@@ -1,4 +1,4 @@
-# Developer Guide
+# Installation Guide
 
 This page is a slightly modified version of the 
 [SSCAI's BWAPI + BWMirror Tutorial (Java)](http://www.sscaitournament.com/index.php?action=tutorial), where instructions have been updated to match this project's filenames, paths and settings.
@@ -52,11 +52,11 @@ In ```Package Explorer``` (left side of Eclipse IDE) navigate to ```src → (def
 
     **HIGHLY RECOMMENDED: You should definitely set up your bwapi.ini file** (in Starcraft/bwapi-data/ folder) to automate this process! Open it and set the following values:
     
-    ```
-        auto_menu = SINGLE_PLAYER
-        maps = maps\sscai\*.sc?
-        Set race and enemy_race to whatever race you want your bot and enemy to be. You should NOT use Random.
-    ```
+```
+auto_menu = SINGLE_PLAYER
+maps = maps\sscai\*.sc?
+Set race and enemy_race to whatever race you want your bot and enemy to be. You should NOT use Random.
+```
 
 - When the game ends, don't forget to terminate the running bot. Press the red square button in the Console section of the screen (or set up your own keyboard shortcut).
 
