@@ -11,46 +11,46 @@ Please have the BWMirror Documentation opened at all times and refer to it frequ
 ## Initial Setup
 
 - Install StarCraft: Brood War, and update it to version 1.16.1. if necessary.
-- Download SSCAI map pack and extract the included 'sscai' directory into your Starcraft/maps/ folder.
-- Get 32bit JRE (Java Runtime Environment) if you don't have it already. Unfortunately, 64bit will not work at this moment.
-- Download and extract Eclipse IDE if you don't have it already. If you do, just make sure it can use 32bit JRE to run the projects.
-- Download and extract BWAPI.
-- Run install.exe to install BWAPI.
+- Copy the ```sscai``` directory into your ```Starcraft/maps/``` folder.
+- Get **32bit JRE (Java Runtime Environment)** if you don't have it already. Unfortunately, **64bit will not work** at this moment.
+- Download and extract Eclipse IDE if you don't have it already. If you do, just **make sure it can use 32bit JRE** to run the projects.
+- Run install.exe from the ```BWAPI 3.7.4``` folder to install BWAPI.
 
-    If you get the 'install.exe is not a valid Win32 application' error, you need to install BWAPI manually. In that case, follow these steps:
+    If you get the ```install.exe is not a valid Win32 application``` error, you need to install BWAPI manually. In that case, follow these steps:
 
-    1. Go to "BWAPI_3.7.4" folder. You will find 3 important directories there: "WINDOWS", "Starcraft" and "Chaoslauncher"
-    - Copy all the files from the "WINDOWS" directory into your Windows installation location (e.g. C:\Windows\) or to any other location from your system's PATH variable.
-        - Copy everything from "Starcraft" folder into the location of your StarCraft installation.
-        - Create a desktop shortcut to the "Chaoslauncher\Chaoslauncher.exe" file and run it.
-        - Sometimes, you might be asked to specify the path to your Starcraft.exe in ChaosLauncher's settings. In that case click the "Settings" tab set it in the "InstallPath" field. Click "OK" and "Ja" and ChaosLauncher will restart.
+    1. Go to ```BWAPI 3.7.4``` folder. You will find 3 important directories there: ```WINDOWS```, ```Starcraft``` and ```Chaoslauncher```
+    - Copy all the files from the ```WINDOWS``` directory into your Windows installation location (e.g. ```C:\Windows\```) or to any other location from your system's ```PATH``` variable.
+        - Copy everything from ```Starcraft``` folder into the location of your StarCraft installation.
+        - Create a desktop shortcut to the ```Chaoslauncher\Chaoslauncher.exe``` file and run it.
+        - Sometimes, you might be asked to specify the path to your ```Starcraft.exe``` in ChaosLauncher's settings. In that case click the ```Settings``` tab set it in the ```InstallPath``` field. Click ```OK``` and ```Ja``` and ChaosLauncher will restart.
     - If the Chaoslauncher isn't already running, run it using the Desktop shortcut. We'll always use Chaoslauncher to run StarCraft with BWAPI.
-    - In Chaoslauncher's 'Plugins' tab, enable 'BWAPI Injector (1.16.1.) RELEASE' and (optionally) 'W-MODE 1.02'.
-    Download Example Bot - Eclipse and extract it wherever you want to work on it.
-    Run your bot using 32-bit JRE.
+    - In Chaoslauncher's ```Plugins``` tab, enable ```BWAPI Injector (1.16.1.) RELEASE``` and (optionally) ```W-MODE 1.02```.
 
 ## Importing the Bot to Eclipse
 
-Run eclipse.exe. File → Import → General → Existing Projects into Workspace → Browse... → Locate ExampleBot folder.
-The ExampleBot project should appear in the ```Projects:``` field. Make sure it's selected and click Finish.
-In Package Explorer (left side of Eclipse IDE) navigate to src → (default package) → TestBot1.java and double-click it. This is your bot's source code.
+Run ```eclipse.exe``` then ```File → Import → General → Existing Projects into Workspace → Browse...``` then locate the ```ExampleBot``` folder.
+
+The ExampleBot project should appear in the ```Projects:``` field. Make sure it's selected and click ```Finish```.
+In ```Package Explorer``` (left side of Eclipse IDE) navigate to ```src → (default package) → TestBot1.java``` and double-click it. This is the bot's source code.
+
 
 ## Event Listeners and the API
 
-    - In the source code, you'll find the onFrame() method. That's the implementation of the event listener that's called once on every logical game frame (that's 23.81x per second on Fastest game speed setting).
-    - There is also the onStart() listener implementation that's called only once, when the game starts.
-    - Most of the simple bots only use these two listeners.
-    - However, your bot's code can also be hooked to other event listeners and get executed after various other game events. To do that, you can either implement the interface directly, or extend the stub class DefaultBWListener.
-    - For event listeners to work, the API object Mirror needs to be created (take a look at the declaration 'private Mirror mirror = new Mirror();' in the code) and it needs to have the listener registered (done by 'mirror.getModule().setEventListener(...)').
+- In the source code, you'll find **the ```onFrame()``` method**. That's the implementation of the event listener that's called once on every logical game frame (that's 23.81x per second on Fastest game speed setting).
+- There is also the **```onStart()``` listener** implementation that's called only once, when the game starts.
+- Most of the simple bots only use these two listeners.
+- However, your bot's code can also be hooked to other event listeners and get executed after various other game events. To do that, you can either implement the interface directly, or extend the stub class ```DefaultBWListener```.
+- For event listeners to work, the API object Mirror needs to be created (take a look at the declaration ```private Mirror mirror = new Mirror();``` in the code) and it needs to have the listener registered (done by ```mirror.getModule().setEventListener(...)```).
 
 ## Running the Bot
 
-    - Run the bot from Run menu (or press Ctrl+F11).
-    - It should execute the main() method that calls run() function, which registers the listeners and starts waiting for the game by calling mirror.startGame().
-    - In the console (bottom of the Eclipse IDE), you should see the 'Connecting to Broodwar...' message. The bot is now waiting for the game to start.
-    - Run the game from Chaoslauncher (Start button).
-    - In the game, run some Custom Melee game. For example: Single Player → Expansion → select/create some player → Play Custom → Set game type to Melee → Select some map and specify player races → OK
-    HIGHLY RECOMMENDED: You should definitely set up your bwapi.ini file (in Starcraft/bwapi-data/ folder) to automate this process! Open it and set the following values:
+- Run the bot from Run menu (or press ```Ctrl+F11```).
+- It should execute the ```main()``` method that calls the ```run()``` function, which registers the listeners and starts waiting for the game by calling ```mirror.startGame()```.
+- In the console (bottom of the Eclipse IDE), you should see the ```Connecting to Broodwar...``` message. The bot is now waiting for the game to start.
+- Run the game from Chaoslauncher (Start button).
+- In the game, run some Custom Melee game. For example: Single Player → Expansion → select/create some player → Play Custom → Set game type to Melee → Select some map and specify player races → OK
+
+    **HIGHLY RECOMMENDED: You should definitely set up your bwapi.ini file** (in Starcraft/bwapi-data/ folder) to automate this process! Open it and set the following values:
     
     ```
         auto_menu = SINGLE_PLAYER
@@ -58,7 +58,7 @@ In Package Explorer (left side of Eclipse IDE) navigate to src → (default pack
         Set race and enemy_race to whatever race you want your bot and enemy to be. You should NOT use Random.
     ```
 
-    - When the game ends, don't forget to terminate the running bot. Press the red square button in the Console section of the screen (or set up your own keyboard shortcut).
+- When the game ends, don't forget to terminate the running bot. Press the red square button in the Console section of the screen (or set up your own keyboard shortcut).
 
 ![Screenshot of bot atgame startup with chat and workers splitting](images/bot.png "Screenshot of running bot")
 
@@ -70,17 +70,18 @@ This is what the running ExampleBot looks like. If you don't see the debug text,
 
 You can add the following commands to onStart() method to make the debugging easier:
 
-    game.enableFlag(1); - This command allows you to manually control the units during the game.
-    game.setLocalSpeed(value); - This changes the game speed to a given (integer) value. Maximum possible speed corresponds to 0, while typical game speed is around 30. SSCAI tournament is played on speed 20.
+- ```game.enableFlag(1);``` - This command allows you to manually control the units during the game.
+- ```game.setLocalSpeed(value);``` - This changes the game speed to a given (integer) value. Maximum possible speed corresponds to 0, while typical game speed is around 30. SSCAI tournament is played on speed 20.
 
-Note: You can also change game speed manually during the game. Just type in '/speed 0' (or other value) into in-game chat (press Enter to start typing).
-Note: In-game chat can also be used to type in the cheat codes that can help in the debugging process. You can get your bot to type in cheats (or any other messages) by calling the sendText() method. For example: game.sendText("show me the money");
+**Note: You can also change game speed manually during the game.** Just type in ```/speed 0``` (or other value) into in-game chat (press Enter to start typing).
+
+**Note: In-game chat can also be used to type in the cheat codes** that can help in the debugging process. You can get your bot to type in cheats (or any other messages) by calling the ```sendText()``` method. For example: ```game.sendText("show me the money");```
 
 ## Implementation and Important Classes
 
 ### Game Class
 
-The Game object, received by calling Mirror.getGame(), gives you access to players, units as well as general information about the current game. It also provides you with the ability to print draw text or simple geometry on the game screen/map. This greatly helps with debugging your bot. See the collection of methods: ```draw_\__Screen``` to draw using screen coordinates (0,0 is top left corner of the screen) and ```draw_\__Map``` if you wish to use map coordinates (0,0 is top left corner of the map)
+The Game object, received by calling ```Mirror.getGame()```, gives you access to players, units as well as general information about the current game. It also provides you with the ability to print draw text or simple geometry on the game screen/map. This greatly helps with debugging your bot. See the collection of methods: ```draw_\__Screen``` to draw using screen coordinates (0,0 is top left corner of the screen) and ```draw_\__Map``` if you wish to use map coordinates (0,0 is top left corner of the map)
 
 ### Player Class
 
