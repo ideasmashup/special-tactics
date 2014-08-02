@@ -31,34 +31,42 @@ Please have the BWMirror Documentation opened at all times and refer to it frequ
 
 ## Importing the Bot to Eclipse
 
-    Run ```eclipse.exe.```
-    File → Import → General → Existing Projects into Workspace → Browse... → Locate ExampleBot folder.
-    The ```ExampleBot``` project should appear in the ```Projects:``` field. Make sure it's selected and click Finish.
-    In Package Explorer (left side of Eclipse IDE) navigate to src → (default package) → TestBot1.java and double-click it. This is your bot's source code.
+Run eclipse.exe. File → Import → General → Existing Projects into Workspace → Browse... → Locate ExampleBot folder.
+The ExampleBot project should appear in the ```Projects:``` field. Make sure it's selected and click Finish.
+In Package Explorer (left side of Eclipse IDE) navigate to src → (default package) → TestBot1.java and double-click it. This is your bot's source code.
 
 ## Event Listeners and the API
 
-    In the source code, you'll find the onFrame() method. That's the implementation of the event listener that's called once on every logical game frame (that's 23.81x per second on Fastest game speed setting).
-    There is also the onStart() listener implementation that's called only once, when the game starts.
-    Most of the simple bots only use these two listeners.
-    However, your bot's code can also be hooked to other event listeners and get executed after various other game events. To do that, you can either implement the interface directly, or extend the stub class DefaultBWListener.
-    For event listeners to work, the API object Mirror needs to be created (take a look at the declaration 'private Mirror mirror = new Mirror();' in the code) and it needs to have the listener registered (done by 'mirror.getModule().setEventListener(...)').
+    - In the source code, you'll find the onFrame() method. That's the implementation of the event listener that's called once on every logical game frame (that's 23.81x per second on Fastest game speed setting).
+    - There is also the onStart() listener implementation that's called only once, when the game starts.
+    - Most of the simple bots only use these two listeners.
+    - However, your bot's code can also be hooked to other event listeners and get executed after various other game events. To do that, you can either implement the interface directly, or extend the stub class DefaultBWListener.
+    - For event listeners to work, the API object Mirror needs to be created (take a look at the declaration 'private Mirror mirror = new Mirror();' in the code) and it needs to have the listener registered (done by 'mirror.getModule().setEventListener(...)').
 
 ## Running the Bot
 
-    Run the bot from Run menu (or press Ctrl+F11).
-    It should execute the main() method that calls run() function, which registers the listeners and starts waiting for the game by calling mirror.startGame().
-    In the console (bottom of the Eclipse IDE), you should see the 'Connecting to Broodwar...' message. The bot is now waiting for the game to start.
-    Run the game from Chaoslauncher (Start button).
-    In the game, run some Custom Melee game. For example: Single Player → Expansion → select/create some player → Play Custom → Set game type to Melee → Select some map and specify player races → OK
+    - Run the bot from Run menu (or press Ctrl+F11).
+    - It should execute the main() method that calls run() function, which registers the listeners and starts waiting for the game by calling mirror.startGame().
+    - In the console (bottom of the Eclipse IDE), you should see the 'Connecting to Broodwar...' message. The bot is now waiting for the game to start.
+    - Run the game from Chaoslauncher (Start button).
+    - In the game, run some Custom Melee game. For example: Single Player → Expansion → select/create some player → Play Custom → Set game type to Melee → Select some map and specify player races → OK
     HIGHLY RECOMMENDED: You should definitely set up your bwapi.ini file (in Starcraft/bwapi-data/ folder) to automate this process! Open it and set the following values:
+    
+    ```
         auto_menu = SINGLE_PLAYER
         maps = maps\sscai\*.sc?
         Set race and enemy_race to whatever race you want your bot and enemy to be. You should NOT use Random.
-    When the game ends, don't forget to terminate the running bot. Press the red square button in the Console section of the screen (or set up your own keyboard shortcut).
+    ```
+
+    - When the game ends, don't forget to terminate the running bot. Press the red square button in the Console section of the screen (or set up your own keyboard shortcut).
+
+![Screenshot of bot atgame startup with chat and workers splitting](docs/images/bot.png "Screenshot of running bot")
 
 This is what the running ExampleBot looks like. If you don't see the debug text, or the workers aren't gathering minerals, the bot is probably not running, or cannot connect to the game.
-User Input and Speed
+
+
+
+## User Input and Speed
 
 You can add the following commands to onStart() method to make the debugging easier:
 
