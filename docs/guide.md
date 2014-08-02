@@ -124,7 +124,7 @@ However, you usually want to give units specific orders depending on their type.
 
 UnitType gives you a lot of additional information about the unit, such as its max health, cost, weapon type, or even build time. To get unit's type, use unit.getType(). BWMirror API comes with predefined constants for all unit types, you can find them as public static class fields in UnitType class. To test, whether a unit is of a particular type, you can simply compare it's type with one of the predefined constants:
 
-```
+```java
 if (myUnit.getType() == UnitType.Terran_Command_Center && self.minerals() >= 50) {
 	myUnit.train(UnitType.Terran_SCV);
 }
@@ -276,9 +276,9 @@ Now that we're able to build structures, train units and move them around the ma
 
 BWTA is enabled in our ExampleBot by calling the following two static methods and importing required dependency (the ```import bwta.*;``` line at the beginning of ```ExampleBot.java```):
 
-```
-    BWTA.readMap();
-    BWTA.analyze(); 
+```java
+BWTA.readMap();
+BWTA.analyze(); 
 ```
 
 Usually, the map analysis is called in ```BWEventListener.onStart()```.
@@ -304,7 +304,7 @@ for (BaseLocation b : BWTA.getBaseLocations()) {
 
 There comes a time in the game when you want to attack your opponent. With the code above, you should be able to find the enemy by sending some units to all ```BaseLocations```. When you discover some enemy buildings (when you see them, the ```game.enemy().getUnits()``` function returns non-empty set), **you should remember their location**, so that you don't need to look for them in future. Prepare some kind of register for enemy building positions and always keep it up to date. For example, you can declare the following ```HashSet``` that will hold all the positions where we saw an enemy building:
 
-```
+```java
 private HashSet enemyBuildingMemory = new HashSet();
 ```
 
