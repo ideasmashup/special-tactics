@@ -36,11 +36,11 @@ In ```Package Explorer``` (left side of Eclipse IDE) navigate to ```src → (def
 
 ## Event Listeners and the API
 
-- In the source code, you'll find **the ```onFrame()``` method**. That's the implementation of the event listener that's called once on every logical game frame (that's 23.81x per second on Fastest game speed setting).
+- In the source code, you'll find **the ```onFrame()``` method**. That's the implementation of the event listener that's called once on every logical game frame (that's [23.81x per second](https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?) on Fastest game speed setting).
 - There is also the **```onStart()``` listener** implementation that's called only once, when the game starts.
 - Most of the simple bots only use these two listeners.
-- However, your bot's code can also be hooked to other event listeners and get executed after various other game events. To do that, you can either implement the interface directly, or extend the stub class ```DefaultBWListener```.
-- For event listeners to work, the API object Mirror needs to be created (take a look at the declaration ```private Mirror mirror = new Mirror();``` in the code) and it needs to have the listener registered (done by ```mirror.getModule().setEventListener(...)```).
+- However, your bot's code can also be hooked to other [event listeners](http://bwmirror.jurenka.sk/javadoc/bwapi/BWEventListener.html) and get executed after various other game events. To do that, you can either implement the [interface](http://bwmirror.jurenka.sk/javadoc/bwapi/BWEventListener.html) directly, or extend the stub class [DefaultBWListener](http://bwmirror.jurenka.sk/javadoc/bwapi/DefaultBWListener.html).
+- For event listeners to work, the API object [Mirror](http://bwmirror.jurenka.sk/javadoc/bwapi/Mirror.html) needs to be created (take a look at the declaration ```private Mirror mirror = new Mirror();``` in the code) and it needs to have the listener registered (done by ```mirror.getModule().setEventListener(...)```).
 
 ## Running the Bot
 
