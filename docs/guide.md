@@ -60,7 +60,7 @@ In Package Explorer (left side of Eclipse IDE) navigate to src → (default pack
 
     - When the game ends, don't forget to terminate the running bot. Press the red square button in the Console section of the screen (or set up your own keyboard shortcut).
 
-![Screenshot of bot atgame startup with chat and workers splitting](docs/images/bot.png "Screenshot of running bot")
+![Screenshot of bot atgame startup with chat and workers splitting](images/bot.png "Screenshot of running bot")
 
 This is what the running ExampleBot looks like. If you don't see the debug text, or the workers aren't gathering minerals, the bot is probably not running, or cannot connect to the game.
 
