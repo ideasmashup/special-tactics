@@ -5,9 +5,9 @@ This wiki is a draft, please improve and fix as you see fit so that information 
 ## Table of content
 
 
-1. Introduction
+1. [Introduction](intro.md)
 2. Guidelines
-    - Getting started
+    - [Getting started](install.md))
     - Eclipse settings
     - Code conventions
 3. Concepts and theory
