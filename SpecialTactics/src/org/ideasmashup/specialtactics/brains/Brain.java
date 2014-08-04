@@ -13,6 +13,13 @@ public class Brain {
 	public Brain(Game game, Player player) {
 		this.game = game;
 		this.self = player;
+
+		// constructor is called on first Frame
+		onStart();
+	}
+	
+	public void onStart() {
+		// TODO initialize pools, rquirements, operators, etc...
 	}
 	
 	public void onFrame() {
