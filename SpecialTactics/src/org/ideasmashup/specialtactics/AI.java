@@ -1,7 +1,18 @@
 package org.ideasmashup.specialtactics;
 
-import bwapi.*;
-import bwta.*;
+import org.ideasmashup.specialtactics.brains.Brain;
+import org.ideasmashup.specialtactics.brains.ProtossBrain;
+import org.ideasmashup.specialtactics.brains.TerranBrain;
+import org.ideasmashup.specialtactics.brains.ZergBrain;
+
+import bwapi.DefaultBWListener;
+import bwapi.Game;
+import bwapi.Mirror;
+import bwapi.Player;
+import bwapi.Race;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwta.BWTA;
 
 public class AI {
 
@@ -10,6 +21,8 @@ public class AI {
 	private Game game;
 
 	private Player self;
+	
+	private Brain brain;
 
 	public void run() {
 		mirror.getModule().setEventListener(new DefaultBWListener() {
@@ -31,6 +44,20 @@ public class AI {
 				BWTA.analyze();
 				System.out.println("Map data ready");
 
+				// Initialize AI Brain
+				if (self.getRace() == Race.Protoss) {
+					brain = new ProtossBrain();
+				}
+				else if (self.getRace() == Race.Terran) {
+					brain = new TerranBrain();
+				}
+				else if (self.getRace() == Race.Zerg) {
+					brain = new ZergBrain();
+				}
+				else {
+					System.out.println("Couldn't find brain for this race: "+ self.getRace());
+					brain = null;
+				}
 			}
 
 			@Override
