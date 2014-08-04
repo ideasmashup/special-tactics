@@ -1,9 +1,13 @@
 package org.ideasmashup.specialtactics.brains;
 
+import bwapi.Game;
+import bwapi.Player;
+
+
 public class TerranBrain extends Brain {
 
-	public TerranBrain() {
-		// TODO implement this
+	public TerranBrain(Game game, Player player) {
+		super(game, player);
 	}
 
 }
