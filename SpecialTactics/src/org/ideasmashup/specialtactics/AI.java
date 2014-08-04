@@ -2,6 +2,7 @@ package org.ideasmashup.specialtactics;
 
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.brains.ProtossBrain;
+import org.ideasmashup.specialtactics.brains.SpectatorBrain;
 import org.ideasmashup.specialtactics.brains.TerranBrain;
 import org.ideasmashup.specialtactics.brains.ZergBrain;
 
@@ -11,7 +12,6 @@ import bwapi.Mirror;
 import bwapi.Player;
 import bwapi.Race;
 import bwapi.Unit;
-import bwapi.UnitType;
 import bwta.BWTA;
 
 public class AI {
@@ -56,7 +56,8 @@ public class AI {
 				}
 				else {
 					System.out.println("Couldn't find brain for this race: "+ self.getRace());
-					brain = null;
+					brain = new SpectatorBrain(game, self);
+					System.out.println("AI initialized in 'Spectator mode'");
 				}
 			}
 
