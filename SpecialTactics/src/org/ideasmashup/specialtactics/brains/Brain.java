@@ -1,11 +1,12 @@
 package org.ideasmashup.specialtactics.brains;
 
+import bwapi.DefaultBWListener;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class Brain {
+public class Brain extends DefaultBWListener {
 	
 	protected Game game;
 	protected Player self;
