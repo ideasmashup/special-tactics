@@ -11,7 +11,6 @@ import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
 import bwapi.Race;
-import bwapi.Unit;
 import bwta.BWTA;
 
 public class AI {
@@ -27,11 +26,6 @@ public class AI {
 	public void run() {
 		mirror.getModule().setEventListener(new DefaultBWListener() {
 			@Override
-			public void onUnitCreate(Unit unit) {
-				System.out.println("New unit " + unit.getType());
-			}
-
-			@Override
 			public void onStart() {
 				game = mirror.getGame();
 				self = game.self();
@@ -46,24 +40,22 @@ public class AI {
 
 				// Initialize AI Brain
 				if (self.getRace() == Race.Protoss) {
-					brain = new ProtossBrain(game, self);
+					brain = new ProtossBrain(game);
 				}
 				else if (self.getRace() == Race.Terran) {
-					brain = new TerranBrain(game, self);
+					brain = new TerranBrain(game);
 				}
 				else if (self.getRace() == Race.Zerg) {
-					brain = new ZergBrain(game, self);
+					brain = new ZergBrain(game);
 				}
 				else {
 					System.out.println("Couldn't find brain for this race: "+ self.getRace());
-					brain = new SpectatorBrain(game, self);
+					brain = new SpectatorBrain(game);
 					System.out.println("AI initialized in 'Spectator mode'");
 				}
-			}
-
-			@Override
-			public void onFrame() {
-				brain.onFrame();
+				
+				// reaffect listener
+				mirror.getModule().setEventListener(brain);
 			}
 		});
 

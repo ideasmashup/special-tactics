@@ -2,27 +2,45 @@ package org.ideasmashup.specialtactics.brains;
 
 import bwapi.DefaultBWListener;
 import bwapi.Game;
+import bwapi.Mirror;
 import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 
 public class Brain extends DefaultBWListener {
-	
+
+	protected Mirror mirror;
 	protected Game game;
 	protected Player self;
 	
-	public Brain(Game game, Player player) {
-		this.game = game;
-		this.self = player;
-
-		// constructor is called on first Frame
-		onStart();
+	public Brain(Mirror mirror) {
+		this.mirror = mirror;
 	}
 	
+	public Brain(Game game) {
+		this.game = game;
+		this.self = game.self();
+	}
+	
+	@Override
 	public void onStart() {
 		// TODO initialize pools, rquirements, operators, etc...
+
+		this.game = mirror.getGame();
+		this.self = game.self();
+
+		// Use BWTA to analyze map
+		// This may take a few minutes if the map is processed first
+		// time!
+		/*
+		System.out.println("Analyzing map...");
+		BWTA.readMap();
+		BWTA.analyze();
+		System.out.println("Map data ready");
+		*/
 	}
 	
+	@Override
 	public void onFrame() {
 		game.setTextSize(10);
 		game.drawTextScreen(10, 10, "Playing as " + self.getName()
