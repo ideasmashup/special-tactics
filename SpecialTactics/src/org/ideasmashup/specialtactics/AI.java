@@ -5,6 +5,7 @@ import org.ideasmashup.specialtactics.brains.ProtossBrain;
 import org.ideasmashup.specialtactics.brains.SpectatorBrain;
 import org.ideasmashup.specialtactics.brains.TerranBrain;
 import org.ideasmashup.specialtactics.brains.ZergBrain;
+import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.DefaultBWListener;
 import bwapi.Game;
@@ -15,13 +16,15 @@ import bwta.BWTA;
 
 public class AI {
 
-	private Mirror mirror = new Mirror();
+	private final Mirror mirror = new Mirror();
 
 	private Game game;
 
 	private Player self;
-	
+
 	private Brain brain;
+
+	private Utils utils;
 
 	public void run() {
 		mirror.getModule().setEventListener(new DefaultBWListener() {
@@ -38,6 +41,9 @@ public class AI {
 				BWTA.analyze();
 				System.out.println("Map data ready");
 
+				// Initialize Utilities singleton
+				utils = Utils.init(game);
+
 				// Initialize AI Brain
 				if (self.getRace() == Race.Protoss) {
 					brain = new ProtossBrain(game);
@@ -53,7 +59,7 @@ public class AI {
 					brain = new SpectatorBrain(game);
 					System.out.println("AI initialized in 'Spectator mode'");
 				}
-				
+
 				// reaffect listener
 				mirror.getModule().setEventListener(brain);
 			}
