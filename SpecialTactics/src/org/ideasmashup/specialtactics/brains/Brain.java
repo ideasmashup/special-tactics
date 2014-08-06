@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.ideasmashup.specialtactics.agents.Bindable;
+import org.ideasmashup.specialtactics.agents.MineralPatch;
 
 import bwapi.DefaultBWListener;
 import bwapi.Game;
@@ -17,20 +18,20 @@ public class Brain extends DefaultBWListener {
 	protected Mirror mirror;
 	protected Game game;
 	protected Player self;
-	
+
 	protected List<Bindable> agents;
-	
+
 	public Brain(Mirror mirror) {
 		this.mirror = mirror;
-		
+
 		agents = new ArrayList<Bindable>();
 	}
-	
+
 	public Brain(Game game) {
 		this.game = game;
 		this.self = game.self();
 	}
-	
+
 	@Override
 	public void onStart() {
 		// TODO initialize pools, rquirements, operators, etc...
@@ -47,21 +48,21 @@ public class Brain extends DefaultBWListener {
 		BWTA.analyze();
 		System.out.println("Map data ready");
 		*/
-		
+
 		// Initialize all constraints and agents
 		System.out.println("Starting by listing all visible units ");
-		
+
 		for (Unit unit : self.getUnits()) {
 			System.out.println("Found "+ unit.getType());
-			 
+
 			//
 			if (unit.getType() == UnitType.Resource_Mineral_Field) {
 				System.out.println("  - is mineral patch : assigned MineralPatch agent");
-				
+				agents.add(new MineralPatch(unit));
 			}
 		}
 	}
-	
+
 	@Override
 	public void onFrame() {
 		game.setTextSize(10);
