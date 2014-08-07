@@ -12,13 +12,13 @@ import org.ideasmashup.specialtactics.utils.Utils;
 import bwapi.Unit;
 import bwta.BWTA;
 
-public class MineralPatch {
+public class MineralPatch extends Agent {
 
-	protected Unit bindee; // the mineral patch
 	protected List<Unit> servants; // the workers assigned to this patch
 	protected List<Need> needs; // the request to have 2 workers
 
-	public MineralPatch() {
+	public MineralPatch(Unit mineralpatch) {
+		super(mineralpatch);
 		this.servants = new ArrayList<Unit>(2);
 		this.needs = new ArrayList<Need>(2);
 
