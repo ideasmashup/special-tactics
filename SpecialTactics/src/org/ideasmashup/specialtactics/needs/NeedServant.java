@@ -11,4 +11,9 @@ public class NeedServant extends Need {
 		this.type = type;
 	}
 
+	public NeedServant(UnitType type, float priority) {
+		super(priority);
+		this.type = type;
+	}
+
 }
