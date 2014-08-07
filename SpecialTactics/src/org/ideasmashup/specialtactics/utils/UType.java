@@ -5,6 +5,7 @@ import bwapi.UnitType;
 
 public enum UType {
 	WORKER (UnitType.Terran_SCV, UnitType.Protoss_Probe, UnitType.Zerg_Drone),
+	BASE (UnitType.Terran_Command_Center, UnitType.Protoss_Nexus, UnitType.Zerg_Hatchery),
 	T1 (UnitType.Terran_Marine, UnitType.Protoss_Zealot, UnitType.Zerg_Zergling);
 
 	private UnitType terran;
