@@ -3,14 +3,14 @@ package org.ideasmashup.specialtactics.needs;
 public class Need {
 
 	protected boolean isSatisfied;
-	protected int priority;
+	protected float priority;
 
 	public Need() {
 		this.isSatisfied = false;
 		this.priority = 0;
 	}
 
-	public Need(int priority) {
+	public Need(float priority) {
 		this();
 		this.priority = priority;
 	}
@@ -27,7 +27,7 @@ public class Need {
 		this.priority = priority;
 	}
 
-	public int getPriority() {
+	public float getPriority() {
 		return this.priority;
 	}
 
