@@ -12,9 +12,8 @@ import org.ideasmashup.specialtactics.utils.Utils;
 import bwapi.Unit;
 import bwta.BWTA;
 
-public class MineralPatch extends Agent {
+public class MineralPatch extends MasterAgent {
 
-	protected List<Unit> servants; // the workers assigned to this patch
 	protected List<Need> needs; // the request to have 2 workers
 
 	public MineralPatch(Unit mineralpatch) {
@@ -68,19 +67,6 @@ public class MineralPatch extends Agent {
 		}
 
 		return false;
-	}
-
-	protected void addServant(Unit unit) {
-
-	}
-
-	protected void freeServant(Unit unit) {
-		servants.remove(unit);
-		// Utils.getProductChannels().add(unit);
-	}
-
-	protected void freeAllServants() {
-
 	}
 
 }
