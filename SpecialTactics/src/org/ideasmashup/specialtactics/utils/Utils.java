@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,11 +22,15 @@ public class Utils {
 	// TODO split all in distintc maps per categories (units, ressources, etc)
 	private final Map<Need, Agent> needs;
 
+	// map of all unit-specific listeners
+	private final Map<UnitType, ArrayList<UnitListener>> lsUnits;
+
 	protected Utils(Game game) {
 		this.game = game;
 		this.player = game.self();
 
 		this.needs = new HashMap<Need, Agent>();
+		this.lsUnits = new HashMap<UnitType, ArrayList<UnitListener>>();
 	}
 
 	public static Utils init(Game game) {
@@ -64,6 +69,27 @@ public class Utils {
 		// remove all occurences with "owner" value
 		// oher syntaxes would only removes the first occurence
 		this.needs.values().removeAll(Collections.singleton(owner));
+	}
+
+	public void addUnitsListener(UnitType type, UnitListener ls) {
+		if (this.lsUnits.containsKey(type)) {
+			this.lsUnits.get(type).add(ls);
+		}
+		else {
+			// need to create a new ArrayList
+			ArrayList<UnitListener> list = new ArrayList<UnitListener>();
+			list.add(ls);
+
+			this.lsUnits.put(type, list);
+		}
+	}
+
+	public boolean removeUnitsListener(UnitType type, UnitListener ls) {
+		if (this.lsUnits.containsKey(type)) {
+			return this.lsUnits.get(type).remove(ls);
+		}
+
+		return false;
 	}
 
 }
