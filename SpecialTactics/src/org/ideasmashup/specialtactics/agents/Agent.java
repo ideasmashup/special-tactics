@@ -10,9 +10,17 @@ public class Agent {
 
 	public Agent(Unit bindee) {
 		this.bindee = bindee;
+
+		init();
+	}
+
+	protected void init() {
+		// first initialization (on creation)
+
 	}
 
 	public void update() {
+		// called on every frame (or as frequently as possible)
 
 	}
 
