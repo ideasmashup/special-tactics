@@ -13,7 +13,7 @@ import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class Brain extends DefaultBWListener {
+public class Brain implements BWEventListener {
 
 	protected Mirror mirror;
 	protected Game game;
@@ -65,48 +65,105 @@ public class Brain extends DefaultBWListener {
 
 	@Override
 	public void onFrame() {
-		game.setTextSize(10);
-		game.drawTextScreen(10, 10, "Playing as " + self.getName()
-				+ " - " + self.getRace());
 
-		StringBuilder units = new StringBuilder("My units:\n");
-
-		// iterate through my units
-		for (Unit myUnit : self.getUnits()) {
-			units.append(myUnit.getType()).append(" ")
-					.append(myUnit.getTilePosition()).append("\n");
-
-			// if there's enough minerals, train an SCV
-			if (myUnit.getType() == UnitType.Terran_Command_Center
-					&& self.minerals() >= 50) {
-				myUnit.train(UnitType.Terran_SCV);
-			}
-
-			// if it's a drone and it's idle, send it to the closest
-			// mineral patch
-			if (myUnit.getType().isWorker() && myUnit.isIdle()) {
-				Unit closestMineral = null;
-
-				// find the closest mineral
-				for (Unit neutralUnit : game.neutral().getUnits()) {
-					if (neutralUnit.getType().isMineralField()) {
-						if (closestMineral == null
-								|| myUnit.getDistance(neutralUnit) < myUnit
-										.getDistance(closestMineral)) {
-							closestMineral = neutralUnit;
-						}
-					}
-				}
-
-				// if a mineral patch was found, send the drone to
-				// gather it
-				if (closestMineral != null) {
-					myUnit.gather(closestMineral, false);
-				}
-			}
+		for (Agent agent : agents) {
+			// call all agents to do their low-level "stuff"
+			agent.update();
 		}
 
-		// draw my units on screen
-		game.drawTextScreen(10, 25, units.toString());
+		// TODO call all ops and high level classes to do strategic/global stuff
+	}
+
+	@Override
+	public void onEnd(boolean isWinner) {
+		if (isWinner) {
+			//
+		}
+		else {
+			//
+		}
+	}
+
+	@Override
+	public void onSendText(String text) {
+
+	}
+
+	@Override
+	public void onReceiveText(Player player, String text) {
+
+	}
+
+	@Override
+	public void onPlayerLeft(Player player) {
+
+	}
+
+	@Override
+	public void onNukeDetect(Position target) {
+
+	}
+
+	@Override
+	public void onUnitDiscover(Unit unit) {
+
+	}
+
+	@Override
+	public void onUnitEvade(Unit unit) {
+
+	}
+
+	@Override
+	public void onUnitShow(Unit unit) {
+
+	}
+
+	@Override
+	public void onUnitHide(Unit unit) {
+
+	}
+
+	@Override
+	public void onUnitCreate(Unit unit) {
+		// TODO refactor code so that this gets abck into AI.java
+		//      and Brain handles more
+
+		// add new unit to global Units pool
+		units.add(unit);
+
+		//
+		Agent needee = needs.findNeedeeFor(unit);
+		needee.fillNeed();
+	}
+
+	@Override
+	public void onUnitDestroy(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitMorph(Unit unit) {
+
+	}
+
+	@Override
+	public void onUnitRenegade(Unit unit) {
+
+	}
+
+	@Override
+	public void onSaveGame(String gameName) {
+
+	}
+
+	@Override
+	public void onUnitComplete(Unit unit) {
+
+	}
+
+	@Override
+	public void onPlayerDropped(Player player) {
+
 	}
 }
