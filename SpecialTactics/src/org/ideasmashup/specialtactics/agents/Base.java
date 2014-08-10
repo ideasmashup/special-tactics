@@ -18,6 +18,8 @@ public class Base extends MasterAgent implements UnitListener {
 		// look for surrounding mineral patches
 		// assign them MineralPatch agents asap
 
+		//Utils.get().getPlayer().getUnits()
+
 		// attach itself to workers creation
 		Utils.get().addUnitsListener(Utils.get().getTypeFor(UType.WORKER), this);
 	}
@@ -37,29 +39,6 @@ public class Base extends MasterAgent implements UnitListener {
 			// TODO replace with prioritized Needs collection (?)
 			if (Utils.get().getPlayer().minerals() >= 50) {
 				bindee.train(Utils.get().getTypeFor(UType.WORKER));
-			}
-		}
-
-
-		if (bindee.getResources() == 0) {
-			// no longer mineable
-			freeAllServants();
-		}
-		else {
-			// can still be mined : mining micro-management of all servants
-			for (Unit servant : servants) {
-				if (servant.isCarryingMinerals()) {
-					// carrying minerals so move back to base
-					// FIXME maybe this is already automatic ?
-					servant.move(BWTA.getNearestBaseLocation(servant.getPosition()).getPosition());
-				}
-				else if (servant.isGatheringMinerals()) {
-					// collecting minerals so keep doing it
-				}
-				else {
-					// not doing anything so move back to mineral collection on this patch
-					servant.gather(bindee);
-				}
 			}
 		}
 	}
