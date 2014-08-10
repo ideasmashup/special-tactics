@@ -51,42 +51,10 @@ public class Brain implements BWEventListener {
 		BWTA.analyze();
 		System.out.println("Map data ready");
 		*/
-
-		// List all units
-		for (Unit unit : self.getUnits()) {
-			Units.add(unit);
-		}
-
-		// Initialize all constraints and agents
-		System.out.println("Starting by listing all visible units ");
-		Agent agent;
-
-		for (Unit unit : self.getUnits()) {
-			System.out.println("Found "+ unit.getType());
-
-			//
-			if (unit.getType() == UnitType.Resource_Mineral_Field) {
-				System.out.println("  - is mineral patch : assigned MineralPatch agent");
-				agent = new MineralPatch(unit);
-				agents.add(agent);
-			}
-
-			//
-			if (unit.getType() == Units.Types.BUILDING_BASE.getUnitType()) {
-				System.out.println("  - is base center : assigne Base agent");
-				agent = new Base(unit);
-				agents.add(agent);
-			}
-		}
 	}
 
 	@Override
 	public void onFrame() {
-
-		// register all new units
-		for (Unit unit : self.getUnits()) {
-			Units.add(unit);
-		}
 
 		// run all agents
 		for (Agent agent : agents) {
@@ -149,16 +117,29 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitCreate(Unit unit) {
-		// TODO refactor code so that this gets abck into AI.java
-		//      and Brain handles more
-
 		// add new unit to global Units pool
-		//units.add(unit);
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") created");
 
-		//
+		Units.add(unit);
+
 		//Agent needee = needs.findNeedeeFor(unit);
 		//needee.fillNeed();
+
+		Agent agent;
+
+		//
+		if (unit.getType() == UnitType.Resource_Mineral_Field) {
+			System.out.println("  - is mineral patch : assigned MineralPatch agent");
+			agent = new MineralPatch(unit);
+			agents.add(agent);
+		}
+
+		//
+		if (unit.getType() == Units.Types.BUILDING_BASE.getUnitType()) {
+			System.out.println("  - is base center : assigne Base agent");
+			agent = new Base(unit);
+			agents.add(agent);
+		}
 	}
 
 	@Override
