@@ -33,27 +33,37 @@ import bwapi.UnitType;
  */
 public class Units {
 
+	protected static List<Integer> ids;
 	protected static Map<Types, ArrayList<Unit>> map;
 	protected static List<UnitListener> listeners;
 
 	/* static constructor */
 	{
+		ids = new ArrayList<Integer>();
 		map = new HashMap<Types, ArrayList<Unit>>();
 		listeners = new ArrayList<UnitListener>();
 	}
 
 	public static void add(Unit unit) {
-		Types[] types = Types.getTypes(unit);
-		for (Types type : types) {
-			if (map.containsKey(type)) {
-				map.get(type).add(unit);
-			}
-			else {
-				ArrayList<Unit> arr = new ArrayList<Unit>();
-				arr.add(unit);
+		if (!ids.contains(unit.getID())) {
+			System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") newly registered");
 
-				map.put(type, arr);
+			Types[] types = Types.getTypes(unit);
+			for (Types type : types) {
+				System.out.println(" - assigned type ("+ type.name() +")");
+				if (map.containsKey(type)) {
+					map.get(type).add(unit);
+				}
+				else {
+					ArrayList<Unit> arr = new ArrayList<Unit>();
+					arr.add(unit);
+
+					map.put(type, arr);
+				}
 			}
+		}
+		else {
+			System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") already registered");
 		}
 	}
 
