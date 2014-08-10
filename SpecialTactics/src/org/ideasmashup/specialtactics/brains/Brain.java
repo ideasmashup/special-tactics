@@ -24,9 +24,6 @@ public class Brain implements BWEventListener {
 	// low-level agents
 	protected List<Agent> agents;
 
-	// collection of all units
-	protected Units units;
-
 	public Brain(Mirror mirror) {
 		this.mirror = mirror;
 
@@ -36,8 +33,6 @@ public class Brain implements BWEventListener {
 	public Brain(Game game) {
 		this.game = game;
 		this.self = game.self();
-
-		this.units = new Units();
 	}
 
 	@Override
@@ -57,13 +52,17 @@ public class Brain implements BWEventListener {
 		System.out.println("Map data ready");
 		*/
 
+		// List all units
+		for (Unit unit : self.getUnits()) {
+			Units.add(unit);
+		}
+
 		// Initialize all constraints and agents
 		System.out.println("Starting by listing all visible units ");
 		Agent agent;
 
 		for (Unit unit : self.getUnits()) {
 			System.out.println("Found "+ unit.getType());
-			units.add(unit);
 
 			//
 			if (unit.getType() == UnitType.Resource_Mineral_Field) {
@@ -84,6 +83,12 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onFrame() {
 
+		// register all new units
+		for (Unit unit : self.getUnits()) {
+			Units.add(unit);
+		}
+
+		// run all agents
 		for (Agent agent : agents) {
 			// call all agents to do their low-level "stuff"
 			agent.update();
@@ -124,22 +129,22 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitDiscover(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") discovered");
 	}
 
 	@Override
 	public void onUnitEvade(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") evaded");
 	}
 
 	@Override
 	public void onUnitShow(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") shown");
 	}
 
 	@Override
 	public void onUnitHide(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") hidden");
 	}
 
 	@Override
@@ -148,7 +153,8 @@ public class Brain implements BWEventListener {
 		//      and Brain handles more
 
 		// add new unit to global Units pool
-		units.add(unit);
+		//units.add(unit);
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") created");
 
 		//
 		//Agent needee = needs.findNeedeeFor(unit);
@@ -157,17 +163,17 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		//
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") destroyed");
 	}
 
 	@Override
 	public void onUnitMorph(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") morphed");
 	}
 
 	@Override
 	public void onUnitRenegade(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") renegade");
 	}
 
 	@Override
@@ -177,7 +183,7 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-
+		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") completed");
 	}
 
 	@Override
