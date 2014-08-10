@@ -1,15 +1,19 @@
 package org.ideasmashup.specialtactics.brains;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.ideasmashup.specialtactics.agents.Bindable;
+import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
+import org.ideasmashup.specialtactics.utils.UType;
+import org.ideasmashup.specialtactics.utils.Utils;
 
-import bwapi.DefaultBWListener;
+import bwapi.BWEventListener;
 import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
+import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -19,17 +23,23 @@ public class Brain implements BWEventListener {
 	protected Game game;
 	protected Player self;
 
-	protected List<Bindable> agents;
+	// low-level agents
+	protected List<Agent> agents;
+
+	// collection of all units
+	protected Units units;
 
 	public Brain(Mirror mirror) {
 		this.mirror = mirror;
 
-		agents = new ArrayList<Bindable>();
+		agents = new ArrayList<Agent>();
 	}
 
 	public Brain(Game game) {
 		this.game = game;
 		this.self = game.self();
+
+		this.units = new Units();
 	}
 
 	@Override
@@ -51,14 +61,24 @@ public class Brain implements BWEventListener {
 
 		// Initialize all constraints and agents
 		System.out.println("Starting by listing all visible units ");
+		Agent agent;
 
 		for (Unit unit : self.getUnits()) {
 			System.out.println("Found "+ unit.getType());
+			units.add(unit);
 
 			//
 			if (unit.getType() == UnitType.Resource_Mineral_Field) {
 				System.out.println("  - is mineral patch : assigned MineralPatch agent");
-				agents.add(new MineralPatch(unit));
+				agent = new MineralPatch(unit);
+				agents.add(agent);
+			}
+
+			//
+			if (unit.getType() == Utils.get().getTypeFor(UType.BASE)) {
+				System.out.println("  - is base center : assigne Base agent");
+				agent = new Base(unit);
+				agents.add(agent);
 			}
 		}
 	}
@@ -133,8 +153,8 @@ public class Brain implements BWEventListener {
 		units.add(unit);
 
 		//
-		Agent needee = needs.findNeedeeFor(unit);
-		needee.fillNeed();
+		//Agent needee = needs.findNeedeeFor(unit);
+		//needee.fillNeed();
 	}
 
 	@Override
