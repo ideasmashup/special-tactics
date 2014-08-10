@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.brains.Units;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedServant;
-import org.ideasmashup.specialtactics.utils.UType;
-import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.Unit;
 import bwta.BWTA;
@@ -28,10 +27,11 @@ public class MineralPatch extends MasterAgent {
 		// mineral patch needs two workers (to be assigned as miners "servants")
 		// priority is defined based on distance from nearest base location
 		float priority = 1/bindee.getDistance(BWTA.getNearestBaseLocation(bindee.getPosition()).getPosition());
-		this.needs.add(new NeedServant(Utils.get().getTypeFor(UType.WORKER), priority));
-		this.needs.add(new NeedServant(Utils.get().getTypeFor(UType.WORKER), priority));
+		this.needs.add(new NeedServant(Units.Types.WORKERS.getUnitType(), priority));
+		this.needs.add(new NeedServant(Units.Types.WORKERS.getUnitType(), priority));
 	}
 
+	@Override
 	public void update() {
 		if (bindee.getResources() == 0) {
 			// no longer mineable

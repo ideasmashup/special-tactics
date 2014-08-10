@@ -157,6 +157,14 @@ public class Units {
 			return null;
 		}
 
+		public UnitType getUnitType() {
+			UnitType[] ut = get(Utils.get().getPlayer().getRace());
+			if (ut.length > 0) {
+				return ut[0];
+			}
+			return null;
+		}
+
 		public boolean is(Unit unit) {
 			for (int i=0; i<protoss.length; i++) {
 				if (protoss[i] == unit.getType()) return true;

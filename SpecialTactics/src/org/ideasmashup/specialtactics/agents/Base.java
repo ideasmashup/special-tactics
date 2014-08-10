@@ -1,11 +1,10 @@
 package org.ideasmashup.specialtactics.agents;
 
-import org.ideasmashup.specialtactics.utils.UType;
+import org.ideasmashup.specialtactics.brains.Units;
 import org.ideasmashup.specialtactics.utils.UnitListener;
 import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.Unit;
-import bwta.BWTA;
 
 public class Base extends MasterAgent implements UnitListener {
 
@@ -18,10 +17,9 @@ public class Base extends MasterAgent implements UnitListener {
 		// look for surrounding mineral patches
 		// assign them MineralPatch agents asap
 
-		//Utils.get().getPlayer().getUnits()
+		//Units.get(Unit.Types.WORKERS);
 
 		// attach itself to workers creation
-		Utils.get().addUnitsListener(Utils.get().getTypeFor(UType.WORKER), this);
 	}
 
 	@Override
@@ -38,7 +36,7 @@ public class Base extends MasterAgent implements UnitListener {
 
 			// TODO replace with prioritized Needs collection (?)
 			if (Utils.get().getPlayer().minerals() >= 50) {
-				bindee.train(Utils.get().getTypeFor(UType.WORKER));
+				bindee.train(Units.Types.WORKERS.getUnitType());
 			}
 		}
 	}

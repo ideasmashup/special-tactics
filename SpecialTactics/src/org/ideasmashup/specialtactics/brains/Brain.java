@@ -6,8 +6,6 @@ import java.util.List;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
-import org.ideasmashup.specialtactics.utils.UType;
-import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.BWEventListener;
 import bwapi.Game;
@@ -75,7 +73,7 @@ public class Brain implements BWEventListener {
 			}
 
 			//
-			if (unit.getType() == Utils.get().getTypeFor(UType.BASE)) {
+			if (unit.getType() == Units.Types.BUILDING_BASE.getUnitType()) {
 				System.out.println("  - is base center : assigne Base agent");
 				agent = new Base(unit);
 				agents.add(agent);
