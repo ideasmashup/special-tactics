@@ -1,13 +1,16 @@
 package org.ideasmashup.specialtactics.brains;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.ideasmashup.specialtactics.utils.UnitListener;
+import org.ideasmashup.specialtactics.utils.Utils;
 
+import bwapi.Race;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -29,13 +32,17 @@ import bwapi.UnitType;
  *
  */
 public class Units {
-	protected Map<Types, ArrayList<Unit>> map;
 
-	public Units() {
-		this.map = new HashMap<Types, ArrayList<Unit>>();
+	protected static Map<Types, ArrayList<Unit>> map;
+	protected static List<UnitListener> listeners;
+
+	/* static constructor */
+	{
+		map = new HashMap<Types, ArrayList<Unit>>();
+		listeners = new ArrayList<UnitListener>();
 	}
 
-	public void add(Unit unit) {
+	public static void add(Unit unit) {
 		Types[] types = Types.getTypes(unit);
 		for (Types type : types) {
 			if (map.containsKey(type)) {
@@ -50,8 +57,20 @@ public class Units {
 		}
 	}
 
-	public void addListener(UnitListener ls) {
+	public static void addListener(UnitListener ls) {
+		listeners.add(ls);
+	}
 
+	public static void removeListener(UnitListener ls) {
+		listeners.remove(ls);
+	}
+
+	public static void removeAllListeners() {
+		listeners.clear();
+	}
+
+	public static Unit[] get(Types type) {
+		return map.get(type).toArray(new Unit[0]);
 	}
 
 	public static enum Types {
@@ -139,9 +158,9 @@ public class Units {
 			this.zerg = zerg;
 		}
 
-		private UnitType[] protoss;
-		private UnitType[] terran;
-		private UnitType[] zerg;
+		private final UnitType[] protoss;
+		private final UnitType[] terran;
+		private final UnitType[] zerg;
 
 		public UnitType[] get(Race race) {
 			if (race == Race.Protoss) {
