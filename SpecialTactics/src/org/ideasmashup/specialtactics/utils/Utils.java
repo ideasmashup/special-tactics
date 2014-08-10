@@ -53,10 +53,6 @@ public class Utils {
 		return game;
 	}
 
-	public UnitType getTypeFor(UType type){
-		return type.get(getPlayer().getRace());
-	}
-
 	public void addNeed(Need need, Agent owner) {
 		this.needs.put(need, owner);
 	}

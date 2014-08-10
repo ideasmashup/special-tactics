@@ -143,6 +143,20 @@ public class Units {
 		private UnitType[] terran;
 		private UnitType[] zerg;
 
+		public UnitType[] get(Race race) {
+			if (race == Race.Protoss) {
+				return protoss;
+			}
+			else if (race == Race.Terran) {
+				return terran;
+			}
+			else if (race == Race.Zerg) {
+				return zerg;
+			}
+
+			return null;
+		}
+
 		public boolean is(Unit unit) {
 			for (int i=0; i<protoss.length; i++) {
 				if (protoss[i] == unit.getType()) return true;
