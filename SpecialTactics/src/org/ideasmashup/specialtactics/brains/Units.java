@@ -1,7 +1,6 @@
 package org.ideasmashup.specialtactics.brains;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,54 +32,63 @@ import bwapi.UnitType;
  */
 public class Units {
 
-	protected static List<Integer> ids;
-	protected static Map<Types, ArrayList<Unit>> map;
-	protected static List<UnitListener> listeners;
+	protected List<Integer> ids;
+	protected Map<Types, ArrayList<Unit>> map;
+	protected List<UnitListener> listeners;
 
-	/* static constructor */
-	{
+	protected static Units instance = null;
+
+	protected Units() {
 		ids = new ArrayList<Integer>();
 		map = new HashMap<Types, ArrayList<Unit>>();
 		listeners = new ArrayList<UnitListener>();
 	}
 
+	public static void init() {
+		if (instance == null) {
+			instance = new Units();
+
+			System.out.println("Units initialized");
+		}
+	}
+
 	public static void add(Unit unit) {
-		if (!ids.contains(unit.getID())) {
+		//if (!ids.contains(unit.getID())) {
 			System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") newly registered");
 
 			Types[] types = Types.getTypes(unit);
 			for (Types type : types) {
 				System.out.println(" - assigned type ("+ type.name() +")");
-				if (map.containsKey(type)) {
-					map.get(type).add(unit);
+				if (instance.map.containsKey(type)) {
+					instance.map.get(type).add(unit);
 				}
 				else {
 					ArrayList<Unit> arr = new ArrayList<Unit>();
 					arr.add(unit);
 
-					map.put(type, arr);
+					instance.map.put(type, arr);
 				}
 			}
-		}
-		else {
-			System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") already registered");
-		}
+		//}
+		//else {
+		//	System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") already registered");
+		//}
 	}
 
 	public static void addListener(UnitListener ls) {
-		listeners.add(ls);
+		instance.listeners.add(ls);
 	}
 
 	public static void removeListener(UnitListener ls) {
-		listeners.remove(ls);
+		instance.listeners.remove(ls);
 	}
 
 	public static void removeAllListeners() {
-		listeners.clear();
+		instance.listeners.clear();
 	}
 
 	public static Unit[] get(Types type) {
-		return map.get(type).toArray(new Unit[0]);
+		return instance.map.get(type).toArray(new Unit[0]);
 	}
 
 	public static enum Types {
@@ -219,5 +227,88 @@ public class Units {
 			return types.toArray(new Types[0]);
 		}
 
+	}
+
+	public static void onUnitDiscover(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitDiscover(unit);
+		}
+	}
+
+	public static void onUnitEvade(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitEvade(unit);
+		}
+	}
+
+	public static void onUnitShow(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitShow(unit);
+		}
+	}
+
+	public static void onUnitHide(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitHide(unit);
+		}
+	}
+
+	public static void onUnitCreate(Unit unit) {
+		System.out.println("Units.onUnitCreate()");
+		System.out.println("Units.listeners.size() = "+ instance.listeners.size());
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitCreate(unit);
+		}
+	}
+
+	public static void onUnitDestroy(Unit unit) {
+		System.out.println("Units.onUnitDestroy()");
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitDestroy(unit);
+		}
+	}
+
+	public static void onUnitMorph(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitMorph(unit);
+		}
+	}
+
+	public static void onUnitRenegade(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitRenegade(unit);
+		}
+	}
+
+	/**
+	 * Tells the units manager a new unit has been built.
+	 *
+	 * This method is called automatically whenever a new unit is produced by
+	 * a building, factory, egg, etc...
+	 *
+	 * You can also call this method on units that you no longer need and want
+	 * to give back to the others {@link UnitConsumer}.
+	 *
+	 * @param unit the {@link Unit} twhich is newly available for "consumption"
+	 */
+	public static void onUnitComplete(Unit unit) {
+		// call all listeners
+		for (UnitListener ls : instance.listeners) {
+			ls.onUnitComplete(unit);
+		}
+	}
+
+	// FIXME implement these and add them to the UnitListener interface
+
+	public static void onUnitAttacked(Unit unit) {
+		//
 	}
 }
