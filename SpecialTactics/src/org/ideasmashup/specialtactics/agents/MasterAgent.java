@@ -13,7 +13,7 @@ public class MasterAgent extends Agent {
 	}
 
 	protected void addServant(Unit unit) {
-	
+		this.servants.add(unit);
 	}
 
 	protected void freeServant(Unit unit) {
