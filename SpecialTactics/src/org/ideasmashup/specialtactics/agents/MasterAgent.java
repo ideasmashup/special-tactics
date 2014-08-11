@@ -2,10 +2,14 @@ package org.ideasmashup.specialtactics.agents;
 
 import java.util.List;
 
+import org.ideasmashup.specialtactics.brains.Units;
+
 import bwapi.Unit;
+import bwapi.UnitType;
 
 public class MasterAgent extends Agent {
 
+	protected Units.Types servantsType;
 	protected List<Unit> servants;
 
 	public MasterAgent(Unit bindee) {
@@ -18,11 +22,20 @@ public class MasterAgent extends Agent {
 
 	protected void freeServant(Unit unit) {
 		servants.remove(unit);
-		// Utils.getProductChannels().add(unit);
+
+		// freed units are like "new" units
+		Units.onUnitComplete(unit);
 	}
 
 	protected void freeAllServants() {
-	
+		for (Unit servant : servants) {
+			Units.onUnitComplete(servant);
+		}
+		servants.clear();
+	}
+
+	public UnitType getServantsType() {
+		return servantsType.getUnitType();
 	}
 
 }
