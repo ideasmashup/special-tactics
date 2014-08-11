@@ -6,6 +6,7 @@ import java.util.List;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
+import org.ideasmashup.specialtactics.needs.Needs;
 
 import bwapi.BWEventListener;
 import bwapi.Game;
@@ -27,6 +28,11 @@ public class Brain implements BWEventListener {
 	public Brain(Game game) {
 		this.game = game;
 		this.self = game.self();
+
+		this.agents = new ArrayList<Agent>();
+
+		Units.init();
+		Needs.init();
 	}
 
 	@Override
