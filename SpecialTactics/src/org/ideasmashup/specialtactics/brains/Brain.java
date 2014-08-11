@@ -24,12 +24,6 @@ public class Brain implements BWEventListener {
 	// low-level agents
 	protected List<Agent> agents;
 
-	public Brain(Mirror mirror) {
-		this.mirror = mirror;
-
-		agents = new ArrayList<Agent>();
-	}
-
 	public Brain(Game game) {
 		this.game = game;
 		this.self = game.self();
@@ -37,10 +31,10 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onStart() {
+		// FIXME DO NOT USE!!! NOT CALLED YET IN THIS VERSION!!!
+
 		// TODO initialize pools, rquirements, operators, etc...
 
-		this.game = mirror.getGame();
-		this.self = game.self();
 
 		// Use BWTA to analyze map
 		// This may take a few minutes if the map is processed first
@@ -55,6 +49,7 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onFrame() {
+		//System.out.println("frame "+ new Date());
 
 		// run all agents
 		for (Agent agent : agents) {
@@ -98,21 +93,25 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onUnitDiscover(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") discovered");
+		Units.onUnitDiscover(unit);
 	}
 
 	@Override
 	public void onUnitEvade(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") evaded");
+		Units.onUnitEvade(unit);
 	}
 
 	@Override
 	public void onUnitShow(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") shown");
+		Units.onUnitShow(unit);
 	}
 
 	@Override
 	public void onUnitHide(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") hidden");
+		Units.onUnitHide(unit);
 	}
 
 	@Override
@@ -120,15 +119,13 @@ public class Brain implements BWEventListener {
 		// add new unit to global Units pool
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") created");
 
-		Units.add(unit);
-
 		//Agent needee = needs.findNeedeeFor(unit);
 		//needee.fillNeed();
 
 		Agent agent;
 
 		//
-		if (unit.getType() == UnitType.Resource_Mineral_Field) {
+		if (unit.getType() == UnitType.Resource_Mineral_Field && unit.isVisible()) {
 			System.out.println("  - is mineral patch : assigned MineralPatch agent");
 			agent = new MineralPatch(unit);
 			agents.add(agent);
@@ -140,21 +137,30 @@ public class Brain implements BWEventListener {
 			agent = new Base(unit);
 			agents.add(agent);
 		}
+
+		// TODO verify that call order is correct for new Agents that implement
+		//      UnitListener and may be called after/before? they are created
+
+		Units.add(unit);
+		Units.onUnitCreate(unit);
 	}
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") destroyed");
+		Units.onUnitDestroy(unit);
 	}
 
 	@Override
 	public void onUnitMorph(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") morphed");
+		Units.onUnitMorph(unit);
 	}
 
 	@Override
 	public void onUnitRenegade(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") renegade");
+		Units.onUnitRenegade(unit);
 	}
 
 	@Override
@@ -165,6 +171,7 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onUnitComplete(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") completed");
+		Units.onUnitComplete(unit);
 	}
 
 	@Override
