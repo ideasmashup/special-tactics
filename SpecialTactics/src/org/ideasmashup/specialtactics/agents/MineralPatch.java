@@ -1,8 +1,8 @@
 package org.ideasmashup.specialtactics.agents;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.ideasmashup.specialtactics.brains.Units;
 import org.ideasmashup.specialtactics.needs.Need;
@@ -12,21 +12,20 @@ import org.ideasmashup.specialtactics.needs.Needs;
 import bwapi.Unit;
 import bwta.BWTA;
 
-public class MineralPatch extends MasterAgent implements UnitConsumer {
+public class MineralPatch extends MasterAgent implements Consumer {
 
-	protected List<Need> needs; // the request to have 2 workers
+	protected List<Need> needs; // each patch needs 2 workers for saturation
 
 	public MineralPatch(Unit mineralpatch) {
 		super(mineralpatch);
 		this.servants = new ArrayList<Unit>(2);
 		this.needs = new ArrayList<Need>(2);
 
-		// initialize this mineral patches needs
-		// (e.g. 2 workers assigned for optimal saturation)
-		initNeeds();
+		// initialize needs and register them to the global Needs manager
+		// so that they can be satisfied automatically asap
 
-		// now ask the Needs manager to satisfy our current needs
-		requestNeeds();
+		initNeeds();
+		plugNeeds();
 	}
 
 	protected void initNeeds() {
@@ -40,12 +39,43 @@ public class MineralPatch extends MasterAgent implements UnitConsumer {
 		this.needs.add(new NeedUnit(Units.Types.WORKERS.getUnitType(), priority));
 	}
 
-	protected void requestNeeds() {
+	protected void plugNeeds() {
 		for (Need need : needs) {
 			if (!need.isSatisfied()) {
 				Needs.add(need, this);
 			}
 		}
+	}
+
+	@Override
+	public Need[] getNeeds(boolean returnAll) {
+		if (returnAll) {
+			return needs.toArray(new Need[0]);
+		}
+		else {
+			List<Need> unsatisfied = new ArrayList<Need>();
+			for (Need need : needs) {
+				if (!need.isSatisfied()) unsatisfied.add(need);
+			}
+			return unsatisfied.toArray(new Need[0]);
+		}
+	}
+
+	@Override
+	public boolean fillNeeds(Object offer) {
+		for (Need need : needs) {
+			if (offer instanceof Unit) {
+				Unit unit = (Unit) offer;
+				if (unit.getType().isWorker()) {
+					System.out.println("mineral patch just received new worker #"+ unit.getID() +"! yay!");
+					need.setSatified(true);
+					addServant(unit);
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -80,30 +110,4 @@ public class MineralPatch extends MasterAgent implements UnitConsumer {
 			}
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.ideasmashup.specialtactics.agents.UnitConsumer#getNeeds()
-	 */
-	@Override
-	public List<Need> getNeeds() {
-		return Collections.unmodifiableList(needs);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.ideasmashup.specialtactics.agents.UnitConsumer#fillNeed(org.ideasmashup.specialtactics.needs.Need, bwapi.Unit)
-	 */
-	@Override
-	public boolean fillNeed(Unit offer) {
-		for (Need need : needs) {
-			if (offer.getType().isWorker()) {
-				System.out.println("mineral patch just received new worker #"+ offer.getID() +"! yay!");
-				need.setSatified(true);
-				addServant(offer);
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 }
