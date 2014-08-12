@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.ideasmashup.specialtactics.utils.UnitListener;
+import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.Race;
