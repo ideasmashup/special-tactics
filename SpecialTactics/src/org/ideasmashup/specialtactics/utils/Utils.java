@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.needs.Need;
 
 import bwapi.Game;
