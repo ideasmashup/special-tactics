@@ -1,4 +1,4 @@
-package org.ideasmashup.specialtactics.needs;
+package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,10 @@ import java.util.Map;
 
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Consumer;
-import org.ideasmashup.specialtactics.brains.Units;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
-import org.ideasmashup.specialtactics.managers.Resources;
-import org.ideasmashup.specialtactics.managers.Supplies;
+import org.ideasmashup.specialtactics.needs.Need;
 
 import bwapi.Unit;
 

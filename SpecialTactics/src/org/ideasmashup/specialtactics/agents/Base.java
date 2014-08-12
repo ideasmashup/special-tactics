@@ -1,12 +1,13 @@
 package org.ideasmashup.specialtactics.agents;
 
-import org.ideasmashup.specialtactics.brains.Units;
-import org.ideasmashup.specialtactics.utils.UnitListener;
-import org.ideasmashup.specialtactics.utils.Utils;
+import org.ideasmashup.specialtactics.listeners.ResourcesListener;
+import org.ideasmashup.specialtactics.listeners.UnitListener;
+import org.ideasmashup.specialtactics.managers.Resources;
+import org.ideasmashup.specialtactics.managers.Units;
 
 import bwapi.Unit;
 
-public class Base extends MasterAgent implements UnitListener {
+public class Base extends MasterAgent implements UnitListener, ResourcesListener {
 
 	public Base(Unit base) {
 		super(base);
@@ -15,30 +16,16 @@ public class Base extends MasterAgent implements UnitListener {
 	@Override
 	protected void init() {
 		// look for surrounding mineral patches
-		// assign them MineralPatch agents asap
+		// assign them MineralPatch agents asap ?
 
-		//Units.get(Unit.Types.WORKERS);
-
-		// attach itself to workers creation
+		// register itself to units events, resources events
+		Units.addListener(this);
+		Resources.addListener(this);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-
-		// basic units building
-		if (this.bindee.isTraining()) {
-			// already training unit, do nothing because we don't queue thanks to
-			// AI insane APMs
-		}
-		else {
-			// not training unit let's see if we can build something
-
-			// TODO replace with prioritized Needs collection (?)
-			if (Utils.get().getPlayer().minerals() >= 50) {
-				bindee.train(Units.Types.WORKERS.getUnitType());
-			}
-		}
 	}
 
 	@Override
@@ -94,5 +81,25 @@ public class Base extends MasterAgent implements UnitListener {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onResourcesChange(int minerals, int gas) {
+		System.out.println("base onResourcesChange("+minerals+")");
+
+		// basic units building
+		if (this.bindee.isTraining()) {
+			// already training unit, do nothing because we don't queue thanks to
+			// AI insane APMs
+		}
+		else if (this.bindee.isIdle()) {
+			// not doing anything let's see if we can build something
+
+			// TODO replace with prioritized Needs collection (?)
+			if (minerals >= 50) {
+				bindee.train(Units.Types.WORKERS.getUnitType());
+			}
+		}
+	}
+
 
 }

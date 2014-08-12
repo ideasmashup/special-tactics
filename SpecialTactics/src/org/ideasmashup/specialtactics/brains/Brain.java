@@ -6,9 +6,10 @@ import java.util.List;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
+import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
-import org.ideasmashup.specialtactics.needs.Needs;
+import org.ideasmashup.specialtactics.managers.Units;
 
 import bwapi.BWEventListener;
 import bwapi.Game;
@@ -39,10 +40,13 @@ public class Brain implements BWEventListener {
 
 		this.agents = new ArrayList<Agent>();
 
+		// must initialize managers in correct order
 		Units.init();
-		Needs.init();
 		Resources.init();
 		Supplies.init();
+
+		// needs manager always last
+		Needs.init();
 	}
 
 	@Override
@@ -69,8 +73,11 @@ public class Brain implements BWEventListener {
 		// Low priority code running every 20 frames instead of on every frame
 		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
 
+		System.out.println("Brain.onFrame()");
+
 		if (++frames % 20 == 0) {
 			frames = 0;
+			System.out.println("Brain.onFrame() every 20...");
 
 			int curGas = self.gas();
 			int curMinerals = self.minerals();

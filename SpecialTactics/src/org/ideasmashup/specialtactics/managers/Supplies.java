@@ -6,6 +6,7 @@ import java.util.List;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 
 public class Supplies {
+
 	protected List<SupplyListener> listeners;
 
 	protected static Supplies instance = null;

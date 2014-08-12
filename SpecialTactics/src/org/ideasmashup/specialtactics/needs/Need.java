@@ -1,5 +1,7 @@
 package org.ideasmashup.specialtactics.needs;
 
+import org.ideasmashup.specialtactics.managers.Needs;
+
 
 public abstract class Need {
 

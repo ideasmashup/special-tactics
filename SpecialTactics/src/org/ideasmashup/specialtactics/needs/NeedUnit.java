@@ -1,6 +1,7 @@
 package org.ideasmashup.specialtactics.needs;
 
-import org.ideasmashup.specialtactics.needs.Needs.Types;
+import org.ideasmashup.specialtactics.managers.Needs;
+import org.ideasmashup.specialtactics.managers.Needs.Types;
 
 import bwapi.Unit;
 import bwapi.UnitType;

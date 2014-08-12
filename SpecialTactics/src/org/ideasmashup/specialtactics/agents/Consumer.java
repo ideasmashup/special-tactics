@@ -1,7 +1,7 @@
 package org.ideasmashup.specialtactics.agents;
 
+import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.needs.Need;
-import org.ideasmashup.specialtactics.needs.Needs;
 
 public interface Consumer {
 

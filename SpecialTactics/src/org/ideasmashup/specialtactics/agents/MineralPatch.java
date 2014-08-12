@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.ideasmashup.specialtactics.brains.Units;
+import org.ideasmashup.specialtactics.managers.Needs;
+import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
-import org.ideasmashup.specialtactics.needs.Needs;
 
 import bwapi.Unit;
 import bwta.BWTA;

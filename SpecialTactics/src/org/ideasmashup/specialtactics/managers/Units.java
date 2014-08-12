@@ -1,4 +1,4 @@
-package org.ideasmashup.specialtactics.brains;
+package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
