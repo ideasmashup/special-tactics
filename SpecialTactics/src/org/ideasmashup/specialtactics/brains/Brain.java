@@ -6,6 +6,8 @@ import java.util.List;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
+import org.ideasmashup.specialtactics.managers.Resources;
+import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.needs.Needs;
 
 import bwapi.BWEventListener;
@@ -22,6 +24,12 @@ public class Brain implements BWEventListener {
 	protected Game game;
 	protected Player self;
 
+	// internal flags
+	protected int frames = 0;
+	protected int prevMinerals = 0;
+	protected int prevGas = 0;
+	protected int prevSupply = 0;
+
 	// low-level agents
 	protected List<Agent> agents;
 
@@ -33,6 +41,8 @@ public class Brain implements BWEventListener {
 
 		Units.init();
 		Needs.init();
+		Resources.init();
+		Supplies.init();
 	}
 
 	@Override
@@ -55,11 +65,35 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onFrame() {
-		//System.out.println("frame "+ new Date());
 
-		// run all agents
+		// Low priority code running every 20 frames instead of on every frame
+		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
+
+		if (++frames % 20 == 0) {
+			frames = 0;
+
+			int curGas = self.gas();
+			int curMinerals = self.minerals();
+			int curSupply = self.supplyTotal() - self.supplyUsed();
+
+			if (prevMinerals != curMinerals || prevGas != curGas) {
+				prevGas = curGas;
+				prevMinerals = curMinerals;
+
+				Resources.onResourcesChange(curMinerals, curGas);
+			}
+
+			if (prevSupply != curSupply) {
+				prevSupply = curSupply;
+
+				Supplies.onSupplyChange(curSupply);
+			}
+		}
+
+		// High priority code running on every frame for intensive micro
+		// this includes running all agents update()
+
 		for (Agent agent : agents) {
-			// call all agents to do their low-level "stuff"
 			agent.update();
 		}
 
