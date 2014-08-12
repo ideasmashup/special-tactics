@@ -1,6 +1,7 @@
 package org.ideasmashup.specialtactics.needs;
 
-public class Need {
+
+public abstract class Need {
 
 	protected boolean isSatisfied;
 	protected float priority;
@@ -30,5 +31,9 @@ public class Need {
 	public float getPriority() {
 		return this.priority;
 	}
+
+	public abstract Needs.Types[] getTypes();
+
+	public abstract boolean canReceive(Object offer);
 
 }
