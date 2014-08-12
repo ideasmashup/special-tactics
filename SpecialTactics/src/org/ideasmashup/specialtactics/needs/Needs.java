@@ -2,20 +2,23 @@ package org.ideasmashup.specialtactics.needs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.ideasmashup.specialtactics.agents.Agent;
-import org.ideasmashup.specialtactics.agents.UnitConsumer;
+import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.brains.Units;
-import org.ideasmashup.specialtactics.utils.UnitListener;
+import org.ideasmashup.specialtactics.listeners.ResourcesListener;
+import org.ideasmashup.specialtactics.listeners.SupplyListener;
+import org.ideasmashup.specialtactics.listeners.UnitListener;
+import org.ideasmashup.specialtactics.managers.Resources;
+import org.ideasmashup.specialtactics.managers.Supplies;
 
 import bwapi.Unit;
 
 /**
  * <h3>Global needs manager.</h3>
  * <p>
- * All needs get pushed here by agents who are needing them. The manager watches
+ * All needs get pushed here by consumers needing them. The manager watches
  * events such as ressources and units changes.
  * </p>
  * <p>
@@ -25,7 +28,7 @@ import bwapi.Unit;
  * <ul>
  * <li>a new unit for a UnitConsumer</li>
  * <li>a new ressource for a RessourceConsumer</li>
- * <li>a new threat for a ThreatConsumer</li>
+ * <li>a new supply for a SupplyConsumer</li>
  * <li>etc</li>
  * </ul>
  * <p>
@@ -42,42 +45,53 @@ import bwapi.Unit;
  * @author William ANGER
  *
  */
-public class Needs implements UnitListener{
+public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
-	protected List<Need> needs;
-	protected Map<Need, Agent> agents;
+	protected Map<Types, ArrayList<Need>> needs;
+	protected Map<Need, Consumer> consumers;
 
+	// FIXME replace by real "singleton" pattern when debugging over!
 	protected static Needs instance = null;
 
 	protected Needs() {
 		// init local fields
-		needs = new ArrayList<Need>();
-		agents = new HashMap<Need, Agent>();
+		needs = new HashMap<Types, ArrayList<Need>>();
+
+		needs.put(Types.RESOURCES, new ArrayList<Need>());
+		needs.put(Types.UNIT, new ArrayList<Need>());
+
+		consumers = new HashMap<Need, Consumer>();
 	}
 
 	public static void init() {
 		if (instance == null) {
 			instance = new Needs();
 
-			// bind itself to units events
+			// bind itself to units events, supply and resources events
 			Units.addListener(instance);
+			Resources.addListener(instance);
+			Supplies.addListener(instance);
 
 			System.out.println("Needs initialized");
 		}
 	}
 
-	public static void add(Need need, Agent owner) {
-		System.out.println("  - added need (priority = "+ need.getPriority() +") for "+ owner.toString());
+	public static void add(Need need, Consumer owner) {
+		instance.consumers.put(need, owner);
 
-		instance.needs.add(need);
-		instance.agents.put(need, owner);
+		for (Types type : need.getTypes()) {
+			System.out.println("  - added "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
+			instance.needs.get(type).add(need);
+		}
 	}
 
 	public static void remove(Need need) {
-		instance.needs.remove(need);
-		Agent owner = instance.agents.remove(need);
+		Consumer owner = instance.consumers.remove(need);
 
-		System.out.println("  - removed need (priority = "+ need.getPriority() +") for "+ owner.toString());
+		for (Types type : need.getTypes()) {
+			System.out.println("  - removed "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
+			instance.needs.get(type).remove(need);
+		}
 	}
 
 	@Override
@@ -125,24 +139,54 @@ public class Needs implements UnitListener{
 	public void onUnitComplete(Unit unit) {
 		// assign new unit to needees
 		System.out.println("Needs.onUnitComplete()");
-		System.out.println("Needs.size() = "+ needs.size());
+		System.out.println("Needs.get(UNIT).size() = "+ needs.get(Types.UNIT).size());
 
-		for (Need need : needs) {
-			if (need instanceof NeedUnit) {
-				NeedUnit ns = (NeedUnit) need;
-				if (ns.type == unit.getType()) {
-					// this need can be filled by this new unit
-					UnitConsumer agent = (UnitConsumer) agents.get(need);
-					if (agent.fillNeed(unit)) {
-						System.out.println("  - consumer satisfied !");
-						// this unit has been overtaken by the unit consumer
-						remove(need);
-						break;
-					}
+		for (Need need : needs.get(Types.UNIT)) {
+			if (need.canReceive(unit)) {
+				Consumer consumer = consumers.get(need);
+				if (consumer.fillNeeds(unit)) {
+					System.out.println("  - consumer satisfied !");
+					// this unit has been overtaken by the unit consumer
+					remove(need);
+					break;
 				}
 			}
 		}
 	}
 
+	@Override
+	public void onResourcesChange(int minerals, int gas) {
+		// assign new unit to needees
+		System.out.println("Needs.onRessourcesChange()");
+		System.out.println("Needs.get(RESOURCES).size() = "+ instance.needs.get(Types.RESOURCES).size());
 
+		for (Need need : instance.needs.get(Types.RESOURCES)) {
+			Consumer consumer = instance.consumers.get(need);
+			if (consumer.fillNeeds(null)) {
+				System.out.println("  - ressources consumer satisfied !");
+				remove(need);
+				break;
+			}
+		}
+
+	}
+
+	@Override
+	public void onSupplyChange(int supply) {
+		System.out.println("Needs.onSupplyChange()");
+		System.out.println("Needs.get(SUPPLY).size() = "+ instance.needs.get(Types.SUPPLY).size());
+
+		for (Need need : instance.needs.get(Types.SUPPLY)) {
+			Consumer consumer = instance.consumers.get(need);
+			if (consumer.fillNeeds(null)) {
+				System.out.println("  - supply consumer satisfied !");
+				remove(need);
+				break;
+			}
+		}
+	}
+
+	public static enum Types {
+		UNIT, RESOURCES, SUPPLY;
+	}
 }
