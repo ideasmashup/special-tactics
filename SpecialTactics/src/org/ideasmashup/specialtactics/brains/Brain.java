@@ -73,11 +73,8 @@ public class Brain implements BWEventListener {
 		// Low priority code running every 20 frames instead of on every frame
 		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
 
-		System.out.println("Brain.onFrame()");
-
 		if (++frames % 20 == 0) {
 			frames = 0;
-			System.out.println("Brain.onFrame() every 20...");
 
 			int curGas = self.gas();
 			int curMinerals = self.minerals();
@@ -165,9 +162,6 @@ public class Brain implements BWEventListener {
 	public void onUnitCreate(Unit unit) {
 		// add new unit to global Units pool
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") created");
-
-		//Agent needee = needs.findNeedeeFor(unit);
-		//needee.fillNeed();
 
 		Agent agent;
 
