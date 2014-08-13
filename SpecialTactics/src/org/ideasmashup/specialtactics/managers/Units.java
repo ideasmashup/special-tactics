@@ -97,6 +97,11 @@ public class Units {
 			new UnitType[]{UnitType.Terran_SCV},
 			new UnitType[]{UnitType.Zerg_Drone}
 		),
+		SUPPLY(
+			new UnitType[]{UnitType.Protoss_Pylon},
+			new UnitType[]{UnitType.Terran_Supply_Depot},
+			new UnitType[]{UnitType.Zerg_Overlord}
+		),
 		BUILDING_BASE(
 			new UnitType[]{UnitType.Protoss_Nexus},
 			new UnitType[]{UnitType.Terran_Command_Center},
