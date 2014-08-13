@@ -1,7 +1,7 @@
 package org.ideasmashup.specialtactics.managers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.ideasmashup.specialtactics.agents.Agent;
@@ -45,7 +45,7 @@ import bwapi.Unit;
  */
 public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
-	protected Map<Types, ArrayList<Need>> needs;
+	protected Map<Types, LinkedList<Need>> needs;
 	protected Map<Need, Consumer> consumers;
 
 	// FIXME replace by real "singleton" pattern when debugging over!
@@ -53,10 +53,10 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	protected Needs() {
 		// init local fields
-		needs = new HashMap<Types, ArrayList<Need>>();
+		needs = new HashMap<Types, LinkedList<Need>>();
 
-		needs.put(Types.RESOURCES, new ArrayList<Need>());
-		needs.put(Types.UNIT, new ArrayList<Need>());
+		needs.put(Types.RESOURCES, new LinkedList<Need>());
+		needs.put(Types.UNIT, new LinkedList<Need>());
 
 		consumers = new HashMap<Need, Consumer>();
 	}
@@ -79,7 +79,27 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 		for (Types type : need.getTypes()) {
 			System.out.println("  - added "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
-			instance.needs.get(type).add(need);
+
+			// sorted insert based on priority (highest is last)
+			LinkedList<Need> llist = instance.needs.get(type);
+
+			if (llist.size() == 0) {
+				llist.add(need);
+			}
+			else if (llist.get(0).getPriority() > need.getPriority()) {
+				llist.add(0, need);
+			}
+			else if (llist.get(llist.size() - 1).getPriority() < need
+					.getPriority()) {
+				llist.add(llist.size(), need);
+			}
+			else {
+				int i = 0;
+				while (llist.get(i).getPriority() < need.getPriority()) {
+					i++;
+				}
+				llist.add(i, need);
+			}
 		}
 	}
 
@@ -155,8 +175,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	@Override
 	public void onResourcesChange(int minerals, int gas) {
 		// assign new unit to needees
-		System.out.println("Needs.onRessourcesChange()");
-		System.out.println("Needs.get(RESOURCES).size() = "+ instance.needs.get(Types.RESOURCES).size());
+		//System.out.println("Needs.onRessourcesChange()");
+		//System.out.println("Needs.get(RESOURCES).size() = "+ instance.needs.get(Types.RESOURCES).size());
 
 		for (Need need : instance.needs.get(Types.RESOURCES)) {
 			Consumer consumer = instance.consumers.get(need);
