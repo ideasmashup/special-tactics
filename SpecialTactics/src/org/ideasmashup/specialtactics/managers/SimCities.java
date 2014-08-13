@@ -5,6 +5,7 @@ import org.ideasmashup.specialtactics.utils.Utils;
 import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
+import bwapi.UnitType;
 import bwta.BWTA;
 
 public class SimCities {
@@ -23,7 +24,7 @@ public class SimCities {
 		}
 	}
 
-	public static Position getLocationForStructure(Unit structure, Unit worker) {
+	public static TilePosition getLocationForStructure(UnitType structure, Unit worker) {
 		// extract the region containing the near
 		bwta.Region region = BWTA.getRegion(worker.getPosition());
 		bwta.Polygon polygon = region.getPolygon();
@@ -44,12 +45,12 @@ public class SimCities {
 			tp = new TilePosition(p.getX(), p.getY());
 
 			// check that the position is buildable
-			if (Utils.get().getGame().canBuildHere(worker, tp, structure.getType())) {
+			if (Utils.get().getGame().canBuildHere(worker, tp, structure)) {
 
 			}
 		}
 		while (!polygon.isInside(p));
 
-		return p;
+		return tp;
 	}
 }
