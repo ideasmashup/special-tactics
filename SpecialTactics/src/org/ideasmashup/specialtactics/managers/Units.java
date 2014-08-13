@@ -212,10 +212,10 @@ public class Units {
 				if (protoss[i] == unit.getType()) return true;
 			}
 			for (int i=0; i<terran.length; i++) {
-				if (protoss[i] == unit.getType()) return true;
+				if (terran[i] == unit.getType()) return true;
 			}
 			for (int i=0; i<zerg.length; i++) {
-				if (protoss[i] == unit.getType()) return true;
+				if (zerg[i] == unit.getType()) return true;
 			}
 
 			return false;

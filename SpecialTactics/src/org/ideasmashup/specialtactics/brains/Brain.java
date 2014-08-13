@@ -6,6 +6,7 @@ import java.util.List;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
+import org.ideasmashup.specialtactics.agents.Scout;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
@@ -47,6 +48,9 @@ public class Brain implements BWEventListener {
 
 		// needs manager always last
 		Needs.init();
+
+		// creates scouting agent
+		agents.add(new Scout(null));
 	}
 
 	@Override
