@@ -86,11 +86,15 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 			if (llist.size() == 0) {
 				llist.add(need);
 			}
-			else if (llist.get(0).getPriority() > need.getPriority()) {
+			else if (need.getPriority() == Need.CRITICAL
+					|| llist.get(0).getPriority() > need.getPriority()) {
+				// first place for CRITICAL or need with smallest value
 				llist.add(0, need);
 			}
-			else if (llist.get(llist.size() - 1).getPriority() < need
+			else if (need.getPriority() == Need.USELESS
+					|| llist.get(llist.size() - 1).getPriority() < need
 					.getPriority()) {
+				// last place for USELESS or need with biggest value
 				llist.add(llist.size(), need);
 			}
 			else {
