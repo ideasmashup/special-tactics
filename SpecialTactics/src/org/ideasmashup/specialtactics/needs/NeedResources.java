@@ -4,20 +4,20 @@ import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Needs.Types;
 
 
-public class NeedRessources extends Need {
+public class NeedResources extends Need {
 
 	protected int minerals;
 	protected int gas;
 	protected final Needs.Types[] types;
 
-	public NeedRessources(int minerals, int gas) {
+	public NeedResources(int minerals, int gas) {
 		super();
 		this.types = new Types[]{Needs.Types.RESOURCES};
 		this.minerals = minerals;
 		this.gas = gas;
 	}
 
-	public NeedRessources(int minerals, int gas, float priority) {
+	public NeedResources(int minerals, int gas, float priority) {
 		super(priority);
 		this.types = new Types[]{Needs.Types.RESOURCES};
 		this.minerals = minerals;
