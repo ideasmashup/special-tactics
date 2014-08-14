@@ -101,11 +101,25 @@ public class Brain implements BWEventListener {
 		// High priority code running on every frame for intensive micro
 		// this includes running all agents update()
 
+		List<Agent> zombies = new LinkedList<Agent>();
+
 		for (Agent agent : agents) {
-			agent.update();
+			// update living agents and burn the walking dead
+			if (agent.isDestroyed()) {
+				zombies.add(agent);
+			}
+			else {
+				agent.update();
+			}
 		}
 
-		// TODO call all ops and high level classes to do strategic/global stuff
+		// cleanup zombies
+		for (Agent zombie : zombies) {
+			agents.remove(zombie);
+		}
+
+		// TODO call all ops and high-level classes to do
+		//      strategic | global stuff
 	}
 
 	@Override
