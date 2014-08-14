@@ -8,9 +8,20 @@ public abstract class Need {
 	protected boolean isSatisfied;
 	protected float priority;
 
+	// preset priorities levels
+	public static float CRITICAL = -Float.MAX_VALUE;
+	public static float HIGHEST  = -888f;
+	public static float HIGHER   = -88f;
+	public static float HIGH     = -8f;
+	public static float NORMAL   =  0f;
+	public static float LOW      =  8f;
+	public static float LOWER    =  88f;
+	public static float LOWEST   =  888f;
+	public static float USELESS  =  Float.MAX_VALUE;
+
 	public Need() {
 		this.isSatisfied = false;
-		this.priority = 0;
+		this.priority = NORMAL;
 	}
 
 	public Need(float priority) {
