@@ -209,6 +209,17 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	}
 
 	public static enum Types {
-		UNIT, RESOURCES, SUPPLY;
+		UNIT,
+		RESOURCES,
+		SUPPLY,
+		/*
+		DEFENSE
+		ATTACK
+		DROP // maybe a different kind of ATTACK?
+		REPAIRS //
+		MAPCONTROL
+		VISION
+		DETECTION // maybe a kind of VISION?
+		*/
 	}
 }
