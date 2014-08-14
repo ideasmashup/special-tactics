@@ -18,6 +18,8 @@ public class MineralPatch extends MasterAgent implements Consumer {
 
 	public MineralPatch(Unit mineralpatch) {
 		super(mineralpatch);
+
+		this.servantsType = Units.Types.WORKERS;
 		this.servants = new ArrayList<Unit>(2);
 		this.needs = new ArrayList<Need>(2);
 
