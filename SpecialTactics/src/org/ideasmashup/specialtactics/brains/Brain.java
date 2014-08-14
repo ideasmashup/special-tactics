@@ -206,7 +206,7 @@ public class Brain implements BWEventListener {
 		}
 
 		//
-		if (unit.getType() == Units.Types.BUILDING_BASE.getUnitType()) {
+		if (unit.getType() == Units.Types.BASE.getUnitType()) {
 			System.out.println("  - is base center : assigne Base agent");
 			agent = new Base(unit);
 			agents.add(agent);

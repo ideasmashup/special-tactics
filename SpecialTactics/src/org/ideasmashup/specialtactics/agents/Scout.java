@@ -88,7 +88,7 @@ public class Scout extends Agent {
 				if(distanceToTarget < sightRange) {
 					System.out.println("Scout unit in range of target position.");
 					for (final Unit u : Utils.get().getGame().enemy().getUnits()) {
-					    if (u.getType().isBuilding() && Types.BUILDING_BASE.is(u)) {
+					    if (u.getType().isBuilding() && Types.BASE.is(u)) {
 					    	System.out.println("Ennemy base found");
 					    	final BaseLocation b = BWTA.getNearestBaseLocation(u.getPosition()); 
 					    	ennemyBases.add(b);
