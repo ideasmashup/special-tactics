@@ -7,9 +7,11 @@ import bwapi.Unit;
 public class Agent {
 
 	protected Unit bindee;
+	protected boolean dead;
 
 	public Agent(Unit bindee) {
 		this.bindee = bindee;
+		this.dead = false;
 
 		init();
 	}
@@ -22,6 +24,15 @@ public class Agent {
 	public void update() {
 		// called on every frame (or as frequently as possible)
 
+	}
+
+	public void destroy() {
+		// kill this agent
+		this.dead = true;
+	}
+
+	public boolean isDestroyed() {
+		return dead;
 	}
 
 }
