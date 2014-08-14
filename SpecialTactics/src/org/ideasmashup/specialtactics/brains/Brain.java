@@ -1,6 +1,7 @@
 package org.ideasmashup.specialtactics.brains;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.ideasmashup.specialtactics.agents.Agent;
@@ -19,8 +20,11 @@ import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BWTA;
 
 public class Brain implements BWEventListener {
+
+	protected static Brain instance;
 
 	protected Mirror mirror;
 	protected Game game;
@@ -36,6 +40,8 @@ public class Brain implements BWEventListener {
 	protected List<Agent> agents;
 
 	public Brain(Game game) {
+		instance = this;
+
 		this.game = game;
 		this.self = game.self();
 
@@ -53,22 +59,31 @@ public class Brain implements BWEventListener {
 		agents.add(new Scout(null));
 	}
 
+	public static Brain get() {
+		return instance;
+	}
+
 	@Override
 	public void onStart() {
-		// FIXME DO NOT USE!!! NOT CALLED YET IN THIS VERSION!!!
-
-		// TODO initialize pools, rquirements, operators, etc...
-
 
 		// Use BWTA to analyze map
 		// This may take a few minutes if the map is processed first
 		// time!
-		/*
 		System.out.println("Analyzing map...");
 		BWTA.readMap();
 		BWTA.analyze();
 		System.out.println("Map data ready");
+
+		// TODO initialize pools, requirements, operators, etc...
+
+		/*
+			- after BWTA tag strategic areas tiles
+				- tag minerals front (mining zones)
+				- tag minerals back (drop zones)
+				- tag choke
+				- tag base outline (drop defense)
 		*/
+
 	}
 
 	@Override

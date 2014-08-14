@@ -12,7 +12,6 @@ import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
 import bwapi.Race;
-import bwta.BWTA;
 
 public class AI {
 
@@ -24,8 +23,6 @@ public class AI {
 
 	private Brain brain;
 
-	private Utils utils;
-
 	public void run() {
 		mirror.getModule().setEventListener(new DefaultBWListener() {
 			@Override
@@ -33,16 +30,8 @@ public class AI {
 				game = mirror.getGame();
 				self = game.self();
 
-				// Use BWTA to analyze map
-				// This may take a few minutes if the map is processed first
-				// time!
-				System.out.println("Analyzing map...");
-				BWTA.readMap();
-				BWTA.analyze();
-				System.out.println("Map data ready");
-
-				// Initialize Utilities singleton
-				utils = Utils.init(game);
+				// FIXME this will be deprecated soon!
+				Utils.init(game);
 
 				// Initialize AI Brain
 				if (self.getRace() == Race.Protoss) {
@@ -60,7 +49,10 @@ public class AI {
 					System.out.println("AI initialized in 'Spectator mode'");
 				}
 
-				// reaffect listener
+				// force call brain.onStart()
+				brain.onStart();
+
+				// reaffect listener to specialized brain
 				mirror.getModule().setEventListener(brain);
 			}
 		});
