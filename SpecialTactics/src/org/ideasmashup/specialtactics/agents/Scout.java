@@ -1,16 +1,20 @@
 package org.ideasmashup.specialtactics.agents;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
+import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Types;
 import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.Position;
 import bwapi.Unit;
+import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 
@@ -21,11 +25,16 @@ import bwta.BaseLocation;
  * @author Kevin POULET <github at ideasmashup.com>
  *
  */
-public class Scout extends Agent {
+public class Scout extends Agent implements UnitListener {
 
 	private List<BaseLocation> ennemyBases;
 	private boolean scouting;
 	private Queue<Position> wayPoints;
+
+	private Map<Integer, Unit> myUnits;
+	private Map<Integer, Unit> myBuildings;
+	private Map<Integer, Unit> ennemyUnits;
+	private Map<Integer, Unit> ennemyBuildings;
 
 	public Scout(final Unit bindee) {
 		super(bindee);
@@ -34,6 +43,10 @@ public class Scout extends Agent {
 	@Override
 	public void init() {
 		ennemyBases = new ArrayList<BaseLocation>();
+		myUnits = new HashMap<Integer, Unit>();
+		myBuildings = new HashMap<Integer, Unit>();
+		ennemyUnits = new HashMap<Integer, Unit>();
+		ennemyBuildings = new HashMap<Integer, Unit>();
 	}
 
 	@Override
@@ -111,6 +124,121 @@ public class Scout extends Agent {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onUnitDiscover(final Unit unit) {
+		final UnitType type = unit.getType();
+		if(unit.getPlayer().equals(Utils.get().getPlayer())) {
+			if(type.isBuilding()) {
+				final Unit u = myBuildings.get(unit.getID());
+				if(u == null) { // unknown unit
+					System.out.println("Registering new own building");
+					myBuildings.put(unit.getID(), unit);
+				}
+			} else {
+				final Unit u = myUnits.get(unit.getID());
+				if(u == null) { // unknown unit
+					System.out.println("Registering new own unit");
+					myUnits.put(unit.getID(), unit);
+				}
+			}
+		} else if(unit.getPlayer().equals(Utils.get().getGame().enemy())) {
+			if(type.isBuilding()) {
+				final Unit u = ennemyBuildings.get(unit.getID());
+				if(u == null) { // unknown unit
+					System.out.println("Registering new ennemy building");
+					ennemyBuildings.put(unit.getID(), unit);
+				}
+			} else {
+				final Unit u = ennemyUnits.get(unit.getID());
+				if(u == null) { // unknown unit
+					System.out.println("Registering new ennemy unit");
+					ennemyUnits.put(unit.getID(), unit);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onUnitEvade(Unit unit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitShow(Unit unit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitHide(Unit unit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitCreate(Unit unit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitDestroy(final Unit unit) {
+		final UnitType type = unit.getType();
+		if(unit.getPlayer().equals(Utils.get().getPlayer())) {
+			if(type.isBuilding()) {
+				final Unit u = myBuildings.get(unit.getID());
+				if(u != null) { // known unit
+					System.out.println("Unregistering own building");
+					myBuildings.remove(unit.getID());
+				}
+			} else {
+				final Unit u = myUnits.get(unit.getID());
+				if(u != null) { // known unit
+					System.out.println("Unregistering own unit");
+					myUnits.remove(unit.getID());
+					if(bindee == unit) {
+						System.out.println("Scout unit destroyed!");
+						bindee = null;
+						scouting = false;
+					}
+				}
+			}
+		} else if(unit.getPlayer().equals(Utils.get().getGame().enemy())) {
+			if(type.isBuilding()) {
+				final Unit u = ennemyBuildings.get(unit.getID());
+				if(u != null) { // known unit
+					System.out.println("Unregistering ennemy building");
+					ennemyBuildings.remove(unit.getID());
+				}
+			} else {
+				final Unit u = ennemyUnits.get(unit.getID());
+				if(u != null) { // known unit
+					System.out.println("Unregistering ennemy unit");
+					ennemyUnits.remove(unit.getID());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onUnitMorph(Unit unit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitRenegade(Unit unit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitComplete(Unit unit) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

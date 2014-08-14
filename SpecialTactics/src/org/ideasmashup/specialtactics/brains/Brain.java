@@ -50,7 +50,9 @@ public class Brain implements BWEventListener {
 		Needs.init();
 
 		// creates scouting agent
-		agents.add(new Scout(null));
+		final Scout scout = new Scout(null);
+		Units.addListener(scout);
+		agents.add(scout);
 	}
 
 	@Override
