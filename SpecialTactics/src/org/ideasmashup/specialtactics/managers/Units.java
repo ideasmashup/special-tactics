@@ -102,7 +102,7 @@ public class Units {
 			new UnitType[]{UnitType.Terran_Supply_Depot},
 			new UnitType[]{UnitType.Zerg_Overlord}
 		),
-		BUILDING_BASE(
+		BASE(
 			new UnitType[]{UnitType.Protoss_Nexus},
 			new UnitType[]{UnitType.Terran_Command_Center},
 			new UnitType[]{
@@ -111,7 +111,7 @@ public class Units {
 				UnitType.Zerg_Hive
 			}
 		),
-		BUILDING_PRODUCTION(
+		PROD(
 			new UnitType[]{
 				UnitType.Protoss_Gateway,
 				UnitType.Protoss_Robotics_Facility,
@@ -120,21 +120,37 @@ public class Units {
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		BUILDING_DEFENCE(
+		PROD_T1(
+			new UnitType[]{UnitType.Protoss_Gateway},
+			new UnitType[]{UnitType.Terran_Barracks},
+			new UnitType[]{UnitType.Zerg_Hatchery}
+		),
+		TECH(
+			new UnitType[]{
+				UnitType.Protoss_Citadel_of_Adun,
+			},
+			new UnitType[]{
+				UnitType.Terran_Academy,
+			},
+			new UnitType[]{
+				UnitType.Zerg_Spawning_Pool,
+			}
+		),
+		DEFENCE(
 			new UnitType[]{
 				UnitType.Protoss_Photon_Cannon,
 			},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		BUILDING_DETECTION(
+		DETECTION(
 			new UnitType[]{
 				UnitType.Protoss_Photon_Cannon,
 			},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_CASTERS(
+		CASTERS(
 			new UnitType[]{
 				UnitType.Protoss_High_Templar,
 				UnitType.Protoss_Dark_Archon,
@@ -142,34 +158,34 @@ public class Units {
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_GROUND(
+		GROUND(
 			new UnitType[]{
 
 			},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_GROUND_RANGED(
+		GROUND_RANGED(
 			new UnitType[]{},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_GROUND_MELEE(
+		GROUND_MELEE(
 			new UnitType[]{},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_AIR(
+		AIR(
 			new UnitType[]{},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_AIR_RANGED(
+		AIR_RANGED(
 			new UnitType[]{},
 			new UnitType[]{},
 			new UnitType[]{}
 		),
-		MILITARY_AIR_MELEE(
+		AIR_MELEE(
 			new UnitType[]{},
 			new UnitType[]{},
 			new UnitType[]{}
