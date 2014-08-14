@@ -35,10 +35,10 @@ public class MineralPatch extends MasterAgent implements Consumer {
 		// priority is defined based on distance from nearest base location
 
 		// FIXME should invert distance (more distance => lower priority)
-		float priority = bindee.getDistance(BWTA.getNearestBaseLocation(bindee.getPosition()).getPosition());
+		float distance = bindee.getDistance(BWTA.getNearestBaseLocation(bindee.getPosition()).getPosition());
 
-		this.needs.add(new NeedUnit(Units.Types.WORKERS.getUnitType(), priority));
-		this.needs.add(new NeedUnit(Units.Types.WORKERS.getUnitType(), priority));
+		this.needs.add(new NeedUnit(servantsType.getUnitType(), Need.LOW + distance));
+		this.needs.add(new NeedUnit(servantsType.getUnitType(), Need.LOW + distance));
 	}
 
 	protected void plugNeeds() {
