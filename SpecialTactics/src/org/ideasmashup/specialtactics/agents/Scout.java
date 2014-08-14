@@ -52,9 +52,9 @@ public class Scout extends Agent implements UnitListener {
 	@Override
 	public void update() {
 		// first get a unit for scouting
-		// TODO use Needs system instead of kidnapping units
+		// TODO use Needs system instead of kidnaping units
 		if(bindee == null) {
-			for (final Unit u : Utils.get().getPlayer().getUnits()) {
+			for (final Unit u : myUnits.values()) {
 		        if (Units.Types.WORKERS.is(u)) {
 		            bindee = u;
 		            break;
@@ -100,8 +100,8 @@ public class Scout extends Agent implements UnitListener {
 				final double distanceToTarget = bindee.getPosition().getDistance(bindee.getTargetPosition());
 				if(distanceToTarget < sightRange) {
 					System.out.println("Scout unit in range of target position.");
-					for (final Unit u : Utils.get().getGame().enemy().getUnits()) {
-					    if (u.getType().isBuilding() && Types.BUILDING_BASE.is(u)) {
+					for (final Unit u : ennemyBuildings.values()) {
+					    if (Types.BUILDING_BASE.is(u)) {
 					    	System.out.println("Ennemy base found");
 					    	final BaseLocation b = BWTA.getNearestBaseLocation(u.getPosition()); 
 					    	ennemyBases.add(b);
