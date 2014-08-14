@@ -107,8 +107,14 @@ public class Scout extends Agent implements UnitListener {
 					    	ennemyBases.add(b);
 					    	if(b.isStartLocation()) {
 						    	System.out.println("Ennemy main found!");
-						    	bindee.stop();
 						    	scouting = false;
+						    	// start patrolling just to get some unit events (discovered/hidden/created...)
+						    	final int ux = bindee.getPosition().getX();
+						    	final int uy = bindee.getPosition().getY();
+						    	final int dx = b.getPosition().getX() - ux;
+						    	final int dy = b.getPosition().getY() - uy;
+						    	boolean xGreater = Math.abs(dx) >= Math.abs(dy);
+							    bindee.patrol(new Position(ux - (xGreater ? dx : 0), uy - (xGreater ? 0 : dy)));
 					    	}
 					    }
 					}
