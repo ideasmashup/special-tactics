@@ -42,7 +42,7 @@ public class Resources {
 		}
 
 		if (instance.lockedMinerals < 0) {
-			System.out.println("ERROR: locked negative minerals!! "+ instance.lockedMinerals);
+			System.err.println("ERROR: locked negative minerals!! "+ instance.lockedMinerals);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class Resources {
 		}
 
 		if (instance.lockedGas < 0) {
-			System.out.println("ERROR: locked negative gas!! "+ instance.lockedGas);
+			System.err.println("ERROR: locked negative gas!! "+ instance.lockedGas);
 		}
 	}
 

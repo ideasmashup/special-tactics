@@ -45,7 +45,7 @@ public class Supplies implements Consumer {
 		}
 
 		if (instance.lockedSupply < 0) {
-			System.out.println("ERROR: locked negative supply!! "+ instance.lockedSupply);
+			System.err.println("ERROR: locked negative supply!! "+ instance.lockedSupply);
 		}
 	}
 
