@@ -27,7 +27,7 @@ public class Agents {
 		return instance;
 	}
 
-	public void add(UnitAgent agent) {
+	public void add(Agent agent) {
 		agents.add(agent);
 	}
 
