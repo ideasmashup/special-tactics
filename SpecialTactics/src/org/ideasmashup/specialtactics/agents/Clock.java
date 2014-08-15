@@ -14,7 +14,7 @@ import bwapi.Unit;
  * @author Kevin POULET <github at ideasmashup.com>
  *
  */
-public class Clock extends Agent {
+public class Clock extends UnitAgent {
 
 	protected Game game;
 
