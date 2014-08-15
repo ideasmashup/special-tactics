@@ -181,25 +181,21 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitDiscover(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") discovered");
 		units.onUnitDiscover(unit);
 	}
 
 	@Override
 	public void onUnitEvade(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") evaded");
 		units.onUnitEvade(unit);
 	}
 
 	@Override
 	public void onUnitShow(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") shown");
 		units.onUnitShow(unit);
 	}
 
 	@Override
 	public void onUnitHide(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") hidden");
 		units.onUnitHide(unit);
 	}
 
@@ -233,19 +229,16 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") destroyed");
 		units.onUnitDestroy(unit);
 	}
 
 	@Override
 	public void onUnitMorph(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") morphed");
 		units.onUnitMorph(unit);
 	}
 
 	@Override
 	public void onUnitRenegade(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") renegade");
 		units.onUnitRenegade(unit);
 	}
 
@@ -256,7 +249,6 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") completed");
 		units.onUnitComplete(unit);
 	}
 

@@ -281,8 +281,6 @@ public class Units {
 	}
 
 	public void onUnitCreate(Unit unit) {
-		System.out.println("Units.onUnitCreate()");
-		System.out.println("Units.listeners.size() = "+ listeners.size());
 		// call all listeners
 		for (UnitListener ls : listeners) {
 			ls.onUnitCreate(unit);
@@ -290,7 +288,6 @@ public class Units {
 	}
 
 	public void onUnitDestroy(Unit unit) {
-		System.out.println("Units.onUnitDestroy()");
 		// call all listeners
 		for (UnitListener ls : listeners) {
 			ls.onUnitDestroy(unit);

@@ -161,9 +161,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		// assign new unit to needees
-		System.out.println("Needs.onUnitComplete()");
-		System.out.println("Needs.get(UNIT).size() = "+ needs.get(Types.UNIT).size());
+		//System.out.println("Needs.onUnitComplete()");
+		//System.out.println("Needs.get(UNIT).size() = "+ needs.get(Types.UNIT).size());
 
 		for (Need need : needs.get(Types.UNIT)) {
 			if (need.canReceive(unit)) {
@@ -197,15 +196,38 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	@Override
 	public void onSupplyChange(int supply) {
-		System.out.println("Needs.onSupplyChange()");
-		System.out.println("Needs.get(SUPPLY).size() = "+ needs.get(Types.SUPPLY).size());
+		//System.out.println("Needs.onSupplyChange()");
+		//System.out.println("Needs.get(SUPPLY).size() = "+ needs.get(Types.SUPPLY).size());
 
 		for (Need need : needs.get(Types.SUPPLY)) {
 			Consumer consumer = consumers.get(need);
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - supply consumer satisfied !");
-				remove(need);
-				break;
+
+				if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
+					// when normal needs are satified they are removed from the
+					// global stack immediately
+					remove(need);
+					break;
+				}
+				else if (need.getModifiers() == Needs.Modifiers.IS_TRANSIENT) {
+					// when transient needs are satified they are removed but
+					// their offer can still be passed to satifsy the next consumer
+					remove(need);
+					continue;
+				}
+				else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
+					// when permanent needs are satified they are removed but
+					// added back immediately because they can't be satisfied
+
+					// Yet the need often changes when fillNeed() is called
+					// so when it's added back it may have different priorities
+					// modifiers, etc
+
+					remove(need);
+					add(need, consumer);
+					break;
+				}
 			}
 		}
 	}
