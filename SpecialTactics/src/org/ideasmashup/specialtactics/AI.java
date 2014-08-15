@@ -5,7 +5,6 @@ import org.ideasmashup.specialtactics.brains.ProtossBrain;
 import org.ideasmashup.specialtactics.brains.SpectatorBrain;
 import org.ideasmashup.specialtactics.brains.TerranBrain;
 import org.ideasmashup.specialtactics.brains.ZergBrain;
-import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.DefaultBWListener;
 import bwapi.Game;
@@ -15,13 +14,13 @@ import bwapi.Race;
 
 public class AI {
 
-	private final Mirror mirror = new Mirror();
+	private static final Mirror mirror = new Mirror();
 
-	private Game game;
+	private static Game game;
 
-	private Player self;
+	private static Player self;
 
-	private Brain brain;
+	private static Brain brain;
 
 	public void run() {
 		mirror.getModule().setEventListener(new DefaultBWListener() {
@@ -29,9 +28,6 @@ public class AI {
 			public void onStart() {
 				game = mirror.getGame();
 				self = game.self();
-
-				// FIXME this will be deprecated soon!
-				Utils.init(game);
 
 				// Initialize AI Brain
 				if (self.getRace() == Race.Protoss) {
@@ -58,6 +54,18 @@ public class AI {
 		});
 
 		mirror.startGame();
+	}
+
+	public static Game getGame() {
+		return game;
+	}
+
+	public static Player getPlayer() {
+		return self;
+	}
+
+	public static void say(String message) {
+		game.drawTextScreen(10, 25, message);
 	}
 
 	public static void main(String... args) {
