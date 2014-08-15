@@ -125,7 +125,7 @@ public class Brain implements BWEventListener {
 		List<Agent> zombies = new LinkedList<Agent>();
 
 		for (Agent agent : agents.getList()) {
-			// update living agents and burn the walking dead
+			// update living agents and burn - previously on AMC's - the walking dead
 			if (agent.isDestroyed()) {
 				zombies.add(agent);
 			}
