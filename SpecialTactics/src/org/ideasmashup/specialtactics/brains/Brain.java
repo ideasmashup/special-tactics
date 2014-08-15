@@ -8,6 +8,7 @@ import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
 import org.ideasmashup.specialtactics.agents.Scout;
 import org.ideasmashup.specialtactics.managers.Agents;
+import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
@@ -58,6 +59,10 @@ public class Brain implements BWEventListener {
 
 		// needs manager always last
 		needs = Needs.getInstance();
+
+		// creates timer agent
+		final Clock clock = new Clock(null);
+		agents.add(clock);
 
 		// creates scouting agent
 		final Scout scout = new Scout(null);
