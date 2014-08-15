@@ -3,8 +3,8 @@ package org.ideasmashup.specialtactics.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
-import org.ideasmashup.specialtactics.utils.Utils;
 
 public class Resources {
 
@@ -66,11 +66,11 @@ public class Resources {
 	}
 
 	public int getMinerals() {
-		return Utils.get().getPlayer().minerals() - lockedMinerals;
+		return AI.getPlayer().minerals() - lockedMinerals;
 	}
 
 	public int getGas() {
-		return Utils.get().getPlayer().gas() - lockedGas;
+		return AI.getPlayer().gas() - lockedGas;
 	}
 
 	public void addListener(ResourcesListener ls) {

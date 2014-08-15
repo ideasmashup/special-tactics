@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Types;
-import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.Position;
 import bwapi.Unit;
@@ -66,7 +66,7 @@ public class Scout extends UnitAgent implements UnitListener {
 				if(ennemyBases.isEmpty()) {
 					// lists all start locations
 					final List<BaseLocation> sb = new ArrayList<BaseLocation>();
-					final BaseLocation bSelf = BWTA.getStartLocation(Utils.get().getPlayer());
+					final BaseLocation bSelf = BWTA.getStartLocation(AI.getPlayer());
 					for (BaseLocation b : BWTA.getBaseLocations()) {
 					    if (b.isStartLocation() && !b.getPosition().equals(bSelf.getPosition())) { // excludes own start location
 					    	sb.add(b);
@@ -96,7 +96,7 @@ public class Scout extends UnitAgent implements UnitListener {
 				}
 			} else {
 				// checks building presence before actually reaching the location to avoid attacking the building
-				final int sightRange = Utils.get().getPlayer().sightRange(bindee.getType());
+				final int sightRange = AI.getPlayer().sightRange(bindee.getType());
 				final double distanceToTarget = bindee.getPosition().getDistance(bindee.getTargetPosition());
 				if(distanceToTarget < sightRange) {
 					System.out.println("Scout unit in range of target position.");
@@ -136,7 +136,7 @@ public class Scout extends UnitAgent implements UnitListener {
 	@Override
 	public void onUnitDiscover(final Unit unit) {
 		final UnitType type = unit.getType();
-		if(unit.getPlayer().equals(Utils.get().getPlayer())) {
+		if(unit.getPlayer().equals(AI.getPlayer())) {
 			if(type.isBuilding()) {
 				final Unit u = myBuildings.get(unit.getID());
 				if(u == null) { // unknown unit
@@ -150,7 +150,7 @@ public class Scout extends UnitAgent implements UnitListener {
 					myUnits.put(unit.getID(), unit);
 				}
 			}
-		} else if(unit.getPlayer().equals(Utils.get().getGame().enemy())) {
+		} else if(unit.getPlayer().equals(AI.getGame().enemy())) {
 			if(type.isBuilding()) {
 				final Unit u = ennemyBuildings.get(unit.getID());
 				if(u == null) { // unknown unit
@@ -194,7 +194,7 @@ public class Scout extends UnitAgent implements UnitListener {
 	@Override
 	public void onUnitDestroy(final Unit unit) {
 		final UnitType type = unit.getType();
-		if(unit.getPlayer().equals(Utils.get().getPlayer())) {
+		if(unit.getPlayer().equals(AI.getPlayer())) {
 			if(type.isBuilding()) {
 				final Unit u = myBuildings.get(unit.getID());
 				if(u != null) { // known unit
@@ -213,7 +213,7 @@ public class Scout extends UnitAgent implements UnitListener {
 					}
 				}
 			}
-		} else if(unit.getPlayer().equals(Utils.get().getGame().enemy())) {
+		} else if(unit.getPlayer().equals(AI.getGame().enemy())) {
 			if(type.isBuilding()) {
 				final Unit u = ennemyBuildings.get(unit.getID());
 				if(u != null) { // known unit

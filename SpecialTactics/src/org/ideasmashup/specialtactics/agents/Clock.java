@@ -1,6 +1,6 @@
 package org.ideasmashup.specialtactics.agents;
 
-import org.ideasmashup.specialtactics.utils.Utils;
+import org.ideasmashup.specialtactics.AI;
 
 import bwapi.Game;
 import bwapi.Position;
@@ -36,7 +36,7 @@ public class Clock extends UnitAgent {
 
 	@Override
 	protected void init() {
-		game = Utils.get().getGame();
+		game = AI.getGame();
 		realTime = 0D;
 		gameTime = 0D;
 		t0 = System.currentTimeMillis();

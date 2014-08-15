@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.agents;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
@@ -8,7 +9,6 @@ import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
-import org.ideasmashup.specialtactics.utils.Utils;
 
 import bwapi.Position;
 import bwapi.TilePosition;
@@ -75,7 +75,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 				System.out.println("SUPPLY : worker moving to choke and trying to build somewhere on that route");
 				TilePosition tp = worker.getTilePosition();
 
-				if (Utils.get().getGame().canBuildHere(worker, tp, supplyType)) {
+				if (AI.getGame().canBuildHere(worker, tp, supplyType)) {
 					// when moving try to find a place where a supply structure can be built
 					worker.build(tp, supplyType);
 				}
@@ -180,6 +180,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	public void onUnitComplete(Unit unit) {
 		if (unit == supply) {
 			// the supply depot, pylon... has been built!
+			System.out.println("SUPPLY : supply structure created !");
 
 			// remove from managers
 			Agents.getInstance().remove(this);

@@ -1,6 +1,6 @@
 package org.ideasmashup.specialtactics.managers;
 
-import org.ideasmashup.specialtactics.utils.Utils;
+import org.ideasmashup.specialtactics.AI;
 
 import bwapi.Position;
 import bwapi.TilePosition;
@@ -45,7 +45,7 @@ public class SimCities {
 			tp = new TilePosition(p.getX(), p.getY());
 
 			// check that the position is buildable
-			if (Utils.get().getGame().canBuildHere(worker, tp, structure)) {
+			if (AI.getGame().canBuildHere(worker, tp, structure)) {
 
 			}
 		}

@@ -2,10 +2,11 @@ package org.ideasmashup.specialtactics.managers;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.agents.Consumer;
+import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
@@ -140,7 +141,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	@Override
 	public void onUnitCreate(Unit unit) {
-		System.out.println("Needs.onUnitCreate()");
+		//
 	}
 
 	@Override
@@ -164,7 +165,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.onUnitComplete()");
 		//System.out.println("Needs.get(UNIT).size() = "+ needs.get(Types.UNIT).size());
 
-		for (Need need : needs.get(Types.UNIT)) {
+		List<Need> unitsNeeds = needs.get(Types.UNIT);
+		for (Need need : unitsNeeds) {
 			if (need.canReceive(unit)) {
 				Consumer consumer = consumers.get(need);
 				if (consumer.fillNeeds(unit)) {
@@ -197,6 +199,11 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					break;
 				}
 			}
+		}
+
+		if (unitsNeeds.size() == 0) {
+			// no more needs...
+			System.out.println("NEEDS : All unit needs have been satisfied!! YEEAY!");
 		}
 	}
 

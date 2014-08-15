@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.agents.MakeSupply;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.needs.Need;
-import org.ideasmashup.specialtactics.needs.NeedUnit;
-import org.ideasmashup.specialtactics.utils.Utils;
-
-import bwapi.Unit;
-import bwapi.UnitType;
 
 public class Supplies implements Consumer {
 
@@ -57,7 +53,7 @@ public class Supplies implements Consumer {
 	}
 
 	public int getSupply() {
-		return Utils.get().getPlayer().supplyTotal() - Utils.get().getPlayer().supplyUsed() - lockedSupply;
+		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - lockedSupply;
 	}
 
 	public void addListener(SupplyListener ls) {
@@ -73,14 +69,12 @@ public class Supplies implements Consumer {
 	}
 
 	public void onSupplyChange(int supply) {
-		// FIXME implement listeners and locking mechanism like in Resources
-
 		// automatically create supply
 
 		// FIXME remember when supply is laready being produced so that other workers
 		//       continue being used for mining and other activities
 
-		if (getSupply() <= 3) {
+		if (getSupply() <= Units.Types.WORKERS.getUnitType().supplyRequired() * 3) {
 			// supply running low, must create a new "supply provider" (e.g. supplier)
 			// unless there are already suppliers in action
 
