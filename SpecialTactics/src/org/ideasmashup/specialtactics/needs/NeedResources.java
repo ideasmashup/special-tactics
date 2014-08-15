@@ -24,6 +24,13 @@ public class NeedResources extends Need {
 		this.gas = gas;
 	}
 
+	public NeedResources(int minerals, int gas, float priority, Needs.Modifiers modifiers) {
+		super(priority, modifiers);
+		this.types = new Types[]{Needs.Types.RESOURCES};
+		this.minerals = minerals;
+		this.gas = gas;
+	}
+
 	@Override
 	public Types[] getTypes() {
 		return types;

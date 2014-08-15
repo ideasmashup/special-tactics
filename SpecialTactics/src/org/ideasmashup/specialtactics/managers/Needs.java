@@ -246,4 +246,10 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		DETECTION // maybe a kind of VISION?
 		*/
 	}
+
+	public static enum Modifiers{
+		IS_TRANSIENT, // successful offers to transients needs must be offered to next in line too
+		IS_NORMAL,    // successful offers to normal needs will consume the "filled" need object
+		IS_PERMANENT, // successful offers to permanent needs won't consume the "filled" need
+	}
 }

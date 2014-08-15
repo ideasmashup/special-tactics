@@ -20,6 +20,12 @@ public class NeedSupply extends Need {
 		this.supply = supply;
 	}
 
+	public NeedSupply(int supply, float priority, Needs.Modifiers modifiers) {
+		super(priority, modifiers);
+		this.types = new Types[]{Needs.Types.SUPPLY};
+		this.supply = supply;
+	}
+
 	@Override
 	public Types[] getTypes() {
 		return types;

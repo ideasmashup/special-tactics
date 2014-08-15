@@ -7,6 +7,7 @@ public abstract class Need {
 
 	protected boolean isSatisfied;
 	protected float priority;
+	protected Needs.Modifiers modifiers;
 
 	// preset priorities levels
 	public static float CRITICAL = -Float.MAX_VALUE;
@@ -22,11 +23,18 @@ public abstract class Need {
 	public Need() {
 		this.isSatisfied = false;
 		this.priority = NORMAL;
+		this.modifiers = Needs.Modifiers.IS_NORMAL;
 	}
 
 	public Need(float priority) {
 		this();
 		this.priority = priority;
+	}
+
+	public Need(float priority, Needs.Modifiers modifier) {
+		this();
+		this.priority = priority;
+		this.modifiers = modifier;
 	}
 
 	public boolean isSatisfied() {
@@ -43,6 +51,10 @@ public abstract class Need {
 
 	public float getPriority() {
 		return this.priority;
+	}
+
+	public Needs.Modifiers getModifiers() {
+		return modifiers;
 	}
 
 	public abstract Needs.Types[] getTypes();

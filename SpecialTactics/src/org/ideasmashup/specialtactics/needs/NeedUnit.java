@@ -23,6 +23,12 @@ public class NeedUnit extends Need {
 		this.unittype = type;
 	}
 
+	public NeedUnit(UnitType type, float priority, Needs.Modifiers modifiers) {
+		super(priority, modifiers);
+		this.types = new Types[]{Needs.Types.UNIT};
+		this.unittype = type;
+	}
+
 	@Override
 	public Types[] getTypes() {
 		return types;
@@ -31,8 +37,9 @@ public class NeedUnit extends Need {
 	@Override
 	public boolean canReceive(Object offer) {
 		if (offer instanceof Unit) {
-			// only accept units "offers"
-			return true;
+			// only accept units "offers" of the correct type
+			Unit unit = (Unit) offer;
+			return unit.getType() == this.unittype;
 		}
 		return false;
 	}
