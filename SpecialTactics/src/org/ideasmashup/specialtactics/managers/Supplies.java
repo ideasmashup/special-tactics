@@ -1,9 +1,12 @@
 package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Consumer;
+import org.ideasmashup.specialtactics.agents.MakeSupply;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
@@ -14,16 +17,18 @@ import bwapi.UnitType;
 
 public class Supplies implements Consumer {
 
+	protected static Supplies instance = null;
+
 	protected List<SupplyListener> listeners;
+	protected List<Agent> suppliers;
 
 	// FIXME temporary hack to "reserve" resouces (must replace with async
 	//       needs-filling API
 	protected int lockedSupply = 0;
 
-	protected static Supplies instance = null;
-
 	protected Supplies() {
 		listeners = new ArrayList<SupplyListener>();
+		suppliers = new ArrayList<Agent>();
 	}
 
 	public static Supplies getInstance() {
@@ -74,9 +79,26 @@ public class Supplies implements Consumer {
 
 		// FIXME remember when supply is laready being produced so that other workers
 		//       continue being used for mining and other activities
+
 		if (getSupply() <= 3) {
-			System.out.println("Supply running low, requested next worker for supply building");
-			Needs.getInstance().add(new NeedUnit(Units.Types.WORKERS.getUnitType(), 0), instance);
+			// supply running low, must create a new "supply provider" (e.g. supplier)
+			// unless there are already suppliers in action
+
+			// kill all suppliers that are inactive
+			List<Agent> zombies = new LinkedList<Agent>();
+			for (Agent supplier : suppliers) {
+				if (supplier.isDestroyed()) {
+					zombies.add(supplier);
+				}
+			}
+			for (Agent zombie : zombies) {
+				suppliers.remove(zombie);
+			}
+
+			// no suppliers left alive, need to create a new one
+			if (suppliers.isEmpty()) {
+				suppliers.add(new MakeSupply());
+			}
 		}
 
 		// call all listeners
@@ -92,25 +114,6 @@ public class Supplies implements Consumer {
 
 	@Override
 	public boolean fillNeeds(Object offer) {
-		System.out.println("Supplies.fillNeeds()");
-
-		if (offer instanceof Unit) {
-			Unit unit = (Unit) offer;
-			if (unit.getType().isWorker()) {
-				System.out.println("Supplies just received new worker #"+ unit.getID() +"!");
-				UnitType type = Units.Types.SUPPLY.getUnitType();
-
-				// FIXME ugly workaround to prevent minerals and gas for the pylons/dpot
-				//       to be eaten up by other minerals consumers
-				Resources.getInstance().lockMinerals(type.mineralPrice(), true);
-				Resources.getInstance().lockGas(type.gasPrice(), true);
-
-				//unit.build(SimCities.getLocationForStructure(type, unit), type);
-				unit.build(unit.getTilePosition(), type);
-
-				return true;
-			}
-		}
 		return false;
 	}
 }
