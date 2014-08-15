@@ -24,12 +24,12 @@ public class MasterAgent extends Agent {
 		servants.remove(unit);
 
 		// freed units are like "new" units
-		Units.onUnitComplete(unit);
+		Units.getInstance().onUnitComplete(unit);
 	}
 
 	protected void freeAllServants() {
 		for (Unit servant : servants) {
-			Units.onUnitComplete(servant);
+			Units.getInstance().onUnitComplete(servant);
 		}
 		servants.clear();
 	}

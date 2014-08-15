@@ -43,7 +43,7 @@ public class MineralPatch extends MasterAgent implements Consumer {
 	protected void plugNeeds() {
 		for (Need need : needs) {
 			if (!need.isSatisfied()) {
-				Needs.add(need, this);
+				Needs.getInstance().add(need, this);
 			}
 		}
 	}

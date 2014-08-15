@@ -46,7 +46,7 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 	protected void plugNeeds() {
 		for (Need need : needs) {
 			if (!need.isSatisfied()) {
-				Needs.add(need, this);
+				Needs.getInstance().add(need, this);
 			}
 		}
 	}
@@ -93,10 +93,11 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 			}
 			else {
 				// check ressources, supply and non-unit needs
-				if (Resources.getMinerals() >= structureType.mineralPrice()
-						&& Resources.getGas() >= structureType.gasPrice()) {
-					Resources.lockMinerals(structureType.mineralPrice(), true);
-					Resources.lockGas(structureType.gasPrice(), true);
+				Resources resources = Resources.getInstance();
+				if (resources.getMinerals() >= structureType.mineralPrice()
+						&& resources.getGas() >= structureType.gasPrice()) {
+					resources.lockMinerals(structureType.mineralPrice(), true);
+					resources.lockGas(structureType.gasPrice(), true);
 
 					// start building
 					//StructureBuildingAgent sba = new StructureBuildingAgent(servants.get(0), structure., Need.HIGH);
