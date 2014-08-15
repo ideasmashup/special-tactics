@@ -33,7 +33,7 @@ public abstract class Need {
 		return isSatisfied;
 	}
 
-	public void setSatified(boolean satisfied) {
+	public void setSatisfied(boolean satisfied) {
 		this.isSatisfied = satisfied;
 	}
 

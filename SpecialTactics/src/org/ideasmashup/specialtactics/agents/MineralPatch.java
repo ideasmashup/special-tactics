@@ -69,7 +69,7 @@ public class MineralPatch extends MasterAgent implements Consumer {
 				Unit unit = (Unit) offer;
 				if (unit.getType().isWorker()) {
 					System.out.println("mineral patch just received new worker #"+ unit.getID() +"! yay!");
-					need.setSatified(true);
+					need.setSatisfied(true);
 					addServant(unit);
 					return true;
 				}

@@ -9,6 +9,7 @@ import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
 import org.ideasmashup.specialtactics.agents.Scout;
 import org.ideasmashup.specialtactics.managers.Agents;
+import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
@@ -59,6 +60,10 @@ public class Brain implements BWEventListener {
 
 		// needs manager always last
 		needs = Needs.getInstance();
+
+		// creates timer agent
+		final Clock clock = new Clock(null);
+		agents.add(clock);
 
 		// creates scouting agent
 		final Scout scout = new Scout(null);
@@ -126,7 +131,7 @@ public class Brain implements BWEventListener {
 		List<Agent> zombies = new LinkedList<Agent>();
 
 		for (Agent agent : agents.getList()) {
-			// update living agents and burn the walking dead
+			// update living agents and burn - previously on AMC's - the walking dead
 			if (agent.isDestroyed()) {
 				zombies.add(agent);
 			}
