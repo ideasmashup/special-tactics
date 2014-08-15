@@ -14,6 +14,7 @@ import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
+import bwta.BaseLocation;
 import bwta.Chokepoint;
 
 public class StructureBuildingAgent extends MasterAgent implements Consumer {
@@ -76,9 +77,16 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 					addServant(unit);
 
 					// move the unit to the building location
+					// FIXME for debugging now we just find a spot between the
+					//       command-center in direction of the base chokepoint
 					Chokepoint choke = BWTA.getNearestChokepoint(unit.getTilePosition());
-					Position buildSite = new Position();
-					unit.move(buildSite);
+					BaseLocation base = BWTA.getNearestBaseLocation(unit.getPosition());
+					Position buildSite = new Position(
+						(choke.getCenter().getX() + base.getPosition().getX()) / 2,
+						(choke.getCenter().getY() + base.getPosition().getY()) / 2
+					);
+
+					unit.patrol(buildSite);
 
 					return true;
 				}
@@ -91,7 +99,7 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 					Resources.lockGas(structureType.gasPrice(), true);
 
 					// start building
-					StructureBuildingAgent sba = new StructureBuildingAgent(servants.get(0), structure., Need.HIGH);
+					//StructureBuildingAgent sba = new StructureBuildingAgent(servants.get(0), structure., Need.HIGH);
 
 					return true;
 				}
