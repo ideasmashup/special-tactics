@@ -104,7 +104,7 @@ public class Brain implements BWEventListener {
 		// Low priority code running every 20 frames instead of on every frame
 		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
 
-		if (++frames % 20 == 0) {
+		if (frames == 18) {
 			frames = 0;
 
 			int curGas = self.gas();
