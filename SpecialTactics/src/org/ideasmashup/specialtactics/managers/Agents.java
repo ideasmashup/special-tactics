@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.UnitAgent;
 
 public class Agents {
 
@@ -26,7 +27,7 @@ public class Agents {
 		return instance;
 	}
 
-	public void add(Agent agent) {
+	public void add(UnitAgent agent) {
 		agents.add(agent);
 	}
 

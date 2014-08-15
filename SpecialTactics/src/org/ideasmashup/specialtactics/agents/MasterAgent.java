@@ -7,7 +7,7 @@ import org.ideasmashup.specialtactics.managers.Units;
 import bwapi.Unit;
 import bwapi.UnitType;
 
-public class MasterAgent extends Agent {
+public class MasterAgent extends UnitAgent {
 
 	protected Units.Types servantsType;
 	protected List<Unit> servants;

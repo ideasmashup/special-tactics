@@ -25,7 +25,7 @@ import bwta.BaseLocation;
  * @author Kevin POULET <github at ideasmashup.com>
  *
  */
-public class Scout extends Agent implements UnitListener {
+public class Scout extends UnitAgent implements UnitListener {
 
 	private List<BaseLocation> ennemyBases;
 	private boolean scouting;

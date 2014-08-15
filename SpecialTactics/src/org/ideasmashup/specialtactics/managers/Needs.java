@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
@@ -37,7 +37,7 @@ import bwapi.Unit;
  * <p>
  * If the consumer (agent) is satisfied then the need is removed from the global
  * list of needs. Whenever that agent or another one has that need again it just
- * has to call again {@link #add(Need, Agent)}.
+ * has to call again {@link #add(Need, UnitAgent)}.
  * </p>
  *
  * @author William ANGER

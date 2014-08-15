@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
 import org.ideasmashup.specialtactics.agents.Scout;
@@ -202,7 +203,7 @@ public class Brain implements BWEventListener {
 		// add new unit to global Units pool
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") created");
 
-		Agent agent;
+		UnitAgent agent;
 
 		//
 		if (unit.getType() == UnitType.Resource_Mineral_Field && unit.isVisible()) {
