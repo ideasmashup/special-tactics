@@ -8,33 +8,33 @@ import org.ideasmashup.specialtactics.agents.Agent;
 
 public class Agents {
 
-	// low-level agents
 	protected List<Agent> agents;
 
-	// FIXME replace by real "singleton" pattern when debugging over!
 	protected static Agents instance = null;
 
 	protected Agents() {
 		agents = new ArrayList<Agent>();
 	}
 
-	public static void init() {
+	public static Agents getInstance() {
 		if (instance == null) {
 			instance = new Agents();
 
 			System.out.println("Agents initialized");
 		}
+
+		return instance;
 	}
 
-	public static void add(Agent agent) {
-		instance.agents.add(agent);
+	public void add(Agent agent) {
+		agents.add(agent);
 	}
 
-	public static void remove(Agent agent) {
-		instance.agents.remove(agent);
+	public void remove(Agent agent) {
+		agents.remove(agent);
 	}
 
-	public static List<Agent> getList() {
-		return Collections.unmodifiableList(instance.agents);
+	public List<Agent> getList() {
+		return Collections.unmodifiableList(agents);
 	}
 }

@@ -61,27 +61,29 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		consumers = new HashMap<Need, Consumer>();
 	}
 
-	public static void init() {
+	public static Needs getInstance() {
 		if (instance == null) {
 			instance = new Needs();
 
 			// bind itself to units events, supply and resources events
-			Units.addListener(instance);
-			Resources.addListener(instance);
-			Supplies.addListener(instance);
+			Units.getInstance().addListener(instance);
+			Resources.getInstance().addListener(instance);
+			Supplies.getInstance().addListener(instance);
 
 			System.out.println("Needs initialized");
 		}
+
+		return instance;
 	}
 
-	public static void add(Need need, Consumer owner) {
-		instance.consumers.put(need, owner);
+	public void add(Need need, Consumer owner) {
+		consumers.put(need, owner);
 
 		for (Types type : need.getTypes()) {
 			System.out.println("  - added "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
 
 			// sorted insert based on priority (highest is last)
-			LinkedList<Need> llist = instance.needs.get(type);
+			LinkedList<Need> llist = needs.get(type);
 
 			if (llist.size() == 0) {
 				llist.add(need);
@@ -107,12 +109,12 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 	}
 
-	public static void remove(Need need) {
-		Consumer owner = instance.consumers.remove(need);
+	public void remove(Need need) {
+		Consumer owner = consumers.remove(need);
 
 		for (Types type : need.getTypes()) {
 			System.out.println("  - removed "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
-			instance.needs.get(type).remove(need);
+			needs.get(type).remove(need);
 		}
 	}
 
@@ -180,10 +182,10 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	public void onResourcesChange(int minerals, int gas) {
 		// assign new unit to needees
 		//System.out.println("Needs.onRessourcesChange()");
-		//System.out.println("Needs.get(RESOURCES).size() = "+ instance.needs.get(Types.RESOURCES).size());
+		//System.out.println("Needs.get(RESOURCES).size() = "+ needs.get(Types.RESOURCES).size());
 
-		for (Need need : instance.needs.get(Types.RESOURCES)) {
-			Consumer consumer = instance.consumers.get(need);
+		for (Need need : needs.get(Types.RESOURCES)) {
+			Consumer consumer = consumers.get(need);
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - ressources consumer satisfied !");
 				remove(need);
@@ -196,10 +198,10 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	@Override
 	public void onSupplyChange(int supply) {
 		System.out.println("Needs.onSupplyChange()");
-		System.out.println("Needs.get(SUPPLY).size() = "+ instance.needs.get(Types.SUPPLY).size());
+		System.out.println("Needs.get(SUPPLY).size() = "+ needs.get(Types.SUPPLY).size());
 
-		for (Need need : instance.needs.get(Types.SUPPLY)) {
-			Consumer consumer = instance.consumers.get(need);
+		for (Need need : needs.get(Types.SUPPLY)) {
+			Consumer consumer = consumers.get(need);
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - supply consumer satisfied !");
 				remove(need);

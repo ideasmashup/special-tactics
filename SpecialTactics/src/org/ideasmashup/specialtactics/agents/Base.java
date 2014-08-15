@@ -30,8 +30,8 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 		// assign them MineralPatch agents asap ?
 
 		// register itself to units events, resources events
-		Units.addListener(this);
-		Resources.addListener(this);
+		Units.getInstance().addListener(this);
+		Resources.getInstance().addListener(this);
 
 		initNeeds();
 		plugNeeds();
@@ -51,7 +51,7 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 	protected void plugNeeds() {
 		for (Need need : needs) {
 			if (!need.isSatisfied()) {
-				Needs.add(need, this);
+				Needs.getInstance().add(need, this);
 			}
 		}
 	}
@@ -82,7 +82,7 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 			// not doing anything let's see if we can build something
 
 			// TODO replace with prioritized Needs collection (?)
-			if (Resources.getMinerals() >= 50) {
+			if (Resources.getInstance().getMinerals() >= 50) {
 				bindee.train(Units.Types.WORKERS.getUnitType());
 			}
 		}

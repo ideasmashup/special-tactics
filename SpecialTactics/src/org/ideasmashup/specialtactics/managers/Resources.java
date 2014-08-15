@@ -21,71 +21,73 @@ public class Resources {
 		listeners = new ArrayList<ResourcesListener>();
 	}
 
-	public static void init() {
+	public static Resources getInstance() {
 		if (instance == null) {
 			instance = new Resources();
 
 			System.out.println("Resources initialized");
 		}
+
+		return instance;
 	}
 
-	public static void lockMinerals(int amount, boolean lock) {
+	public void lockMinerals(int amount, boolean lock) {
 		if (lock) {
 			System.out.println("Resources reserved "+ amount +" minerals");
-			instance.lockedMinerals += amount;
+			lockedMinerals += amount;
 			onResourcesChange(-1, -1);
 		}
 		else {
 			System.out.println("Resources unreserved "+ amount +" minerals");
-			instance.lockedMinerals -= amount;
+			lockedMinerals -= amount;
 			onResourcesChange(-1, -1);
 		}
 
-		if (instance.lockedMinerals < 0) {
-			System.err.println("ERROR: locked negative minerals!! "+ instance.lockedMinerals);
+		if (lockedMinerals < 0) {
+			System.err.println("ERROR: locked negative minerals!! "+ lockedMinerals);
 		}
 	}
 
-	public static void lockGas(int amount, boolean lock) {
+	public void lockGas(int amount, boolean lock) {
 		if (lock) {
 			System.out.println("Resources reserved "+ amount +" gas");
-			instance.lockedGas += amount;
+			lockedGas += amount;
 			onResourcesChange(-1, -1);
 		}
 		else {
 			System.out.println("Resources unreserved "+ amount +" gas");
-			instance.lockedGas -= amount;
+			lockedGas -= amount;
 			onResourcesChange(-1, -1);
 		}
 
-		if (instance.lockedGas < 0) {
-			System.err.println("ERROR: locked negative gas!! "+ instance.lockedGas);
+		if (lockedGas < 0) {
+			System.err.println("ERROR: locked negative gas!! "+ lockedGas);
 		}
 	}
 
-	public static int getMinerals() {
-		return Utils.get().getPlayer().minerals() - instance.lockedMinerals;
+	public int getMinerals() {
+		return Utils.get().getPlayer().minerals() - lockedMinerals;
 	}
 
-	public static int getGas() {
-		return Utils.get().getPlayer().gas() - instance.lockedGas;
+	public int getGas() {
+		return Utils.get().getPlayer().gas() - lockedGas;
 	}
 
-	public static void addListener(ResourcesListener ls) {
-		instance.listeners.add(ls);
+	public void addListener(ResourcesListener ls) {
+		listeners.add(ls);
 	}
 
-	public static void removeListener(ResourcesListener ls) {
-		instance.listeners.remove(ls);
+	public void removeListener(ResourcesListener ls) {
+		listeners.remove(ls);
 	}
 
-	public static void removeAllListeners() {
-		instance.listeners.clear();
+	public void removeAllListeners() {
+		listeners.clear();
 	}
 
-	public static void onResourcesChange(int minerals, int gas) {
+	public void onResourcesChange(int minerals, int gas) {
 		// call all listeners
-		for (ResourcesListener ls : instance.listeners) {
+		for (ResourcesListener ls : listeners) {
 			ls.onResourcesChange(getMinerals(), getGas());
 		}
 	}

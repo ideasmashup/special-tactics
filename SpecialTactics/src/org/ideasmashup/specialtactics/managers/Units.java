@@ -44,29 +44,31 @@ public class Units {
 		listeners = new ArrayList<UnitListener>();
 	}
 
-	public static void init() {
+	public static Units getInstance() {
 		if (instance == null) {
 			instance = new Units();
 
 			System.out.println("Units initialized");
 		}
+
+		return instance;
 	}
 
-	public static void add(Unit unit) {
+	public void add(Unit unit) {
 		//if (!ids.contains(unit.getID())) {
 			System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") newly registered");
 
 			Types[] types = Types.getTypes(unit);
 			for (Types type : types) {
 				System.out.println(" - assigned type ("+ type.name() +")");
-				if (instance.map.containsKey(type)) {
-					instance.map.get(type).add(unit);
+				if (map.containsKey(type)) {
+					map.get(type).add(unit);
 				}
 				else {
 					ArrayList<Unit> arr = new ArrayList<Unit>();
 					arr.add(unit);
 
-					instance.map.put(type, arr);
+					map.put(type, arr);
 				}
 			}
 		//}
@@ -75,20 +77,20 @@ public class Units {
 		//}
 	}
 
-	public static void addListener(UnitListener ls) {
-		instance.listeners.add(ls);
+	public void addListener(UnitListener ls) {
+		listeners.add(ls);
 	}
 
-	public static void removeListener(UnitListener ls) {
-		instance.listeners.remove(ls);
+	public void removeListener(UnitListener ls) {
+		listeners.remove(ls);
 	}
 
-	public static void removeAllListeners() {
-		instance.listeners.clear();
+	public void removeAllListeners() {
+		listeners.clear();
 	}
 
-	public static Unit[] get(Types type) {
-		return instance.map.get(type).toArray(new Unit[0]);
+	public Unit[] get(Types type) {
+		return map.get(type).toArray(new Unit[0]);
 	}
 
 	public static enum Types {
@@ -250,61 +252,61 @@ public class Units {
 
 	}
 
-	public static void onUnitDiscover(Unit unit) {
+	public void onUnitDiscover(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitDiscover(unit);
 		}
 	}
 
-	public static void onUnitEvade(Unit unit) {
+	public void onUnitEvade(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitEvade(unit);
 		}
 	}
 
-	public static void onUnitShow(Unit unit) {
+	public void onUnitShow(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitShow(unit);
 		}
 	}
 
-	public static void onUnitHide(Unit unit) {
+	public void onUnitHide(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitHide(unit);
 		}
 	}
 
-	public static void onUnitCreate(Unit unit) {
+	public void onUnitCreate(Unit unit) {
 		System.out.println("Units.onUnitCreate()");
-		System.out.println("Units.listeners.size() = "+ instance.listeners.size());
+		System.out.println("Units.listeners.size() = "+ listeners.size());
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitCreate(unit);
 		}
 	}
 
-	public static void onUnitDestroy(Unit unit) {
+	public void onUnitDestroy(Unit unit) {
 		System.out.println("Units.onUnitDestroy()");
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitDestroy(unit);
 		}
 	}
 
-	public static void onUnitMorph(Unit unit) {
+	public void onUnitMorph(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitMorph(unit);
 		}
 	}
 
-	public static void onUnitRenegade(Unit unit) {
+	public void onUnitRenegade(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitRenegade(unit);
 		}
 	}
@@ -320,16 +322,16 @@ public class Units {
 	 *
 	 * @param unit the {@link Unit} twhich is newly available for "consumption"
 	 */
-	public static void onUnitComplete(Unit unit) {
+	public void onUnitComplete(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : instance.listeners) {
+		for (UnitListener ls : listeners) {
 			ls.onUnitComplete(unit);
 		}
 	}
 
 	// FIXME implement these and add them to the UnitListener interface
 
-	public static void onUnitAttacked(Unit unit) {
+	public void onUnitAttacked(Unit unit) {
 		//
 	}
 }

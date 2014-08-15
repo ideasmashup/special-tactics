@@ -26,9 +26,17 @@ public class Brain implements BWEventListener {
 
 	protected static Brain instance;
 
+	// BWAPI classes
 	protected Mirror mirror;
 	protected Game game;
 	protected Player self;
+
+	// MANAGER classes
+	protected Agents agents;
+	protected Units units;
+	protected Resources resources;
+	protected Supplies supplies;
+	protected Needs needs;
 
 	// internal flags
 	protected int frames = 0;
@@ -43,18 +51,18 @@ public class Brain implements BWEventListener {
 		this.self = game.self();
 
 		// must initialize managers in correct order
-		Agents.init();
-		Units.init();
-		Resources.init();
-		Supplies.init();
+		agents = Agents.getInstance();
+		units = Units.getInstance();
+		resources = Resources.getInstance();
+		supplies = Supplies.getInstance();
 
 		// needs manager always last
-		Needs.init();
+		needs = Needs.getInstance();
 
 		// creates scouting agent
 		final Scout scout = new Scout(null);
-		Units.addListener(scout);
-		Agents.add(scout);
+		units.addListener(scout);
+		agents.add(scout);
 	}
 
 	public static Brain get() {
@@ -101,13 +109,13 @@ public class Brain implements BWEventListener {
 				prevGas = curGas;
 				prevMinerals = curMinerals;
 
-				Resources.onResourcesChange(curMinerals, curGas);
+				resources.onResourcesChange(curMinerals, curGas);
 			}
 
 			if (prevSupply != curSupply) {
 				prevSupply = curSupply;
 
-				Supplies.onSupplyChange(curSupply);
+				supplies.onSupplyChange(curSupply);
 			}
 		}
 
@@ -116,7 +124,7 @@ public class Brain implements BWEventListener {
 
 		List<Agent> zombies = new LinkedList<Agent>();
 
-		for (Agent agent : Agents.getList()) {
+		for (Agent agent : agents.getList()) {
 			// update living agents and burn the walking dead
 			if (agent.isDestroyed()) {
 				zombies.add(agent);
@@ -128,7 +136,7 @@ public class Brain implements BWEventListener {
 
 		// cleanup zombies
 		for (Agent zombie : zombies) {
-			Agents.remove(zombie);
+			agents.remove(zombie);
 		}
 
 		// TODO call all ops and high-level classes to do
@@ -168,25 +176,25 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onUnitDiscover(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") discovered");
-		Units.onUnitDiscover(unit);
+		units.onUnitDiscover(unit);
 	}
 
 	@Override
 	public void onUnitEvade(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") evaded");
-		Units.onUnitEvade(unit);
+		units.onUnitEvade(unit);
 	}
 
 	@Override
 	public void onUnitShow(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") shown");
-		Units.onUnitShow(unit);
+		units.onUnitShow(unit);
 	}
 
 	@Override
 	public void onUnitHide(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") hidden");
-		Units.onUnitHide(unit);
+		units.onUnitHide(unit);
 	}
 
 	@Override
@@ -200,39 +208,39 @@ public class Brain implements BWEventListener {
 		if (unit.getType() == UnitType.Resource_Mineral_Field && unit.isVisible()) {
 			System.out.println("  - is mineral patch : assigned MineralPatch agent");
 			agent = new MineralPatch(unit);
-			Agents.add(agent);
+			agents.add(agent);
 		}
 
 		//
 		if (unit.getType() == Units.Types.BASE.getUnitType()) {
 			System.out.println("  - is base center : assigne Base agent");
 			agent = new Base(unit);
-			Agents.add(agent);
+			agents.add(agent);
 		}
 
 		// TODO verify that call order is correct for new Agents that implement
 		//      UnitListener and may be called after/before? they are created
 
-		Units.add(unit);
-		Units.onUnitCreate(unit);
+		units.add(unit);
+		units.onUnitCreate(unit);
 	}
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") destroyed");
-		Units.onUnitDestroy(unit);
+		units.onUnitDestroy(unit);
 	}
 
 	@Override
 	public void onUnitMorph(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") morphed");
-		Units.onUnitMorph(unit);
+		units.onUnitMorph(unit);
 	}
 
 	@Override
 	public void onUnitRenegade(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") renegade");
-		Units.onUnitRenegade(unit);
+		units.onUnitRenegade(unit);
 	}
 
 	@Override
@@ -243,7 +251,7 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onUnitComplete(Unit unit) {
 		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") completed");
-		Units.onUnitComplete(unit);
+		units.onUnitComplete(unit);
 	}
 
 	@Override
