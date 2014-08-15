@@ -14,7 +14,10 @@ public class DefaultAgent implements Agent {
 	@Override
 	public void update() {
 		// called on every frame (or as frequently as possible)
-
+		// unless dead
+		if (this.dead) {
+			return;
+		}
 	}
 
 	/* (non-Javadoc)
