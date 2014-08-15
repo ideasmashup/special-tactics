@@ -1,6 +1,5 @@
 package org.ideasmashup.specialtactics.brains;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +7,7 @@ import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
 import org.ideasmashup.specialtactics.agents.Scout;
+import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
@@ -36,18 +36,14 @@ public class Brain implements BWEventListener {
 	protected int prevGas = 0;
 	protected int prevSupply = 0;
 
-	// low-level agents
-	protected List<Agent> agents;
-
 	public Brain(Game game) {
 		instance = this;
 
 		this.game = game;
 		this.self = game.self();
 
-		this.agents = new ArrayList<Agent>();
-
 		// must initialize managers in correct order
+		Agents.init();
 		Units.init();
 		Resources.init();
 		Supplies.init();
@@ -58,7 +54,7 @@ public class Brain implements BWEventListener {
 		// creates scouting agent
 		final Scout scout = new Scout(null);
 		Units.addListener(scout);
-		agents.add(scout);
+		Agents.add(scout);
 	}
 
 	public static Brain get() {
@@ -120,7 +116,7 @@ public class Brain implements BWEventListener {
 
 		List<Agent> zombies = new LinkedList<Agent>();
 
-		for (Agent agent : agents) {
+		for (Agent agent : Agents.getList()) {
 			// update living agents and burn the walking dead
 			if (agent.isDestroyed()) {
 				zombies.add(agent);
@@ -132,7 +128,7 @@ public class Brain implements BWEventListener {
 
 		// cleanup zombies
 		for (Agent zombie : zombies) {
-			agents.remove(zombie);
+			Agents.remove(zombie);
 		}
 
 		// TODO call all ops and high-level classes to do
@@ -204,14 +200,14 @@ public class Brain implements BWEventListener {
 		if (unit.getType() == UnitType.Resource_Mineral_Field && unit.isVisible()) {
 			System.out.println("  - is mineral patch : assigned MineralPatch agent");
 			agent = new MineralPatch(unit);
-			agents.add(agent);
+			Agents.add(agent);
 		}
 
 		//
 		if (unit.getType() == Units.Types.BASE.getUnitType()) {
 			System.out.println("  - is base center : assigne Base agent");
 			agent = new Base(unit);
-			agents.add(agent);
+			Agents.add(agent);
 		}
 
 		// TODO verify that call order is correct for new Agents that implement
