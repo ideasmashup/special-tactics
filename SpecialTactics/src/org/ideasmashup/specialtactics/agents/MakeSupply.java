@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.agents;
 
+import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
@@ -19,9 +20,10 @@ import bwta.Chokepoint;
 
 
 
-public class MakeSupply extends DefaultAgent implements Consumer {
+public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	protected UnitType supplyType;
+	protected Unit supply;
 	protected Position pos;
 	protected Unit worker;
 
@@ -29,6 +31,7 @@ public class MakeSupply extends DefaultAgent implements Consumer {
 		super();
 		this.pos = null;
 		this.worker = null;
+		this.supply = null;
 
 		initNeeds();
 	}
@@ -58,13 +61,16 @@ public class MakeSupply extends DefaultAgent implements Consumer {
 
 		// auto-register agent
 		Agents.getInstance().add(this);
+
+		// auto-watch building construction
+		Units.getInstance().addListener(this);
 	}
 
 	@Override
 	public void update() {
 		super.update();
 
-		if (pos != null && worker != null) {
+		if (pos != null && worker != null && supply == null) {
 			if (!worker.isConstructing()) {
 				System.out.println("SUPPLY : worker moving to choke and trying to build somewhere on that route");
 				TilePosition tp = worker.getTilePosition();
@@ -76,12 +82,6 @@ public class MakeSupply extends DefaultAgent implements Consumer {
 				else {
 					worker.move(pos);
 				}
-			}
-			else if (worker.isIdle()) {
-				// done building must free the worker and kill this agent
-				this.destroy();
-				this.worker = null;
-				Units.getInstance().onUnitComplete(worker);
 			}
 		}
 	}
@@ -112,10 +112,88 @@ public class MakeSupply extends DefaultAgent implements Consumer {
 			}
 		}
 		else {
-			// non unit offer : assume minerals
-
+			// non-unit offer : assume minerals
 		}
 
 		return false;
+	}
+
+	@Override
+	public void onUnitDiscover(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitEvade(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitShow(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitHide(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitCreate(Unit unit) {
+		if (unit.getType() == supplyType && unit.isBeingConstructed()) {
+			// this may be the depot this worker is building
+
+			// check by identifying the depot,
+			if (unit.getBuildUnit() == worker) {
+				System.out.println("SUPPLY : the worker is constructing "+ unit.getType());
+				supply = unit;
+			}
+			else {
+
+			}
+		}
+	}
+
+	@Override
+	public void onUnitDestroy(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitMorph(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitRenegade(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitComplete(Unit unit) {
+		if (unit == supply) {
+			// the supply depot, pylon... has been built!
+
+			// remove from managers
+			Agents.getInstance().remove(this);
+			Units.getInstance().removeListener(this);
+
+			// kill this agent and free its worker
+			this.destroy();
+			Units.getInstance().onUnitComplete(worker);
+
+			// nullify refs
+			this.worker = null;
+			this.supply = null;
+			this.pos = null;
+
+		}
 	}
 }
