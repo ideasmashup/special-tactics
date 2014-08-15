@@ -169,8 +169,31 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 				Consumer consumer = consumers.get(need);
 				if (consumer.fillNeeds(unit)) {
 					System.out.println("  - consumer satisfied !");
-					// this unit has been overtaken by the unit consumer
-					remove(need);
+
+					if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
+						// when normal needs are satified they are removed from the
+						// global stack immediately
+						remove(need);
+						break;
+					}
+					else if (need.getModifiers() == Needs.Modifiers.IS_TRANSIENT) {
+						// when transient needs are satified they are removed but
+						// their offer can still be passed to satifsy the next consumer
+						remove(need);
+						continue;
+					}
+					else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
+						// when permanent needs are satified they are removed but
+						// added back immediately because they can't be satisfied
+
+						// Yet the need often changes when fillNeed() is called
+						// so when it's added back it may have different priorities
+						// modifiers, etc
+
+						remove(need);
+						add(need, consumer);
+						break;
+					}
 					break;
 				}
 			}
@@ -179,7 +202,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	@Override
 	public void onResourcesChange(int minerals, int gas) {
-		// assign new unit to needees
 		//System.out.println("Needs.onRessourcesChange()");
 		//System.out.println("Needs.get(RESOURCES).size() = "+ needs.get(Types.RESOURCES).size());
 
@@ -187,7 +209,31 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 			Consumer consumer = consumers.get(need);
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - ressources consumer satisfied !");
-				remove(need);
+
+				if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
+					// when normal needs are satified they are removed from the
+					// global stack immediately
+					remove(need);
+					break;
+				}
+				else if (need.getModifiers() == Needs.Modifiers.IS_TRANSIENT) {
+					// when transient needs are satified they are removed but
+					// their offer can still be passed to satifsy the next consumer
+					remove(need);
+					continue;
+				}
+				else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
+					// when permanent needs are satified they are removed but
+					// added back immediately because they can't be satisfied
+
+					// Yet the need often changes when fillNeed() is called
+					// so when it's added back it may have different priorities
+					// modifiers, etc
+
+					remove(need);
+					add(need, consumer);
+					break;
+				}
 				break;
 			}
 		}
