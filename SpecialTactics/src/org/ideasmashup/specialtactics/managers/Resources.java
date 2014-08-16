@@ -1,9 +1,13 @@
 package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ideasmashup.specialtactics.AI;
+import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 
 public class Resources {
@@ -12,13 +16,25 @@ public class Resources {
 
 	// FIXME temporary hack to "reserve" resouces (must replace with async
 	//       needs-filling API
-	protected int lockedMinerals = 0;
-	protected int lockedGas = 0;
+
+	// ----
+	protected Map<Object, Integer> reservedMinerals;
+	protected int reservedMineralsTotal;
+
+	protected Map<Object, Integer> reservedGas;
+	protected int reservedGasTotal;
+	// ------
 
 	protected static Resources instance = null;
 
 	protected Resources() {
 		listeners = new ArrayList<ResourcesListener>();
+
+		reservedMinerals = new HashMap<Object, Integer>();
+		reservedMineralsTotal = 0;
+
+		reservedGas = new HashMap<Object, Integer>();
+		reservedGasTotal = 0;
 	}
 
 	public static Resources getInstance() {
@@ -31,46 +47,56 @@ public class Resources {
 		return instance;
 	}
 
-	public void lockMinerals(int amount, boolean lock) {
-		if (lock) {
-			System.out.println("Resources reserved "+ amount +" minerals");
-			lockedMinerals += amount;
+	public void reserveMinerals(int amount, Agent owner) {
+		if (!reservedMinerals.containsKey(owner)) {
+			System.out.println("Resources reserved "+ amount +" minerals for "+ owner);
+			reservedMinerals.put(owner, amount);
+
+			Collection<Integer> rs = reservedMinerals.values();
+			int total = 0;
+			for (Integer r : rs) {
+				total += r;
+			}
+			this.reservedMineralsTotal = total;
+
 			onResourcesChange(-1, -1);
 		}
 		else {
-			System.out.println("Resources unreserved "+ amount +" minerals");
-			lockedMinerals -= amount;
-			onResourcesChange(-1, -1);
-		}
-
-		if (lockedMinerals < 0) {
-			System.err.println("ERROR: locked negative minerals!! "+ lockedMinerals);
+			System.err.println("Cannot add more minerals to already reserved by "+ owner);
 		}
 	}
 
-	public void lockGas(int amount, boolean lock) {
-		if (lock) {
-			System.out.println("Resources reserved "+ amount +" gas");
-			lockedGas += amount;
+	public void reserveGas(int amount, Object owner) {
+		if (!reservedGas.containsKey(owner)) {
+			System.out.println("Resources reserved "+ amount +" gas for "+ owner);
+			reservedGas.put(owner, amount);
+
+			Collection<Integer> rs = reservedGas.values();
+			int total = 0;
+			for (Integer r : rs) {
+				total += r;
+			}
+			this.reservedGasTotal = total;
+
 			onResourcesChange(-1, -1);
 		}
 		else {
-			System.out.println("Resources unreserved "+ amount +" gas");
-			lockedGas -= amount;
-			onResourcesChange(-1, -1);
+			System.err.println("Cannot add more minerals to already reserved by "+ owner);
 		}
+	}
 
-		if (lockedGas < 0) {
-			System.err.println("ERROR: locked negative gas!! "+ lockedGas);
-		}
+	public void unreserve(Object owner) {
+		System.out.println("Resources unreserved all resources allocated to "+ owner);
+		reservedMinerals.remove(owner);
+		reservedGas.remove(owner);
 	}
 
 	public int getMinerals() {
-		return AI.getPlayer().minerals() - lockedMinerals;
+		return AI.getPlayer().minerals() - reservedMineralsTotal;
 	}
 
 	public int getGas() {
-		return AI.getPlayer().gas() - lockedGas;
+		return AI.getPlayer().gas() - reservedGasTotal;
 	}
 
 	public void addListener(ResourcesListener ls) {
