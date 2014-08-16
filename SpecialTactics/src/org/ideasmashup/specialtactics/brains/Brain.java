@@ -3,13 +3,14 @@ package org.ideasmashup.specialtactics.brains;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Agent;
-import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.agents.Base;
+import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
 import org.ideasmashup.specialtactics.agents.Scout;
+import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.managers.Agents;
-import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
@@ -41,7 +42,7 @@ public class Brain implements BWEventListener {
 	protected Needs needs;
 
 	// internal flags
-	protected int frames = 0;
+	protected long frames = 0;
 	protected int prevMinerals = 0;
 	protected int prevGas = 0;
 	protected int prevSupply = 0;
@@ -104,9 +105,11 @@ public class Brain implements BWEventListener {
 		// Low priority code running every 20 frames instead of on every frame
 		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
 
-		if (++frames == 18) {
-			frames = 0;
+		if (frames++ == 0) {
+			AI.say("gl hf");
+		}
 
+		if (frames % 18 == 0) {
 			int curGas = self.gas();
 			int curMinerals = self.minerals();
 			int curSupply = self.supplyTotal() - self.supplyUsed();
