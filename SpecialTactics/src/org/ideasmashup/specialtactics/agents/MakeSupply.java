@@ -50,8 +50,8 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		//       to be eaten up by other minerals consumers
 		supplyType = Units.Types.SUPPLY.getUnitType();
 
-		Resources.getInstance().lockMinerals(supplyType.mineralPrice(), true);
-		Resources.getInstance().lockGas(supplyType.gasPrice(), true);
+		Resources.getInstance().reserveMinerals(supplyType.mineralPrice(), this);
+		Resources.getInstance().reserveGas(supplyType.gasPrice(), this);
 
 		System.out.println("SUPPLY : Requested ressources for supply building");
 		Needs.getInstance().add(new NeedResources(
