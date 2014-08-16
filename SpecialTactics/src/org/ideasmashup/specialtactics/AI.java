@@ -65,7 +65,7 @@ public class AI {
 	}
 
 	public static void say(String message) {
-		game.drawTextScreen(10, 25, message);
+		game.sendText(message);
 	}
 
 	public static void main(String... args) {
