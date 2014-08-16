@@ -151,9 +151,14 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			if (unit.getBuildUnit() == worker) {
 				System.out.println("SUPPLY : the worker is constructing "+ unit.getType());
 				supply = unit;
+
+				// resources used so remove reservation
+				Resources.getInstance().unreserve(this);
 			}
 			else {
-
+				// for protoss we can't even get the builder worker!? wtf? is this for real?
+				supply = unit;
+				freeWorker();
 			}
 		}
 	}
@@ -195,6 +200,14 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			this.supply = null;
 			this.pos = null;
 
+			// release captured worker
+			freeWorker();
 		}
+	}
+
+	protected void freeWorker() {
+		System.out.println("SUPPLY: liberated worker");
+		Units.getInstance().onUnitComplete(worker);
+		this.worker = null;
 	}
 }
