@@ -19,7 +19,6 @@ public class Clock extends DefaultAgent {
 
 	protected double gameTime;
 	protected double realTime;
-	protected long t0;
 
 	protected Position textPos = new Position(10, 10);
 	protected Position clockPos = new Position(60, 10);
@@ -38,7 +37,6 @@ public class Clock extends DefaultAgent {
 		game = AI.getGame();
 		realTime = 0D;
 		gameTime = 0D;
-		t0 = System.currentTimeMillis();
 	}
 
 	@Override
@@ -50,13 +48,11 @@ public class Clock extends DefaultAgent {
 		gameTime += 1D / FPS_NORMAL;
 		game.drawTextScreen(textPos.getX(), textPos.getY(),
 			"CLOCK" + "\n" +
-			"System:" + "\n" +
 			"Real:" + "\n" +
 			"Game:"
 		);
 		game.drawTextScreen(clockPos.getX(), clockPos.getY(),
 			"\n" +
-			timeToString((int) (System.currentTimeMillis() - t0) / 1000) + "\n" +
 			timeToString((int) realTime) + "\n" +
 			timeToString((int) gameTime)
 		);
