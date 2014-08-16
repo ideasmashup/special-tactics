@@ -63,7 +63,7 @@ public class Brain implements BWEventListener {
 		needs = Needs.getInstance();
 
 		// creates timer agent
-		final Clock clock = new Clock(null);
+		final Clock clock = new Clock();
 		agents.add(clock);
 
 		// creates scouting agent
