@@ -5,7 +5,7 @@ public class DefaultAgent implements Agent {
 	protected boolean dead;
 
 	public DefaultAgent() {
-		super();
+		this.dead = false;
 	}
 
 	/* (non-Javadoc)
