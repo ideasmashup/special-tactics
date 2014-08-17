@@ -4,7 +4,6 @@ import org.ideasmashup.specialtactics.AI;
 
 import bwapi.Game;
 import bwapi.Position;
-import bwapi.Unit;
 
 /**
  * Clock agent
@@ -14,13 +13,12 @@ import bwapi.Unit;
  * @author Kevin POULET <github at ideasmashup.com>
  *
  */
-public class Clock extends UnitAgent {
+public class Clock extends DefaultAgent {
 
 	protected Game game;
 
 	protected double gameTime;
 	protected double realTime;
-	protected long t0;
 
 	protected Position textPos = new Position(10, 10);
 	protected Position clockPos = new Position(60, 10);
@@ -30,16 +28,15 @@ public class Clock extends UnitAgent {
 	protected static final double FPS_FAST = 17.86;
 	protected static final double FPS_FASTER = 20.83;
 
-	public Clock(final Unit bindee) {
-		super(bindee);
+	public Clock() {
+		super();
+		init();
 	}
 
-	@Override
 	protected void init() {
 		game = AI.getGame();
 		realTime = 0D;
 		gameTime = 0D;
-		t0 = System.currentTimeMillis();
 	}
 
 	@Override
@@ -51,13 +48,11 @@ public class Clock extends UnitAgent {
 		gameTime += 1D / FPS_NORMAL;
 		game.drawTextScreen(textPos.getX(), textPos.getY(),
 			"CLOCK" + "\n" +
-			"System:" + "\n" +
 			"Real:" + "\n" +
 			"Game:"
 		);
 		game.drawTextScreen(clockPos.getX(), clockPos.getY(),
 			"\n" +
-			timeToString((int) (System.currentTimeMillis() - t0) / 1000) + "\n" +
 			timeToString((int) realTime) + "\n" +
 			timeToString((int) gameTime)
 		);

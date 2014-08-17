@@ -20,21 +20,21 @@ import bwta.BaseLocation;
 
 /**
  * Scouting agent
- * Its main job is to accomplish scouting tasks such as finding ennemy main base, looking for ennemy expansions, checking presence of Templar archives or units upgrades.
+ * Its main job is to accomplish scouting tasks such as finding enemy main base, looking for enemy expansions, checking presence of Templar archives or units upgrades.
  *
  * @author Kevin POULET <github at ideasmashup.com>
  *
  */
 public class Scout extends UnitAgent implements UnitListener {
 
-	private List<BaseLocation> ennemyBases;
+	private List<BaseLocation> enemyBases;
 	private boolean scouting;
 	private Queue<Position> wayPoints;
 
 	private Map<Integer, Unit> myUnits;
 	private Map<Integer, Unit> myBuildings;
-	private Map<Integer, Unit> ennemyUnits;
-	private Map<Integer, Unit> ennemyBuildings;
+	private Map<Integer, Unit> enemyUnits;
+	private Map<Integer, Unit> enemyBuildings;
 
 	public Scout(final Unit bindee) {
 		super(bindee);
@@ -42,11 +42,11 @@ public class Scout extends UnitAgent implements UnitListener {
 
 	@Override
 	public void init() {
-		ennemyBases = new ArrayList<BaseLocation>();
+		enemyBases = new ArrayList<BaseLocation>();
 		myUnits = new HashMap<Integer, Unit>();
 		myBuildings = new HashMap<Integer, Unit>();
-		ennemyUnits = new HashMap<Integer, Unit>();
-		ennemyBuildings = new HashMap<Integer, Unit>();
+		enemyUnits = new HashMap<Integer, Unit>();
+		enemyBuildings = new HashMap<Integer, Unit>();
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class Scout extends UnitAgent implements UnitListener {
 		}
 		if(bindee != null) {
 			if(!scouting) {
-				if(ennemyBases.isEmpty()) {
+				if(enemyBases.isEmpty()) {
 					// lists all start locations
 					final List<BaseLocation> sb = new ArrayList<BaseLocation>();
 					final BaseLocation bSelf = BWTA.getStartLocation(AI.getPlayer());
@@ -101,13 +101,13 @@ public class Scout extends UnitAgent implements UnitListener {
 				if(distanceToTarget < sightRange) {
 					System.out.println("Scout unit in range of target position.");
 
-					for (final Unit u : ennemyBuildings.values()) {
+					for (final Unit u : enemyBuildings.values()) {
 					    if (Types.BASE.is(u)) {
-					    	System.out.println("Ennemy base found");
+					    	System.out.println("enemy base found");
 					    	final BaseLocation b = BWTA.getNearestBaseLocation(u.getPosition());
-					    	ennemyBases.add(b);
+					    	enemyBases.add(b);
 					    	if(b.isStartLocation()) {
-						    	System.out.println("Ennemy main found!");
+						    	System.out.println("enemy main found!");
 						    	scouting = false;
 						    	// start patrolling just to get some unit events (discovered/hidden/created...)
 						    	final int ux = bindee.getPosition().getX();
@@ -152,16 +152,16 @@ public class Scout extends UnitAgent implements UnitListener {
 			}
 		} else if(unit.getPlayer().equals(AI.getGame().enemy())) {
 			if(type.isBuilding()) {
-				final Unit u = ennemyBuildings.get(unit.getID());
+				final Unit u = enemyBuildings.get(unit.getID());
 				if(u == null) { // unknown unit
-					System.out.println("Registering new ennemy building");
-					ennemyBuildings.put(unit.getID(), unit);
+					System.out.println("Registering new enemy building");
+					enemyBuildings.put(unit.getID(), unit);
 				}
 			} else {
-				final Unit u = ennemyUnits.get(unit.getID());
+				final Unit u = enemyUnits.get(unit.getID());
 				if(u == null) { // unknown unit
-					System.out.println("Registering new ennemy unit");
-					ennemyUnits.put(unit.getID(), unit);
+					System.out.println("Registering new enemy unit");
+					enemyUnits.put(unit.getID(), unit);
 				}
 			}
 		}
@@ -215,16 +215,16 @@ public class Scout extends UnitAgent implements UnitListener {
 			}
 		} else if(unit.getPlayer().equals(AI.getGame().enemy())) {
 			if(type.isBuilding()) {
-				final Unit u = ennemyBuildings.get(unit.getID());
+				final Unit u = enemyBuildings.get(unit.getID());
 				if(u != null) { // known unit
-					System.out.println("Unregistering ennemy building");
-					ennemyBuildings.remove(unit.getID());
+					System.out.println("Unregistering enemy building");
+					enemyBuildings.remove(unit.getID());
 				}
 			} else {
-				final Unit u = ennemyUnits.get(unit.getID());
+				final Unit u = enemyUnits.get(unit.getID());
 				if(u != null) { // known unit
-					System.out.println("Unregistering ennemy unit");
-					ennemyUnits.remove(unit.getID());
+					System.out.println("Unregistering enemy unit");
+					enemyUnits.remove(unit.getID());
 				}
 			}
 		}

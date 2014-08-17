@@ -63,7 +63,7 @@ public class Brain implements BWEventListener {
 		needs = Needs.getInstance();
 
 		// creates timer agent
-		final Clock clock = new Clock(null);
+		final Clock clock = new Clock();
 		agents.add(clock);
 
 		// creates scouting agent
@@ -101,6 +101,7 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onFrame() {
+		if(game.isPaused()) return;
 
 		// Low priority code running every 20 frames instead of on every frame
 		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
