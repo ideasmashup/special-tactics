@@ -38,9 +38,9 @@ public class Scout extends UnitAgent implements UnitListener {
 
 	public Scout(final Unit bindee) {
 		super(bindee);
+		this.init();
 	}
 
-	@Override
 	public void init() {
 		enemyBases = new ArrayList<BaseLocation>();
 		myUnits = new HashMap<Integer, Unit>();

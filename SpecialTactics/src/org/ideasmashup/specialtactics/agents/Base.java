@@ -22,9 +22,9 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 		super(base);
 
 		this.servantsType = Units.Types.WORKERS;
+		this.init();
 	}
 
-	@Override
 	protected void init() {
 		// look for surrounding mineral patches
 		// assign them MineralPatch agents asap ?
