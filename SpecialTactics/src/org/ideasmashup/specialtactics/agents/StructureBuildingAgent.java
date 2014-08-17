@@ -96,8 +96,8 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 				Resources resources = Resources.getInstance();
 				if (resources.getMinerals() >= structureType.mineralPrice()
 						&& resources.getGas() >= structureType.gasPrice()) {
-					resources.lockMinerals(structureType.mineralPrice(), true);
-					resources.lockGas(structureType.gasPrice(), true);
+					resources.reserveMinerals(structureType.mineralPrice(), this);
+					resources.reserveGas(structureType.gasPrice(), this);
 
 					// start building
 					//StructureBuildingAgent sba = new StructureBuildingAgent(servants.get(0), structure., Need.HIGH);
