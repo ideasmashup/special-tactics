@@ -2,17 +2,24 @@ package org.ideasmashup.specialtactics.agents.commands;
 
 import java.util.LinkedList;
 
-import org.ideasmashup.specialtactics.agents.UnitAgent;
+import org.ideasmashup.specialtactics.managers.Units;
 
+import bwapi.Position;
 import bwapi.Unit;
+import bwapi.UnitCommandType;
 
-public class CommandChain extends UnitAgent {
+public class CommandChain extends Command implements CommandListener {
 
 	protected LinkedList<Command> commands;
+	protected Command current;
 
 	public CommandChain(Unit bindee, Command... commands) {
 		super(bindee);
+		this.current = null;
 		this.commands = new LinkedList<Command>();
+		for (Command command : commands) {
+			this.commands.add(command);
+		}
 	}
 
 	@Override
@@ -25,6 +32,39 @@ public class CommandChain extends UnitAgent {
 	}
 
 	protected void nextCommand() {
+		if (!commands.isEmpty()) {
+			// fetch command and run it
+			current = commands.pollFirst();
+			current.addListener(this);
+			current.start();
+		}
+		else {
+			// last command here!
+		}
+	}
+
+	@Override
+	public void onDone(Object result, boolean success) {
+		// command done, move onto next one
+		Command next = commands.peekFirst();
+		if (next.wantForward()) {
+			// this result should be passed to the next command
+			// so store it for he next in line to use !!
+		}
+	}
+
+	@Override
+	public void onFail() {
 		//
+
+	}
+
+	public static void main(String[] args) {
+		// Usage example
+		Unit unit = Units.getInstance().get(Units.Types.BASE)[0];
+		CommandChain cc = new CommandChain(unit,
+			new Command(unit, UnitCommandType.Attack_Move, new Position(0,0))
+		);
+		cc.start();
 	}
 }
