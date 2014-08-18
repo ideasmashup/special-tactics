@@ -84,6 +84,10 @@ public class Commands {
 
 		private final UnitCommandType uct;
 
+		public UnitCommandType getUnitCommandType() {
+			return uct;
+		}
+
 		public static NativeTypes fromUnitCommandType(UnitCommandType uct) {
 			for (NativeTypes nt : values()) {
 				if (nt.uct == uct) {
@@ -93,15 +97,21 @@ public class Commands {
 			return null;
 		}
 
-		public void runCommand(Unit unit, Object... args) {
+		public boolean runCommand(Unit unit, Object... args) {
+			boolean res = false;
+
 			switch (this) {
 				case Attack_Move:
 					// call function
-					unit.attack((Position) args[0]);
+					res = unit.attack((Position) args[0]);
 					break;
 				case Attack_Unit:
 					// call function
+					res = unit.attack((Unit) args[0]);
 					break;
+				default:
+					// not implemented yet !!
+					System.err.println("NOT IMPLEMENTED YET : "+ this.name());
 				case Build:
 					// call function
 					break;
@@ -235,6 +245,8 @@ public class Commands {
 					// call function
 					break;
 			}
+
+			return res;
 		}
 	}
 
