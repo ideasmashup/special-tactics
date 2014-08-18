@@ -38,6 +38,7 @@ public class MineralPatch extends MasterAgent implements Consumer {
 
 		this.needs.add(new NeedUnit(servantsType.getUnitType(), Need.LOW + distance));
 		this.needs.add(new NeedUnit(servantsType.getUnitType(), Need.LOW + distance));
+		this.needs.add(new NeedUnit(servantsType.getUnitType(), Need.LOW + distance));
 	}
 
 	protected void plugNeeds() {
