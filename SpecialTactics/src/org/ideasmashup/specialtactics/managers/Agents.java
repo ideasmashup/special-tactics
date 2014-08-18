@@ -27,6 +27,10 @@ public class Agents {
 		return instance;
 	}
 
+	public boolean contains(Agent agent) {
+		return agents.contains(agent);
+	}
+
 	public void add(Agent agent) {
 		agents.add(agent);
 	}
