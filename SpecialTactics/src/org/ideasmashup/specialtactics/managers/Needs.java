@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
@@ -81,7 +82,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		consumers.put(need, owner);
 
 		for (Types type : need.getTypes()) {
-			System.out.println("  - added "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
+			System.out.println("  - added "+ type.name() +" NEED for "+ owner.toString());
 
 			// sorted insert based on priority (highest is last)
 			LinkedList<Need> llist = needs.get(type);
@@ -107,6 +108,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 				}
 				llist.add(i, need);
 			}
+
+			System.out.println("  - total "+ type.name() +" needs = "+ llist.size());
 		}
 	}
 
@@ -116,6 +119,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		for (Types type : need.getTypes()) {
 			System.out.println("  - removed "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
 			needs.get(type).remove(need);
+
+			System.out.println("  - total "+ type.name() +" needs = "+ needs.get(type).size());
 		}
 	}
 
@@ -203,7 +208,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 		if (unitsNeeds.size() == 0) {
 			// no more needs...
-			System.out.println("NEEDS : All unit needs have been satisfied!! YEEAY!");
+			AI.say("All mineral patchs say they are satisfied...");
 		}
 	}
 
