@@ -58,13 +58,4 @@ public class CommandChain extends Command implements CommandListener {
 		//
 
 	}
-
-	public static void main(String[] args) {
-		// Usage example
-		Unit unit = Units.getInstance().get(Units.Types.BASE)[0];
-		CommandChain cc = new CommandChain(unit,
-			new Command(unit, UnitCommandType.Attack_Move, new Position(0,0))
-		);
-		cc.start();
-	}
 }
