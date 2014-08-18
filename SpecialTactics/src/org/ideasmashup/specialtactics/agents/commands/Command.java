@@ -7,21 +7,31 @@ import org.ideasmashup.specialtactics.managers.Agents;
 
 import bwapi.Unit;
 import bwapi.UnitCommand;
+import bwapi.UnitCommandType;
 
 public class Command extends UnitAgent {
 
 	protected Commands.States state;
-	protected UnitCommand command;
+	protected UnitCommandType uct;
 	protected Object[] args;
 	protected LinkedList<CommandListener> ls;
 	protected int maxRetries;
 
-	public Command(Unit bindee, UnitCommand command, Object... args) {
+	protected boolean givesObject; // will return an Object to listeners?
+	protected boolean wantForward; // must get returned Object of prev command?
+
+	public Command(Unit bindee) {
 		super(bindee);
 		this.ls = new LinkedList<CommandListener>();
 		this.maxRetries = 100;
+		this.uct = null;
+		this.args = new Object[0];
 		this.state = Commands.States.PAUSED;
-		this.command = command;
+	}
+
+	public Command(Unit bindee, UnitCommandType uct, Object... args) {
+		this(bindee);
+		this.uct = uct;
 		this.args = args;
 	}
 
@@ -32,10 +42,10 @@ public class Command extends UnitAgent {
 			super.update();
 
 			// run the command until it works
-			if (bindee.canIssueCommand(command)) {
-				if (bindee.issueCommand(command)) {
+			if (bindee.canIssueCommand(uct)) {
+				if (bindee.issueCommand(uct)) {
 					// successful command
-					waitForResult();
+					startWaitingForResult();
 				}
 				else {
 					// unsuccessful -> will retry a few times before failing
@@ -45,10 +55,52 @@ public class Command extends UnitAgent {
 				}
 			}
 		}
+		else if (state == Commands.States.WAITING_RESULT) {
+			// we are waiting for something
+		}
 	}
 
-	protected void waitForResult() {
+	protected void startWaitingForResult() {
+		// wait for result of for command to be completed : example move
+		// commands will return the final Position and wait until the unit
+		// reaches the specified coordinates
+
 		this.state = Commands.States.WAITING_RESULT;
+
+		// depending on CommandType maube we have a result already or maybe
+		// we need to wait for an event to obtain the actual result of the
+		// command
+
+		// see : https://code.google.com/p/bwapi/wiki/UnitCommand
+		Commands.Types type = Commands.Types.fromUnitCommandType(uc.getType());
+		if (type == Commands.Types.ENDS_AT_POSITION) {
+			// move commands  : result is final Position when it is reached
+			//      examples  : move, attack-move
+		}
+		else if (type == Commands.Types.ENDS_AFTER_TRANSFORM) {
+			// morph commands : result is new Unit after morph/state change
+			//       examples : siage-mode, lurker morph, etc
+		}
+		else if (type == Commands.Types.ENDS_NEAR_UNIT) {
+			// join commands  : move close to another unit
+			//      examples  : follow
+		}
+	}
+
+	public UnitCommand getCommand() {
+		return uc;
+	}
+
+	public Object[] getArgs() {
+		return args;
+	}
+
+	public boolean givesResult() {
+		return givesObject;
+	}
+
+	public boolean wantForward() {
+		return wantForward;
 	}
 
 	public boolean addListener(CommandListener ls) {
@@ -108,4 +160,5 @@ public class Command extends UnitAgent {
 		super.destroy();
 		this.ls = null;
 	}
+
 }
