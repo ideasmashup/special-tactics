@@ -11,6 +11,7 @@ import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Position;
+import bwapi.Race;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -27,6 +28,15 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	protected Position pos;
 	protected Unit worker;
 
+	protected enum State {
+		START,
+		READY,
+		MOVING,
+		BUILDING,
+		DONE
+	};
+	protected State state;
+
 	public MakeSupply() {
 		super();
 		this.pos = null;
@@ -39,6 +49,8 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	protected void initNeeds() {
 		// FIXME use polymorphism to implement race-specific
 		//       supply creation agents (?)
+
+		state = State.START;
 
 		// first need a worker to build the depot it will be "booked temporarily"
 		// so that the "next in line" consumer will already have it
@@ -70,18 +82,56 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	public void update() {
 		super.update();
 
-		if (pos != null && worker != null && supply == null) {
-			if (!worker.isConstructing()) {
-				System.out.println("SUPPLY : worker moving to choke and trying to build somewhere on that route");
+		System.out.println("SUPPLY : state = "+ state);
+
+		switch (state) {
+			case START:
+				break;
+			case READY:
+			case MOVING:
 				TilePosition tp = worker.getTilePosition();
 
 				if (AI.getGame().canBuildHere(worker, tp, supplyType)) {
 					// when moving try to find a place where a supply structure can be built
-					worker.build(tp, supplyType);
+					AI.say("found buildable site for new supply");
+					if (worker.build(tp, supplyType)) {
+						// ok building started!!
+						AI.say("building placed for building...");
+						Resources.getInstance().unreserve(this);
+						state = State.BUILDING;
+					}
 				}
 				else {
 					worker.move(pos);
 				}
+
+				break;
+			case BUILDING:
+				if (AI.getPlayer().getRace() == Race.Protoss) {
+					// building is done, release worker
+					state = State.DONE;
+				}
+				break;
+			case DONE:
+				// remove from managers
+				Agents.getInstance().remove(this);
+				Units.getInstance().removeListener(this);
+
+				// kill this agent and free its worker
+				this.destroy();
+
+				// nullify refs
+				this.supply = null;
+				this.pos = null;
+
+				// release captured worker
+				freeWorker();
+				break;
+		}
+
+		if (pos != null && worker != null && supply == null) {
+			if (!worker.isConstructing()) {
+
 			}
 		}
 	}
@@ -97,6 +147,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			Unit unit = (Unit) offer;
 			if (unit.getType().isWorker()) {
 				System.out.println("SUPPLY : Received new worker #"+ unit.getID() +"!");
+				state = State.READY;
 
 				// assign worker
 				this.worker = unit;
@@ -144,23 +195,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public void onUnitCreate(Unit unit) {
-		if (unit.getType() == supplyType && unit.isBeingConstructed()) {
-			// this may be the depot this worker is building
-
-			// check by identifying the depot,
-			if (unit.getBuildUnit() == worker) {
-				System.out.println("SUPPLY : the worker is constructing "+ unit.getType());
-				supply = unit;
-
-				// resources used so remove reservation
-				Resources.getInstance().unreserve(this);
-			}
-			else {
-				// for protoss we can't even get the builder worker!? wtf? is this for real?
-				supply = unit;
-				freeWorker();
-			}
-		}
+		//
 	}
 
 	@Override
@@ -183,31 +218,18 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		if (unit == supply) {
-			// the supply depot, pylon... has been built!
-			System.out.println("SUPPLY : supply structure created !");
-
-			// remove from managers
-			Agents.getInstance().remove(this);
-			Units.getInstance().removeListener(this);
-
-			// kill this agent and free its worker
-			this.destroy();
-			Units.getInstance().onUnitComplete(worker);
-
-			// nullify refs
-			this.worker = null;
-			this.supply = null;
-			this.pos = null;
-
-			// release captured worker
-			freeWorker();
+		if (unit.getType() == supplyType && unit.getPlayer() == AI.getPlayer()) {
+			// assume the supply unit just built is from our worker... (this is very dodgy!!!)
+			this.state = State.DONE;
 		}
 	}
 
 	protected void freeWorker() {
-		System.out.println("SUPPLY: liberated worker");
-		Units.getInstance().onUnitComplete(worker);
+		// liberate worker for other consumers to reclaim it
+		// unless we are zerg and the unit has morphed and thus vanished
+		if (worker.getPlayer().getRace() != Race.Zerg) {
+			Units.getInstance().onUnitComplete(worker);
+		}
 		this.worker = null;
 	}
 }
