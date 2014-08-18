@@ -12,7 +12,7 @@ import bwapi.UnitCommandType;
 public class Command extends UnitAgent {
 
 	protected Commands.States state;
-	protected UnitCommandType uct;
+	protected Commands.NativeTypes ntc;
 	protected Object[] args;
 	protected LinkedList<CommandListener> ls;
 	protected int maxRetries;
@@ -24,14 +24,14 @@ public class Command extends UnitAgent {
 		super(bindee);
 		this.ls = new LinkedList<CommandListener>();
 		this.maxRetries = 100;
-		this.uct = null;
+		this.ntc = null;
 		this.args = new Object[0];
 		this.state = Commands.States.PAUSED;
 	}
 
-	public Command(Unit bindee, UnitCommandType uct, Object... args) {
+	public Command(Unit bindee, Commands.NativeTypes uct, Object... args) {
 		this(bindee);
-		this.uct = uct;
+		this.ntc = uct;
 		this.args = args;
 	}
 
@@ -42,16 +42,14 @@ public class Command extends UnitAgent {
 			super.update();
 
 			// run the command until it works
-			if (bindee.canIssueCommand(uct)) {
-				if (bindee.issueCommand(uct)) {
+			if (ntc.runCommand(bindee, args)) {
 					// successful command
 					startWaitingForResult();
-				}
-				else {
-					// unsuccessful -> will retry a few times before failing
-					if (--maxRetries == 0) {
-						fail(null);
-					}
+			}
+			else {
+				// unsuccessful -> will retry a few times before failing
+				if (--maxRetries == 0) {
+					fail(null);
 				}
 			}
 		}
@@ -72,7 +70,7 @@ public class Command extends UnitAgent {
 		// command
 
 		// see : https://code.google.com/p/bwapi/wiki/UnitCommand
-		Commands.Types type = Commands.Types.fromUnitCommandType(uc.getType());
+		Commands.Types type = Commands.Types.fromUnitCommandType(ntc.getUnitCommandType());
 		if (type == Commands.Types.ENDS_AT_POSITION) {
 			// move commands  : result is final Position when it is reached
 			//      examples  : move, attack-move
@@ -87,8 +85,8 @@ public class Command extends UnitAgent {
 		}
 	}
 
-	public UnitCommand getCommand() {
-		return uc;
+	public Commands.NativeTypes getNativeTypes() {
+		return ntc;
 	}
 
 	public Object[] getArgs() {
