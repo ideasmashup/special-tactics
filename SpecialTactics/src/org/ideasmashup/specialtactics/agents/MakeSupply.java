@@ -12,7 +12,6 @@ import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Position;
 import bwapi.Race;
-import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
@@ -36,6 +35,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		DONE
 	};
 	protected State state;
+	private State prevState;
 
 	public MakeSupply() {
 		super();
@@ -51,6 +51,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		//       supply creation agents (?)
 
 		state = State.START;
+		prevState = null;
 
 		// first need a worker to build the depot it will be "booked temporarily"
 		// so that the "next in line" consumer will already have it
@@ -82,27 +83,29 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	public void update() {
 		super.update();
 
-		System.out.println("SUPPLY : state = "+ state);
+		if (prevState != state) {
+			System.out.println("SUPPLY : state = "+ state);
+			prevState = state;
+		}
 
 		switch (state) {
 			case START:
 				break;
 			case READY:
 			case MOVING:
-				TilePosition tp = worker.getTilePosition();
-
-				if (AI.getGame().canBuildHere(worker, tp, supplyType)) {
+				if (AI.getGame().canBuildHere(worker, worker.getTilePosition(), supplyType)) {
 					// when moving try to find a place where a supply structure can be built
 					AI.say("found buildable site for new supply");
-					if (worker.build(tp, supplyType)) {
+
+					if (worker.build(worker.getTilePosition(), supplyType)) {
 						// ok building started!!
 						AI.say("building placed for building...");
 						Resources.getInstance().unreserve(this);
 						state = State.BUILDING;
 					}
-				}
-				else {
-					worker.move(pos);
+					else {
+						AI.say("cannot build supply here...");
+					}
 				}
 
 				break;
@@ -128,12 +131,6 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 				freeWorker();
 				break;
 		}
-
-		if (pos != null && worker != null && supply == null) {
-			if (!worker.isConstructing()) {
-
-			}
-		}
 	}
 
 	@Override
@@ -152,12 +149,13 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 				// assign worker
 				this.worker = unit;
 
-				// force unit to patrol to choke
+				// force unit to move to choke
 				Chokepoint cp = BWTA.getNearestChokepoint(unit.getPosition());
 				this.pos = new Position(cp.getCenter().getX(), cp.getCenter().getY());
 
 				System.out.println("SUPPLY : Moving worker #"+ unit.getID() +" to choke point!");
 				worker.move(pos);
+				state = State.MOVING;
 
 				return true;
 			}
@@ -196,6 +194,9 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	@Override
 	public void onUnitCreate(Unit unit) {
 		//
+		if (unit.getBuildUnit() == worker) {
+			//
+		}
 	}
 
 	@Override
@@ -223,6 +224,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			this.state = State.DONE;
 		}
 	}
+
 
 	protected void freeWorker() {
 		// liberate worker for other consumers to reclaim it
