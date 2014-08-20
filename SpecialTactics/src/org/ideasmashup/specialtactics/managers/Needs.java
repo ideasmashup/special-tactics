@@ -103,7 +103,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 			Needs.Types[] ts = n.getTypes();
 
 		}
-		return count;
+		return false; //count;
 	}
 
 	public void add(Need need, Consumer owner) {
