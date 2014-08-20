@@ -78,6 +78,34 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		return instance;
 	}
 
+	public int count(Needs.Types needType) {
+		return needs.get(needType).size();
+	}
+
+	public boolean contains(Needs.Types needType) {
+		return !needs.get(needType).isEmpty();
+	}
+
+	public int count(Needs.Types needType, Units.Types unitType) {
+		List<Need> ln = needs.get(needType);
+		int count = 0;
+
+		for (Need n : ln) {
+			Needs.Types[] ts = n.getTypes();
+
+		}
+		return count;
+	}
+
+	public boolean contains(Needs.Types needType, Units.Types unitType) {
+		List<Need> ln = needs.get(needType);
+		for (Need n : ln) {
+			Needs.Types[] ts = n.getTypes();
+
+		}
+		return count;
+	}
+
 	public void add(Need need, Consumer owner) {
 		consumers.put(need, owner);
 
