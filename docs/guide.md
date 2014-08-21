@@ -45,6 +45,7 @@ This wiki is a draft, please improve and fix as you see fit so that information 
         - Ferry-op
         - Arbiter-op
 5. Achievements
+    - [Experiments](achievements/experiments.md)
     - Replays
     - Pimpest-plays
     - Rankings history
