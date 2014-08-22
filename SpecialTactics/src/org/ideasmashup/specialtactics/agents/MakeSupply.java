@@ -12,6 +12,7 @@ import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Position;
 import bwapi.Race;
+import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
@@ -93,11 +94,13 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 				break;
 			case READY:
 			case MOVING:
-				if (AI.getGame().canBuildHere(worker, worker.getTilePosition(), supplyType)) {
+				TilePosition tp = worker.getTilePosition();
+
+				if (AI.getGame().canBuildHere(worker, tp, supplyType)) {
 					// when moving try to find a place where a supply structure can be built
 					AI.say("found buildable site for new supply");
 
-					if (worker.build(worker.getTilePosition(), supplyType)) {
+					if (worker.build(tp, supplyType)) {
 						// ok building started!!
 						AI.say("building placed for building...");
 						Resources.getInstance().unreserve(this);
