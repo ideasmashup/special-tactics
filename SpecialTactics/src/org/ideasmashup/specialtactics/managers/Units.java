@@ -225,6 +225,14 @@ public class Units {
 			return null;
 		}
 
+		public boolean contains(UnitType ut) {
+			UnitType[] uts = get(AI.getPlayer().getRace());
+			for (UnitType u : uts) {
+				if (ut == u) return true;
+			}
+			return false;
+		}
+
 		public boolean is(Unit unit) {
 			for (int i=0; i<protoss.length; i++) {
 				if (protoss[i] == unit.getType()) return true;
