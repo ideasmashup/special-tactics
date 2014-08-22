@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.needs;
 
+import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Needs.Types;
 
@@ -8,20 +9,20 @@ public class NeedSupply extends Need {
 	protected int supply;
 	protected final Needs.Types[] types;
 
-	public NeedSupply(int supply) {
-		super();
+	public NeedSupply(Consumer owner, int supply) {
+		super(owner);
 		this.types = new Types[]{Needs.Types.SUPPLY};
 		this.supply = supply;
 	}
 
-	public NeedSupply(int supply, float priority) {
-		super(priority);
+	public NeedSupply(Consumer owner, int supply, float priority) {
+		super(owner, priority);
 		this.types = new Types[]{Needs.Types.SUPPLY};
 		this.supply = supply;
 	}
 
-	public NeedSupply(int supply, float priority, Needs.Modifiers modifiers) {
-		super(priority, modifiers);
+	public NeedSupply(Consumer owner, int supply, float priority, Needs.Modifiers modifiers) {
+		super(owner, priority, modifiers);
 		this.types = new Types[]{Needs.Types.SUPPLY};
 		this.supply = supply;
 	}

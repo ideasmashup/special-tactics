@@ -57,7 +57,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		// first need a worker to build the depot it will be "booked temporarily"
 		// so that the "next in line" consumer will already have it
 		System.out.println("SUPPLY : Requested next worker for supply building");
-		Needs.getInstance().add(new NeedUnit(Units.Types.WORKERS.getUnitType(), 0), this);
+		Needs.getInstance().add(new NeedUnit(this, Units.Types.WORKERS.getUnitType(), 0));
 
 		// then we must "reserve" 100 minerals to be able to build the supply
 		// FIXME ugly workaround to prevent minerals and gas for the pylons/dpot
@@ -68,10 +68,10 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		Resources.getInstance().reserveGas(supplyType.gasPrice(), this);
 
 		System.out.println("SUPPLY : Requested ressources for supply building");
-		Needs.getInstance().add(new NeedResources(
+		Needs.getInstance().add(new NeedResources(this,
 			Units.Types.SUPPLY.getUnitType().mineralPrice(),
 			Units.Types.SUPPLY.getUnitType().gasPrice()
-		), this);
+		));
 
 		// auto-register agent
 		Agents.getInstance().add(this);

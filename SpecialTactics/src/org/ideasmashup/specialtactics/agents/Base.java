@@ -32,28 +32,6 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 		// register itself to units events, resources events
 		Units.getInstance().addListener(this);
 		Resources.getInstance().addListener(this);
-
-		initNeeds();
-		plugNeeds();
-	}
-
-	protected void initNeeds() {
-		// mineral patch needs two workers (to be assigned as miners "servants")
-		// priority is defined based on distance from nearest base location
-
-		// FIXME should invert distance (more distance => lower priority)
-		float priority = bindee.getDistance(BWTA.getNearestBaseLocation(bindee.getPosition()).getPosition());
-
-		this.needs.add(new NeedUnit(servantsType.getUnitType(), priority));
-		this.needs.add(new NeedUnit(servantsType.getUnitType(), priority));
-	}
-
-	protected void plugNeeds() {
-		for (Need need : needs) {
-			if (!need.isSatisfied()) {
-				Needs.getInstance().add(need, this);
-			}
-		}
 	}
 
 	@Override
@@ -72,20 +50,7 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 
 	@Override
 	public boolean fillNeeds(Object offer) {
-		// basic units building
-
-		if (this.bindee.isTraining()) {
-			// already training unit, do nothing because we don't queue thanks to
-			// AI insane APMs
-		}
-		else if (this.bindee.isIdle()) {
-			// not doing anything let's see if we can build something
-
-			// TODO replace with prioritized Needs collection (?)
-			if (Resources.getInstance().getMinerals() >= 50) {
-				bindee.train(Units.Types.WORKERS.getUnitType());
-			}
-		}
+		// typical Base needs are minerals and supply to produce workers
 
 		return false;
 	}
@@ -147,7 +112,6 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 	@Override
 	public void onResourcesChange(int minerals, int gas) {
 		//System.out.println("base onResourcesChange("+minerals+")");
-
 		// basic units building
 		if (this.bindee.isTraining()) {
 			// already training unit, do nothing because we don't queue thanks to

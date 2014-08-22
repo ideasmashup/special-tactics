@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.needs;
 
+import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.managers.Needs;
 
 
@@ -8,6 +9,7 @@ public abstract class Need {
 	protected boolean isSatisfied;
 	protected float priority;
 	protected Needs.Modifiers modifiers;
+	protected Consumer owner;
 
 	// preset priorities levels
 	public static float CRITICAL = -Float.MAX_VALUE;
@@ -20,21 +22,26 @@ public abstract class Need {
 	public static float LOWEST   =  888f;
 	public static float USELESS  =  Float.MAX_VALUE;
 
-	public Need() {
+	public Need(Consumer owner) {
+		this.owner = owner;
 		this.isSatisfied = false;
 		this.priority = NORMAL;
 		this.modifiers = Needs.Modifiers.IS_NORMAL;
 	}
 
-	public Need(float priority) {
-		this();
+	public Need(Consumer owner, float priority) {
+		this(owner);
 		this.priority = priority;
 	}
 
-	public Need(float priority, Needs.Modifiers modifier) {
-		this();
+	public Need(Consumer owner, float priority, Needs.Modifiers modifier) {
+		this(owner);
 		this.priority = priority;
 		this.modifiers = modifier;
+	}
+
+	public Consumer getOwner() {
+		return this.owner;
 	}
 
 	public boolean isSatisfied() {

@@ -39,14 +39,14 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 	protected void initNeeds(float priority) {
 		// we only need one worker to build the structure and the correct
 		// amount of minerals
-		this.needs.add(new NeedUnit(servantsType.getUnitType(), priority));
-		this.needs.add(new NeedResources(structureType.mineralPrice(), structureType.gasPrice(), priority));
+		this.needs.add(new NeedUnit(this, servantsType.getUnitType(), priority));
+		this.needs.add(new NeedResources(this, structureType.mineralPrice(), structureType.gasPrice(), priority));
 	}
 
 	protected void plugNeeds() {
 		for (Need need : needs) {
 			if (!need.isSatisfied()) {
-				Needs.getInstance().add(need, this);
+				Needs.getInstance().add(need);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.needs;
 
+import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Needs.Types;
 
@@ -11,20 +12,20 @@ public class NeedUnit extends Need {
 	protected UnitType unittype;
 	protected final Types[] types;
 
-	public NeedUnit(UnitType type) {
-		super();
+	public NeedUnit(Consumer owner, UnitType type) {
+		super(owner);
 		this.types = new Types[]{Needs.Types.UNIT};
 		this.unittype = type;
 	}
 
-	public NeedUnit(UnitType type, float priority) {
-		super(priority);
+	public NeedUnit(Consumer owner, UnitType type, float priority) {
+		super(owner, priority);
 		this.types = new Types[]{Needs.Types.UNIT};
 		this.unittype = type;
 	}
 
-	public NeedUnit(UnitType type, float priority, Needs.Modifiers modifiers) {
-		super(priority, modifiers);
+	public NeedUnit(Consumer owner, UnitType type, float priority, Needs.Modifiers modifiers) {
+		super(owner, priority, modifiers);
 		this.types = new Types[]{Needs.Types.UNIT};
 		this.unittype = type;
 	}

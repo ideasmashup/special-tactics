@@ -1,5 +1,6 @@
 package org.ideasmashup.specialtactics.needs;
 
+import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Needs.Types;
 
@@ -10,22 +11,22 @@ public class NeedResources extends Need {
 	protected int gas;
 	protected final Needs.Types[] types;
 
-	public NeedResources(int minerals, int gas) {
-		super();
+	public NeedResources(Consumer owner, int minerals, int gas) {
+		super(owner);
 		this.types = new Types[]{Needs.Types.RESOURCES};
 		this.minerals = minerals;
 		this.gas = gas;
 	}
 
-	public NeedResources(int minerals, int gas, float priority) {
-		super(priority);
+	public NeedResources(Consumer owner, int minerals, int gas, float priority) {
+		super(owner, priority);
 		this.types = new Types[]{Needs.Types.RESOURCES};
 		this.minerals = minerals;
 		this.gas = gas;
 	}
 
-	public NeedResources(int minerals, int gas, float priority, Needs.Modifiers modifiers) {
-		super(priority, modifiers);
+	public NeedResources(Consumer owner, int minerals, int gas, float priority, Needs.Modifiers modifiers) {
+		super(owner, priority, modifiers);
 		this.types = new Types[]{Needs.Types.RESOURCES};
 		this.minerals = minerals;
 		this.gas = gas;

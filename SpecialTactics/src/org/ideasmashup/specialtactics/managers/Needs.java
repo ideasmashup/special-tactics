@@ -48,7 +48,6 @@ import bwapi.Unit;
 public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	protected Map<Types, LinkedList<Need>> needs;
-	protected Map<Need, Consumer> consumers;
 
 	// FIXME replace by real "singleton" pattern when debugging over!
 	protected static Needs instance = null;
@@ -59,8 +58,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 		needs.put(Types.RESOURCES, new LinkedList<Need>());
 		needs.put(Types.UNIT, new LinkedList<Need>());
-
-		consumers = new HashMap<Need, Consumer>();
 	}
 
 	public static Needs getInstance() {
@@ -106,11 +103,9 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		return false; //count;
 	}
 
-	public void add(Need need, Consumer owner) {
-		consumers.put(need, owner);
-
+	public void add(Need need) {
 		for (Types type : need.getTypes()) {
-			System.out.println("  - added "+ type.name() +" NEED for "+ owner.toString());
+			System.out.println("  - added "+ type.name() +" NEED for "+ need.getOwner().toString());
 
 			// sorted insert based on priority (highest is last)
 			LinkedList<Need> llist = needs.get(type);
@@ -142,10 +137,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	}
 
 	public void remove(Need need) {
-		Consumer owner = consumers.remove(need);
-
 		for (Types type : need.getTypes()) {
-			System.out.println("  - removed "+ type.name() +" NEED for "+ owner.toString() +" (p="+ need.getPriority() +")");
+			System.out.println("  - removed "+ type.name() +" NEED for "+ need.getOwner().toString() +" (p="+ need.getPriority() +")");
 			needs.get(type).remove(need);
 
 			System.out.println("  - total "+ type.name() +" needs = "+ needs.get(type).size());
@@ -201,7 +194,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		List<Need> unitsNeeds = needs.get(Types.UNIT);
 		for (Need need : unitsNeeds) {
 			if (need.canReceive(unit)) {
-				Consumer consumer = consumers.get(need);
+				Consumer consumer = need.getOwner();
 				if (consumer.fillNeeds(unit)) {
 					System.out.println("  - consumer satisfied !");
 
@@ -226,7 +219,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 						// modifiers, etc
 
 						remove(need);
-						add(need, consumer);
+						add(need);
 						break;
 					}
 					break;
@@ -246,7 +239,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.get(RESOURCES).size() = "+ needs.get(Types.RESOURCES).size());
 
 		for (Need need : needs.get(Types.RESOURCES)) {
-			Consumer consumer = consumers.get(need);
+			Consumer consumer = need.getOwner();
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - ressources consumer satisfied !");
 
@@ -271,7 +264,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					// modifiers, etc
 
 					remove(need);
-					add(need, consumer);
+					add(need);
 					break;
 				}
 				break;
@@ -286,7 +279,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.get(SUPPLY).size() = "+ needs.get(Types.SUPPLY).size());
 
 		for (Need need : needs.get(Types.SUPPLY)) {
-			Consumer consumer = consumers.get(need);
+			Consumer consumer = need.getOwner();
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - supply consumer satisfied !");
 
@@ -311,7 +304,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					// modifiers, etc
 
 					remove(need);
-					add(need, consumer);
+					add(need);
 					break;
 				}
 			}
