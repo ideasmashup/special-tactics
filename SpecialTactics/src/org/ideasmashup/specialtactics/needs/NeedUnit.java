@@ -29,6 +29,10 @@ public class NeedUnit extends Need {
 		this.unittype = type;
 	}
 
+	public UnitType getUnitType() {
+		return unittype;
+	}
+
 	@Override
 	public Types[] getTypes() {
 		return types;
