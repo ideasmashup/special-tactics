@@ -13,6 +13,9 @@ import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
+import org.ideasmashup.specialtactics.needs.NeedResources;
+import org.ideasmashup.specialtactics.needs.NeedSupply;
+import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Unit;
 
@@ -48,17 +51,17 @@ import bwapi.Unit;
  */
 public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
-	protected Map<Types, LinkedList<Need>> needs;
+	protected LinkedList<Need> nUnits;
+	protected LinkedList<Need> nResources;
+	protected LinkedList<Need> nSupplies;
 
-	// FIXME replace by real "singleton" pattern when debugging over!
 	protected static Needs instance = null;
 
 	protected Needs() {
 		// init local fields
-		needs = new HashMap<Types, LinkedList<Need>>();
-
-		needs.put(Types.RESOURCES, new LinkedList<Need>());
-		needs.put(Types.UNIT, new LinkedList<Need>());
+		this.nUnits = new LinkedList<Need>();
+		this.nResources = new LinkedList<Need>();
+		this.nSupplies = new LinkedList<Need>();
 	}
 
 	public static Needs getInstance() {
@@ -76,73 +79,71 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		return instance;
 	}
 
-	public int count(Needs.Types needType) {
-		return needs.get(needType).size();
-	}
+	protected void sortedInsert(LinkedList<Need> llist, Need need) {
+		// sorted insert based on priority (highest is last)
 
-	public boolean contains(Needs.Types needType) {
-		return !needs.get(needType).isEmpty();
-	}
-
-	public int count(Needs.Types needType, Units.Types unitType) {
-		List<Need> ln = needs.get(needType);
-		int count = 0;
-
-		for (Need n : ln) {
-			Needs.Types[] ts = n.getTypes();
-
+		if (llist.size() == 0) {
+			llist.add(need);
 		}
-		return count;
-	}
-
-	public boolean contains(Needs.Types needType, Units.Types unitType) {
-		List<Need> ln = needs.get(needType);
-		for (Need n : ln) {
-			Needs.Types[] ts = n.getTypes();
-
+		else if (need.getPriority() == Need.CRITICAL
+				|| llist.get(0).getPriority() > need.getPriority()) {
+			// first place for CRITICAL or need with smallest value
+			llist.add(0, need);
 		}
-		return false; //count;
+		else if (need.getPriority() == Need.USELESS
+				|| llist.get(llist.size() - 1).getPriority() < need
+				.getPriority()) {
+			// last place for USELESS or need with biggest value
+			llist.add(llist.size(), need);
+		}
+		else {
+			int i = 0;
+			while (llist.get(i).getPriority() < need.getPriority()) {
+				i++;
+			}
+			llist.add(i, need);
+		}
 	}
 
 	public void add(Need need) {
-		for (Types type : need.getTypes()) {
-			System.out.println("  - added "+ type.name() +" NEED for "+ need.getOwner().toString());
-
-			// sorted insert based on priority (highest is last)
-			LinkedList<Need> llist = needs.get(type);
-
-			if (llist.size() == 0) {
-				llist.add(need);
-			}
-			else if (need.getPriority() == Need.CRITICAL
-					|| llist.get(0).getPriority() > need.getPriority()) {
-				// first place for CRITICAL or need with smallest value
-				llist.add(0, need);
-			}
-			else if (need.getPriority() == Need.USELESS
-					|| llist.get(llist.size() - 1).getPriority() < need
-					.getPriority()) {
-				// last place for USELESS or need with biggest value
-				llist.add(llist.size(), need);
-			}
-			else {
-				int i = 0;
-				while (llist.get(i).getPriority() < need.getPriority()) {
-					i++;
-				}
-				llist.add(i, need);
-			}
-
-			System.out.println("  - total "+ type.name() +" needs = "+ llist.size());
+		if (need instanceof NeedUnit) {
+			sortedInsert(this.nUnits, need);
+			System.out.println("  - added NeedUnit for "+ need.getOwner().toString());
+			System.out.println("  - total NeedUnit = "+ nUnits.size());
+		}
+		else if (need instanceof NeedResources) {
+			sortedInsert(this.nResources, need);
+			System.out.println("  - added NeedResources for "+ need.getOwner().toString());
+			System.out.println("  - total NeedResources = "+ nResources.size());
+		}
+		else if (need instanceof NeedSupply) {
+			sortedInsert(this.nSupplies, need);
+			System.out.println("  - added NeedSupply for "+ need.getOwner().toString());
+			System.out.println("  - total NeedSupply now = "+ nSupplies.size());
+		}
+		else {
+			System.err.println("  - not added because of unknown Need type : "+ need);
 		}
 	}
 
 	public void remove(Need need) {
-		for (Types type : need.getTypes()) {
-			System.out.println("  - removed "+ type.name() +" NEED for "+ need.getOwner().toString() +" (p="+ need.getPriority() +")");
-			needs.get(type).remove(need);
-
-			System.out.println("  - total "+ type.name() +" needs = "+ needs.get(type).size());
+		if (need instanceof NeedUnit) {
+			this.nUnits.remove(need);
+			System.out.println("  - removed NeedUnit for "+ need.getOwner().toString());
+			System.out.println("  - total NeedUnit now = "+ nUnits.size());
+		}
+		else if (need instanceof NeedResources) {
+			this.nResources.remove(need);
+			System.out.println("  - removed NeedResources for "+ need.getOwner().toString());
+			System.out.println("  - total NeedResources now = "+ nResources.size());
+		}
+		else if (need instanceof NeedSupply) {
+			this.nSupplies.remove(need);
+			System.out.println("  - removed NeedSupply for "+ need.getOwner().toString());
+			System.out.println("  - total NeedSupply now = "+ nSupplies.size());
+		}
+		else {
+			System.err.println("  - not removed because of unknown Need type : "+ need);
 		}
 	}
 
@@ -192,8 +193,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.onUnitComplete()");
 		//System.out.println("Needs.get(UNIT).size() = "+ needs.get(Types.UNIT).size());
 
-		List<Need> unitsNeeds = needs.get(Types.UNIT);
-		for (Need need : unitsNeeds) {
+		for (Need need : nUnits) {
 			if (need.canReceive(unit)) {
 				Consumer consumer = need.getOwner();
 				if (consumer.fillNeeds(unit)) {
@@ -228,7 +228,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 			}
 		}
 
-		if (unitsNeeds.size() == 0) {
+		if (nUnits.size() == 0) {
 			// no more needs...
 			AI.say("All mineral patchs say they are satisfied...");
 		}
@@ -239,7 +239,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.onRessourcesChange()");
 		//System.out.println("Needs.get(RESOURCES).size() = "+ needs.get(Types.RESOURCES).size());
 
-		for (Need need : needs.get(Types.RESOURCES)) {
+		for (Need need : nResources) {
 			Consumer consumer = need.getOwner();
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - ressources consumer satisfied !");
@@ -279,7 +279,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.onSupplyChange()");
 		//System.out.println("Needs.get(SUPPLY).size() = "+ needs.get(Types.SUPPLY).size());
 
-		for (Need need : needs.get(Types.SUPPLY)) {
+		for (Need need : nSupplies) {
 			Consumer consumer = need.getOwner();
 			if (consumer.fillNeeds(null)) {
 				System.out.println("  - supply consumer satisfied !");
@@ -325,7 +325,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		return this.filter;
 	}
 
-	public static enum Types {
+	@Deprecated
+	public static enum Types {// n instanceof NeedUnit | NeedResources...
 		UNIT,
 		RESOURCES,
 		SUPPLY,
