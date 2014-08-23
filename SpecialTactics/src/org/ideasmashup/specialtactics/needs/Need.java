@@ -64,8 +64,6 @@ public abstract class Need {
 		return modifiers;
 	}
 
-	public abstract Needs.Types[] getTypes();
-
 	public abstract boolean canReceive(Object offer);
 
 }
