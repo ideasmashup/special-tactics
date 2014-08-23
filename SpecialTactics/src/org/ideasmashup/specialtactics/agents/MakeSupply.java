@@ -6,6 +6,7 @@ import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Units;
+import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
@@ -236,5 +237,17 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			Units.getInstance().onUnitComplete(worker);
 		}
 		this.worker = null;
+	}
+
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Unit unit) {
+			return unit == worker;
+		};
+	};
+
+	@Override
+	public Filter getFilter() {
+		return this.filter;
 	}
 }
