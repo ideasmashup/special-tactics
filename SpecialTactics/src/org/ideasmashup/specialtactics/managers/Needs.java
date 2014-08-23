@@ -11,6 +11,7 @@ import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
+import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
 
 import bwapi.Unit;
@@ -309,6 +310,19 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 				}
 			}
 		}
+	}
+
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Unit unit) {
+			// needs manager listens to all units events so allow all
+			return true;
+		};
+	};
+
+	@Override
+	public Filter getFilter() {
+		return this.filter;
 	}
 
 	public static enum Types {
