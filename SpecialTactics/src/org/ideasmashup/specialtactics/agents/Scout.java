@@ -10,6 +10,7 @@ import java.util.Queue;
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Units;
+import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.managers.Units.Types;
 
 import bwapi.Position;
@@ -248,4 +249,16 @@ public class Scout extends UnitAgent implements UnitListener {
 
 	}
 
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Unit unit) {
+			// scout listens to all units events so allow all units
+			return true;
+		};
+	};
+
+	@Override
+	public Filter getFilter() {
+		return this.filter;
+	}
 }
