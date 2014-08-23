@@ -263,56 +263,64 @@ public class Units {
 	public void onUnitDiscover(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitDiscover(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitDiscover(unit);
 		}
 	}
 
 	public void onUnitEvade(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitEvade(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitEvade(unit);
 		}
 	}
 
 	public void onUnitShow(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitShow(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitShow(unit);
 		}
 	}
 
 	public void onUnitHide(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitHide(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitHide(unit);
 		}
 	}
 
 	public void onUnitCreate(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitCreate(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitCreate(unit);
 		}
 	}
 
 	public void onUnitDestroy(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitDestroy(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitDestroy(unit);
 		}
 	}
 
 	public void onUnitMorph(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitMorph(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitMorph(unit);
 		}
 	}
 
 	public void onUnitRenegade(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitRenegade(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitRenegade(unit);
 		}
 	}
 
@@ -330,7 +338,8 @@ public class Units {
 	public void onUnitComplete(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
-			ls.onUnitComplete(unit);
+			if (ls.getFilter().allow(unit))
+				ls.onUnitComplete(unit);
 		}
 	}
 
