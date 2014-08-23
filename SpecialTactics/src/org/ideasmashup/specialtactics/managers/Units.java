@@ -339,4 +339,8 @@ public class Units {
 	public void onUnitAttacked(Unit unit) {
 		//
 	}
+
+	public static interface Filter{
+		public abstract boolean allow(Unit unit);
+	}
 }
