@@ -1,5 +1,7 @@
 package org.ideasmashup.specialtactics.listeners;
 
+import org.ideasmashup.specialtactics.managers.Units;
+
 import bwapi.Unit;
 
 public interface UnitListener {
@@ -13,5 +15,7 @@ public interface UnitListener {
 	public void onUnitMorph(Unit unit);
 	public void onUnitRenegade(Unit unit);
 	public void onUnitComplete(Unit unit);
+
+	public Units.Filter getFilter();
 
 }
