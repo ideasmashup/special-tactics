@@ -8,6 +8,7 @@ import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Units;
+import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
@@ -125,5 +126,17 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 				bindee.train(Units.Types.WORKERS.getUnitType());
 			}
 		}
+	}
+
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Unit unit) {
+			return unit == bindee;
+		};
+	};
+
+	@Override
+	public Filter getFilter() {
+		return this.filter;
 	}
 }
