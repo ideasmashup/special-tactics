@@ -34,4 +34,13 @@ public class NeedResources extends Need {
 		// is ignored (and generally "null" except for special cases)
 		return true;
 	}
+
+	public int getMinerals() {
+		return minerals;
+	}
+
+	public int getGas() {
+		return gas;
+	}
+
 }
