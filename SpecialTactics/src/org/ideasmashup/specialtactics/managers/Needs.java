@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Consumer;
+import org.ideasmashup.specialtactics.agents.Producer;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
@@ -55,6 +56,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	protected LinkedList<Need> nResources;
 	protected LinkedList<Need> nSupplies;
 
+	protected LinkedList<Producer> producers;
+
 	protected static Needs instance = null;
 
 	protected Needs() {
@@ -62,6 +65,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		this.nUnits = new LinkedList<Need>();
 		this.nResources = new LinkedList<Need>();
 		this.nSupplies = new LinkedList<Need>();
+
+		this.producers = new LinkedList<Producer>();
 	}
 
 	public static Needs getInstance() {
@@ -170,6 +175,15 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	@Override
 	public void onUnitCreate(Unit unit) {
 		//
+	}
+
+
+	public void add(Producer producer) {
+		producers.add(producer);
+	}
+
+	public void remove(Producer producer) {
+		producers.remove(producer);
 	}
 
 	@Override
