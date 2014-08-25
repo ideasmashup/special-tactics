@@ -73,8 +73,14 @@ public class Supplies implements Consumer {
 	}
 
 	public int getSupply(Consumer owner) {
-		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - reservedSupplyTotal
-			+ reservedSupply.get(owner);
+		// public supplies + private supplies for this consumer
+		int supply = AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - reservedSupplyTotal;
+
+		if (reservedSupply.containsKey(owner)) {
+			supply += reservedSupply.get(owner);
+		}
+
+		return supply;
 	}
 
 	public void addListener(SupplyListener ls) {
