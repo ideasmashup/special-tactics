@@ -1,9 +1,6 @@
 package org.ideasmashup.specialtactics.managers;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Consumer;
@@ -19,6 +16,7 @@ import org.ideasmashup.specialtactics.needs.NeedSupply;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Unit;
+import bwapi.UnitType;
 
 /**
  * <h3>Global needs manager.</h3>
@@ -152,6 +150,14 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 	}
 
+	public void add(Producer producer) {
+		producers.add(producer);
+	}
+
+	public void remove(Producer producer) {
+		producers.remove(producer);
+	}
+
 	@Override
 	public void onUnitDiscover(Unit unit) {
 		//
@@ -175,15 +181,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	@Override
 	public void onUnitCreate(Unit unit) {
 		//
-	}
-
-
-	public void add(Producer producer) {
-		producers.add(producer);
-	}
-
-	public void remove(Producer producer) {
-		producers.remove(producer);
 	}
 
 	@Override
