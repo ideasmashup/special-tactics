@@ -1,28 +1,41 @@
 package org.ideasmashup.specialtactics.agents;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
+import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
+import org.ideasmashup.specialtactics.needs.NeedResources;
+import org.ideasmashup.specialtactics.needs.NeedSupply;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Unit;
-import bwta.BWTA;
+import bwapi.UnitType;
 
 public class Base extends UnitAgent implements Producer, Consumer, UnitListener {
 
-	protected List<Need> needs; // needs 50 minerals
+	protected LinkedList<NeedUnit> consumers;
+	protected List<Need> needs; // cached copy of consumers needs
 
+	protected boolean hasSupply;
+	protected boolean hasResources;
+
+	// current
 	public Base(Unit base) {
 		super(base);
 
-		this.servantsType = Units.Types.WORKERS;
+		this.consumers = new LinkedList<NeedUnit>();
+		this.needs = new LinkedList<Need>();
+
+		this.hasResources = false;
+		this.hasSupply = false;
+
 		this.init();
 	}
 
@@ -30,9 +43,9 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		// look for surrounding mineral patches
 		// assign them MineralPatch agents asap ?
 
-		// register itself to units events, resources events
+		// register itself to units events
 		Units.getInstance().addListener(this);
-		Resources.getInstance().addListener(this);
+		Needs.getInstance().add(this);
 	}
 
 	@Override
@@ -52,20 +65,70 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	@Override
 	public boolean fillNeeds(Object offer) {
 		// typical Base needs are minerals and supply to produce workers
+		// these needs are filled with a "null" offer
 
+		if (this.bindee.isTraining()) {
+			// already training unit, do nothing to save resources
+		}
+		else if (this.bindee.isIdle()) {
+			// not doing anything let's see if we can build something
+			Resources res = Resources.getInstance();
+			Supplies sup = Supplies.getInstance();
+			NeedUnit nu = consumers.peekFirst();
+			UnitType ut = nu.getUnitType();
+			boolean needFilled = false;
+
+			System.out.println("base fillNeeds("+ offer +")");
+
+			if (!hasSupply && sup.getSupply(this) >= ut.supplyRequired()) {
+				hasSupply = true;
+				needFilled = true;
+
+			}
+
+			if (!hasResources
+				&& res.getMinerals(this) >= ut.mineralPrice()
+				&& res.getGas(this) >= ut.gasPrice()) {
+
+				hasResources = true;
+				needFilled = true;
+			}
+
+			if (hasSupply && hasResources) {
+
+				System.out.println("  - has enough supply, resources, attempt building worker...");
+
+				// can build unit (worker) for first consumer
+				boolean building = bindee.train(ut);
+
+				if (building) {
+					System.out.println("    - SUCCESS : worker building, reseting for next worker request");
+
+					// reset flags for next worker building request
+					hasSupply = false;
+					hasResources = false;
+
+					// can release all reserved resources
+					res.unreserve(nu.getOwner());
+					sup.unreserveSupply(nu.getOwner());
+
+					// and remove consumer
+					consumers.removeFirst();
+				}
+				else {
+					// cannot build... ???
+					System.err.println("ERROR: base couldn't build worker, will try again later...");
+				}
+			}
+			else {
+				// if one "new" (pending) need has been satisfied return true
+				System.out.println(" - some needs still missing, return false");
+				return needFilled;
+			}
+		}
+
+		// no adequate offer yet (waiting for next offer to be satisfying)
 		return false;
-	}
-
-	@Override
-	public void onUnitDiscover(Unit unit) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onUnitEvade(Unit unit) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -102,26 +165,8 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onResourcesChange(int minerals, int gas) {
-		//System.out.println("base onResourcesChange("+minerals+")");
-		// basic units building
-		if (this.bindee.isTraining()) {
-			// already training unit, do nothing because we don't queue thanks to
-			// AI insane APMs
-		}
-		else if (this.bindee.isIdle()) {
-			// not doing anything let's see if we can build something
-
-			// TODO replace with prioritized Needs collection (?)
-			if (minerals >= 50) {
-				bindee.train(Units.Types.WORKERS.getUnitType());
-			}
-		}
+		// this base has just completed (maybe useful for zerg, maybe useful for
+		// base rebuilding if we allow the same agent to persist across rebuilds
 	}
 
 	protected Filter filter = new Filter() {
@@ -141,6 +186,10 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	 */
 	@Override
 	public boolean canFill(Need need) {
+		if (need instanceof NeedUnit) {
+			NeedUnit nu = (NeedUnit) need;
+			return Units.Types.WORKERS.contains(nu.getUnitType());
+		}
 		return false;
 	}
 
@@ -149,6 +198,16 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	 */
 	@Override
 	public void addConsumer(Consumer consumer, Need need) {
+		// add new consumer (a worker consumer)
+		NeedUnit uneed = (NeedUnit) need;
+		UnitType ut = uneed.getUnitType();
+
+		// add the corresponding supply and resources needs
+		Needs.getInstance().add(new NeedResources(this, ut.mineralPrice(), ut.gasPrice()));
+		Needs.getInstance().add(new NeedSupply(this, ut.supplyRequired()));
+
+		// add this consumer to the list
+		this.consumers.add(uneed);
 	}
 
 }
