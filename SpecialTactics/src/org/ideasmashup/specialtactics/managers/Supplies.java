@@ -126,6 +126,10 @@ public class Supplies {
 			// "real" supply running low, must create a new "supply provider" (e.g. supplier)
 			// unless there are already suppliers in action?
 
+			// no suppliers left alive, need to create a new one
+			// generic cross-race agent that creates a supply unit
+			suppliers.add(new MakeSupply());
+
 			// kill all suppliers that are inactive
 			List<Agent> zombies = new LinkedList<Agent>();
 			for (Agent supplier : suppliers) {
@@ -135,12 +139,6 @@ public class Supplies {
 			}
 			for (Agent zombie : zombies) {
 				suppliers.remove(zombie);
-			}
-
-			// no suppliers left alive, need to create a new one
-			if (suppliers.isEmpty()) {
-				// generic cross-race agent that creates a supply unit
-				suppliers.add(new MakeSupply());
 			}
 		}
 
