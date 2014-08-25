@@ -130,7 +130,7 @@ public class Resources {
 		//      his reserved amount asap?
 		int minerals =  AI.getPlayer().minerals() - reservedMineralsTotal;
 
-		if (reservedMinerals.containsKey(owner)) {
+		if (reservedMinerals.containsKey(owner) && consumers.getFirst() == owner) {
 			minerals += reservedMinerals.get(owner);
 		}
 
@@ -149,7 +149,7 @@ public class Resources {
 		//      his reserved amount asap?
 		int gas = AI.getPlayer().gas() - reservedGasTotal;
 
-		if (reservedGas.containsKey(owner)) {
+		if (reservedGas.containsKey(owner) && consumers.getFirst() == owner) {
 			gas += reservedGas.get(owner);
 		}
 
