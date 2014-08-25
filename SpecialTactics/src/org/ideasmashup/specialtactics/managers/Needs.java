@@ -313,13 +313,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		NeedResources need = (NeedResources) nResources.getFirst();
 		Resources res = Resources.getInstance();
 
-		// immediately reserve resources for this need's owner
 		Consumer owner = need.getOwner();
-		if (!res.hasReserved(owner)) {
-			res.reserveMinerals(need.getMinerals(), owner);
-			res.reserveGas(need.getGas(), owner);
-		}
-
 		int mRequired = need.getMinerals();
 		int gRequired = need.getGas();
 
@@ -374,11 +368,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		NeedSupply need = (NeedSupply) nSupplies.getFirst();
 		Supplies sup = Supplies.getInstance();
 
-		// immediately reserve supply for this need's owner
 		Consumer owner = need.getOwner();
-		if (sup.hasReserved(owner)) {
-			sup.reserveSupply(need.getSupply(), owner);
-		}
 
 		if (sup.getSupply(need.getOwner()) >= need.getSupply()) {
 			// this is the first supply need in the list
