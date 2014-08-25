@@ -12,6 +12,7 @@ import org.ideasmashup.specialtactics.listeners.UnitListener;
 import bwapi.Race;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwapi.UpgradeType;
 
 /**
  * Units collection and watcher.
@@ -330,6 +331,10 @@ public class Units {
 			protoss.add(new Requires(UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
 			// level 2 dependency (units)
 			protoss.add(new Requires(UnitType.Protoss_Zealot, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			// level 2 dependency (upgrades)
+			protoss.add(new Requires(UpgradeType.Protoss_Ground_Armor, UnitType.Protoss_Forge, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UpgradeType.Protoss_Ground_Weapons, UnitType.Protoss_Forge, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UpgradeType.Protoss_Plasma_Shields, UnitType.Protoss_Forge, UnitType.Protoss_Nexus));
 
 			// ----
 
@@ -339,6 +344,8 @@ public class Units {
 			protoss.add(new Requires(UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
 			// level 3 dependency (units)
 			protoss.add(new Requires(UnitType.Protoss_Dragoon, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			// level 3 dependency (upgrades)
+			protoss.add(new Requires(UpgradeType.Singularity_Charge, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
 
 			// ----
 
@@ -378,6 +385,11 @@ public class Units {
 			protoss.add(new Requires(UnitType.Protoss_Arbiter, UnitType.Protoss_Arbiter_Tribunal, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Fleet_Beacon, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
 		}
 
+		Requires(UpgradeType upgdtype, UnitType... requires) {
+			this.utype = upgdtype;
+			this.required = requires;
+		}
+
 		Requires(UnitType unittype, UnitType... requires) {
 			this.utype = unittype;
 			this.required = requires;
@@ -388,6 +400,10 @@ public class Units {
 
 		public UnitType getUnitType() {
 			return (utype instanceof UnitType)? (UnitType) utype : null;
+		}
+
+		public UpgradeType getUpgradeType() {
+			return (utype instanceof UpgradeType)? (UpgradeType) utype : null;
 		}
 
 		public UnitType[] getRequirements() {
@@ -413,6 +429,24 @@ public class Units {
 			return null;
 		}
 
+		public static UnitType[] getRequirementsFor(UpgradeType ut) {
+			if (ut.getRace() == Race.Protoss) {
+				for (Requires r : protoss) {
+					if (r.getUpgradeType() == ut) return r.getRequirements();
+				}
+			}
+			else if (ut.getRace() == Race.Terran) {
+				for (Requires r : terran) {
+					if (r.getUpgradeType() == ut) return r.getRequirements();
+				}
+			}
+			else if (ut.getRace() == Race.Zerg) {
+				for (Requires r : zerg) {
+					if (r.getUpgradeType() == ut) return r.getRequirements();
+				}
+			}
+			return null;
+		}
 	}
 
 	public void onUnitDiscover(Unit unit) {
