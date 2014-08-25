@@ -29,4 +29,8 @@ public class NeedSupply extends Need {
 		// is ignored (and generally "null" except for special cases)
 		return true;
 	}
+
+	public int getSupply() {
+		return supply;
+	}
 }
