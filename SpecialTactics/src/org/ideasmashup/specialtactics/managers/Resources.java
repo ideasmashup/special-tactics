@@ -50,17 +50,22 @@ public class Resources {
 		return reservedMinerals.containsKey(owner) || reservedGas.containsKey(owner);
 	}
 
+	protected void updateReservedMineralsTotal() {
+		Collection<Integer> rs = reservedMinerals.values();
+		int total = 0;
+		for (Integer r : rs) {
+			total += r;
+		}
+		this.reservedMineralsTotal = total;
+	}
+
 	public void reserveMinerals(int amount, Consumer owner) {
 		if (!reservedMinerals.containsKey(owner)) {
 			System.out.println("Resources reserved "+ amount +" minerals for "+ owner);
 			reservedMinerals.put(owner, amount);
 
-			Collection<Integer> rs = reservedMinerals.values();
-			int total = 0;
-			for (Integer r : rs) {
-				total += r;
-			}
-			this.reservedMineralsTotal = total;
+			updateReservedMineralsTotal();
+
 			if (!this.consumers.contains(owner)) {
 				this.consumers.addFirst(owner);
 			}
@@ -72,17 +77,22 @@ public class Resources {
 		}
 	}
 
+	protected void updateReservedGasTotal() {
+		Collection<Integer> rs = reservedGas.values();
+		int total = 0;
+		for (Integer r : rs) {
+			total += r;
+		}
+		this.reservedGasTotal = total;
+	}
+
 	public void reserveGas(int amount, Consumer owner) {
 		if (!reservedGas.containsKey(owner)) {
 			System.out.println("Resources reserved "+ amount +" gas for "+ owner);
 			reservedGas.put(owner, amount);
 
-			Collection<Integer> rs = reservedGas.values();
-			int total = 0;
-			for (Integer r : rs) {
-				total += r;
-			}
-			this.reservedGasTotal = total;
+			updateReservedGasTotal();
+
 			if (!this.consumers.contains(owner)) {
 				this.consumers.addFirst(owner);
 			}
@@ -100,6 +110,11 @@ public class Resources {
 		this.consumers.remove(owner);
 		this.reservedMinerals.remove(owner);
 		this.reservedGas.remove(owner);
+
+		updateReservedMineralsTotal();
+		updateReservedGasTotal();
+
+		onResourcesChange(getMinerals(), getGas());
 	}
 
 	public int getMinerals() {

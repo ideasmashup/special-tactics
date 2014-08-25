@@ -50,17 +50,22 @@ public class Supplies {
 		return reservedSupply.containsKey(owner);
 	}
 
+	protected void updateReservedSupply() {
+		Collection<Integer> rs = reservedSupply.values();
+		int total = 0;
+		for (Integer r : rs) {
+			total += r;
+		}
+		this.reservedSupplyTotal = total;
+	}
+
 	public void reserveSupply(int amount, Consumer owner) {
 		if (!reservedSupply.containsKey(owner)) {
 			System.out.println("Supplies reserved "+ amount +" supply for "+ owner);
 			reservedSupply.put(owner, amount);
 
-			Collection<Integer> rs = reservedSupply.values();
-			int total = 0;
-			for (Integer r : rs) {
-				total += r;
-			}
-			this.reservedSupplyTotal = total;
+			updateReservedSupply();
+
 			if (!this.consumers.contains(owner)) {
 				this.consumers.addFirst(owner);
 			}
@@ -76,6 +81,8 @@ public class Supplies {
 		System.out.println("Supplies unreserved allocated to "+ owner);
 		this.consumers.remove(owner);
 		this.reservedSupply.remove(owner);
+
+		updateReservedSupply();
 
 		onSupplyChange(getSupply());
 	}
