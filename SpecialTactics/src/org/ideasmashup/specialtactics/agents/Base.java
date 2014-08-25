@@ -84,6 +84,10 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 				hasSupply = true;
 				needFilled = true;
 
+				// lock supply for this worker
+				if (sup.hasReserved(this)) {
+					sup.reserveSupply(ut.supplyRequired(), this);
+				}
 			}
 
 			if (!hasResources
@@ -92,6 +96,12 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 
 				hasResources = true;
 				needFilled = true;
+
+				// lock resources for this worker
+				if (!res.hasReserved(this)) {
+					res.reserveMinerals(ut.mineralPrice(), this);
+					res.reserveGas(ut.gasPrice(), this);
+				}
 			}
 
 			if (hasSupply && hasResources) {
@@ -109,8 +119,8 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 					hasResources = false;
 
 					// can release all reserved resources
-					res.unreserve(nu.getOwner());
-					sup.unreserveSupply(nu.getOwner());
+					res.unreserve(this);
+					sup.unreserveSupply(this);
 
 					// and remove consumer
 					consumers.removeFirst();
