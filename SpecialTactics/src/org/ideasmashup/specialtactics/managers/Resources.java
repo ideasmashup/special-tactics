@@ -102,8 +102,13 @@ public class Resources {
 
 		// TODO maybe optimize this so that only the first in line can access
 		//      his reserved amount asap?
-		return AI.getPlayer().minerals() - reservedMineralsTotal
-			+ reservedMinerals.get(owner);
+		int minerals =  AI.getPlayer().minerals() - reservedMineralsTotal;
+
+		if (reservedMinerals.containsKey(owner)) {
+			minerals += reservedMinerals.get(owner);
+		}
+
+		return minerals;
 	}
 
 	public int getGas() {
@@ -116,8 +121,13 @@ public class Resources {
 
 		// TODO maybe optimize this so that only the first in line can access
 		//      his reserved amount asap?
-		return AI.getPlayer().gas() - reservedGasTotal
-			+ reservedGas.get(owner);
+		int gas = AI.getPlayer().gas() - reservedGasTotal;
+
+		if (reservedGas.containsKey(owner)) {
+			gas += reservedGas.get(owner);
+		}
+
+		return gas;
 	}
 
 	public void addListener(ResourcesListener ls) {
