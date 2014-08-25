@@ -1,8 +1,11 @@
 package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Agent;
@@ -20,11 +23,15 @@ public class Supplies implements Consumer {
 
 	// FIXME temporary hack to "reserve" resouces (must replace with async
 	//       needs-filling API
-	protected int lockedSupply = 0;
+	protected Map<Consumer, Integer> reservedSupply;
+	protected int reservedSupplyTotal;
 
 	protected Supplies() {
 		listeners = new ArrayList<SupplyListener>();
 		suppliers = new ArrayList<Agent>();
+
+		reservedSupply = new HashMap<Consumer, Integer>();
+		reservedSupplyTotal = 0;
 	}
 
 	public static Supplies getInstance() {
@@ -37,23 +44,37 @@ public class Supplies implements Consumer {
 		return instance;
 	}
 
-	public void lockSupply(int amount, boolean lock) {
-		if (lock) {
-			lockedSupply += amount;
+	public void reserveSupply(int amount, Consumer owner) {
+		if (!reservedSupply.containsKey(owner)) {
+			System.out.println("Supplies reserved "+ amount +" supply for "+ owner);
+			reservedSupply.put(owner, amount);
+
+			Collection<Integer> rs = reservedSupply.values();
+			int total = 0;
+			for (Integer r : rs) {
+				total += r;
+			}
+			this.reservedSupplyTotal = total;
+
 			onSupplyChange(-1);
 		}
 		else {
-			lockedSupply -= amount;
-			onSupplyChange(-1);
-		}
-
-		if (lockedSupply < 0) {
-			System.err.println("ERROR: locked negative supply!! "+ lockedSupply);
+			System.err.println("Cannot add more minerals to already reserved by "+ owner);
 		}
 	}
 
+	public void unreserveSupply(Consumer owner) {
+		System.out.println("Supplies unreserved allocated to "+ owner);
+		onSupplyChange(-1);
+	}
+
 	public int getSupply() {
-		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - lockedSupply;
+		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - reservedSupplyTotal;
+	}
+
+	public int getSupply(Consumer owner) {
+		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - reservedSupplyTotal
+			+ reservedSupply.get(owner);
 	}
 
 	public void addListener(SupplyListener ls) {
@@ -91,6 +112,7 @@ public class Supplies implements Consumer {
 
 			// no suppliers left alive, need to create a new one
 			if (suppliers.isEmpty()) {
+				// generic cross-race agent that creates a supply unit
 				suppliers.add(new MakeSupply());
 			}
 		}
