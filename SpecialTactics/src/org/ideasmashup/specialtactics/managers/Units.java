@@ -234,14 +234,18 @@ public class Units {
 		}
 
 		public boolean is(Unit unit) {
+			return is(unit.getType());
+		}
+
+		public boolean is(UnitType ut) {
 			for (int i=0; i<protoss.length; i++) {
-				if (protoss[i] == unit.getType()) return true;
+				if (protoss[i] == ut) return true;
 			}
 			for (int i=0; i<terran.length; i++) {
-				if (terran[i] == unit.getType()) return true;
+				if (terran[i] == ut) return true;
 			}
 			for (int i=0; i<zerg.length; i++) {
-				if (zerg[i] == unit.getType()) return true;
+				if (zerg[i] == ut) return true;
 			}
 
 			return false;
@@ -254,6 +258,38 @@ public class Units {
 					types.add(type);
 				}
 			}
+			return null;
+		}
+
+		public static Types[] getTypes(UnitType ut){
+			List<Types> types = new LinkedList<Types>();
+			for (Types type : Types.values()) {
+				if (type.is(ut)) {
+					types.add(type);
+				}
+			}
+			return null;
+		}
+
+		public static Types getType(UnitType ut){
+			for (Types type : Types.values()) {
+				if (type.is(ut)) {
+					return type;
+				}
+			}
+			return null;
+		}
+
+		public static Types getType(Unit unit){
+			for (Types type : Types.values()) {
+				if (type.is(unit)) {
+					return type;
+				}
+			}
+			return null;
+		}
+	}
+
 
 			return types.toArray(new Types[0]);
 		}
