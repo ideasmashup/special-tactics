@@ -300,8 +300,117 @@ public class Units {
 		}
 	}
 
+	public static class Requires {
+		private static final List<Requires> protoss = new LinkedList<Requires>();
+		private static final List<Requires> terran = new LinkedList<Requires>();
+		private static final List<Requires> zerg = new LinkedList<Requires>();
 
-			return types.toArray(new Types[0]);
+		{// initialize all dependencies
+
+			// FIXME not all units and upgrades have been added yet!!!
+			// FIXME add missing protoss, terran, zerg units and upgrades dependencies!
+			// FIXME add tech (spells) dependencies too!!!
+
+			// no dependencies for these
+			protoss.add(new Requires(UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Pylon));
+			protoss.add(new Requires(UnitType.Protoss_Assimilator));
+
+			// level 1 dependency (buildings)
+			protoss.add(new Requires(UnitType.Protoss_Forge, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			// level 1 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Probe, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 2 dependency (buildings)
+			protoss.add(new Requires(UnitType.Protoss_Photon_Cannon, UnitType.Protoss_Forge, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Shield_Battery, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			// level 2 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Zealot, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 3 dependency (buildings)
+			protoss.add(new Requires(UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Robotics_Facility, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			// level 3 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Dragoon, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 4 dependency (buildings)
+			protoss.add(new Requires(UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Robotics_Support_Bay, UnitType.Protoss_Robotics_Facility, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Observatory, UnitType.Protoss_Robotics_Facility, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Fleet_Beacon, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			// level 4 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Corsair, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Scout, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Shuttle, UnitType.Protoss_Robotics_Facility, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 5 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Dark_Templar, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_High_Templar, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Reaver, UnitType.Protoss_Robotics_Support_Bay, UnitType.Protoss_Robotics_Facility, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Observer, UnitType.Protoss_Observatory, UnitType.Protoss_Robotics_Facility, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Carrier, UnitType.Protoss_Fleet_Beacon, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 6 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Dark_Archon, UnitType.Protoss_Dark_Templar, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+			protoss.add(new Requires(UnitType.Protoss_Archon, UnitType.Protoss_High_Templar, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 7 dependency (buildings)
+			protoss.add(new Requires(UnitType.Protoss_Arbiter_Tribunal, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Fleet_Beacon, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+
+			// ----
+
+			// level 8 dependency (units)
+			protoss.add(new Requires(UnitType.Protoss_Arbiter, UnitType.Protoss_Arbiter_Tribunal, UnitType.Protoss_Templar_Archives, UnitType.Protoss_Citadel_of_Adun, UnitType.Protoss_Fleet_Beacon, UnitType.Protoss_Stargate, UnitType.Protoss_Cybernetics_Core, UnitType.Protoss_Gateway, UnitType.Protoss_Nexus));
+		}
+
+		Requires(UnitType unittype, UnitType... requires) {
+			this.utype = unittype;
+			this.required = requires;
+		}
+
+		private final Object utype;
+		private final UnitType[] required;
+
+		public UnitType getUnitType() {
+			return (utype instanceof UnitType)? (UnitType) utype : null;
+		}
+
+		public UnitType[] getRequirements() {
+			return required;
+		}
+
+		public static UnitType[] getRequirementsFor(UnitType ut) {
+			if (ut.getRace() == Race.Protoss) {
+				for (Requires r : protoss) {
+					if (r.getUnitType() == ut) return r.getRequirements();
+				}
+			}
+			else if (ut.getRace() == Race.Terran) {
+				for (Requires r : terran) {
+					if (r.getUnitType() == ut) return r.getRequirements();
+				}
+			}
+			else if (ut.getRace() == Race.Zerg) {
+				for (Requires r : zerg) {
+					if (r.getUnitType() == ut) return r.getRequirements();
+				}
+			}
+			return null;
 		}
 
 	}
