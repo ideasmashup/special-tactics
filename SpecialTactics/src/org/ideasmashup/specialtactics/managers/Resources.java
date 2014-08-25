@@ -3,6 +3,7 @@ package org.ideasmashup.specialtactics.managers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,16 +15,11 @@ public class Resources {
 
 	protected List<ResourcesListener> listeners;
 
-	// FIXME temporary hack to "reserve" resouces (must replace with async
-	//       needs-filling API
-
-	// ----
 	protected Map<Consumer, Integer> reservedMinerals;
 	protected int reservedMineralsTotal;
-
 	protected Map<Consumer, Integer> reservedGas;
 	protected int reservedGasTotal;
-	// ------
+	protected LinkedList<Consumer> consumers;
 
 	protected static Resources instance = null;
 
@@ -35,6 +31,9 @@ public class Resources {
 
 		reservedGas = new HashMap<Consumer, Integer>();
 		reservedGasTotal = 0;
+
+		// list of consumers because map isn't ordered
+		consumers = new LinkedList<Consumer>();
 	}
 
 	public static Resources getInstance() {
@@ -58,8 +57,11 @@ public class Resources {
 				total += r;
 			}
 			this.reservedMineralsTotal = total;
+			if (!this.consumers.contains(owner)) {
+				this.consumers.addFirst(owner);
+			}
 
-			onResourcesChange(-1, -1);
+			onResourcesChange(getMinerals(), getGas());
 		}
 		else {
 			System.err.println("Cannot add more minerals to already reserved by "+ owner);
@@ -77,8 +79,11 @@ public class Resources {
 				total += r;
 			}
 			this.reservedGasTotal = total;
+			if (!this.consumers.contains(owner)) {
+				this.consumers.addFirst(owner);
+			}
 
-			onResourcesChange(-1, -1);
+			onResourcesChange(getMinerals(), getGas());
 		}
 		else {
 			System.err.println("Cannot add more minerals to already reserved by "+ owner);
@@ -87,8 +92,10 @@ public class Resources {
 
 	public void unreserve(Consumer owner) {
 		System.out.println("Resources unreserved all resources allocated to "+ owner);
-		reservedMinerals.remove(owner);
-		reservedGas.remove(owner);
+
+		this.consumers.remove(owner);
+		this.reservedMinerals.remove(owner);
+		this.reservedGas.remove(owner);
 	}
 
 	public int getMinerals() {
