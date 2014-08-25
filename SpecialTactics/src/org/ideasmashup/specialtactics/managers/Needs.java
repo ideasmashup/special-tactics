@@ -272,25 +272,44 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	@Override
 	public void onResourcesChange(int minerals, int gas) {
-		//System.out.println("Needs.onRessourcesChange()");
-		//System.out.println("Needs.get(RESOURCES).size() = "+ needs.get(Types.RESOURCES).size());
+		//System.out.println("Needs.onRessourcesChange( "+minerals+", "+gas+" )");
+		//System.out.println("Needs.nResources.size() = "+ nResources.size());
 
-		for (Need need : nResources) {
-			Consumer consumer = need.getOwner();
-			if (consumer.fillNeeds(null)) {
-				System.out.println("  - ressources consumer satisfied !");
+		// no longer loop on full collection, only pick first need of supply
+		// because it is the most urgent and next ones will wait until next
+		// resources change (after a few frames - less than 1s delay)
+
+		NeedResources need = (NeedResources) nResources.getFirst();
+		Resources res = Resources.getInstance();
+
+		// immediately reserve resources for this need's owner
+		Consumer owner = need.getOwner();
+		if (!res.hasReserved(owner)) {
+			res.reserveMinerals(need.getMinerals(), owner);
+			res.reserveGas(need.getGas(), owner);
+		}
+
+		int mRequired = need.getMinerals();
+		int gRequired = need.getGas();
+
+		System.out.println("- first resources consumer "+ owner +" needs "+ mRequired +" and "+ gRequired);
+
+		int mAvailable = res.getMinerals(owner);
+		int gAvailable = res.getGas(owner);
+
+		System.out.println("- can give it "+ mAvailable +" minerals and "+ gAvailable +" gas");
+
+		if (mAvailable >= mRequired && gAvailable >= gRequired) {
+			// this is the first resources need in the list
+			// and it can be fulfilled
+
+			if (owner.fillNeeds(null)) {
+				System.out.println("  - resources consumer satisfied !");
 
 				if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
 					// when normal needs are satified they are removed from the
 					// global stack immediately
 					remove(need);
-					break;
-				}
-				else if (need.getModifiers() == Needs.Modifiers.IS_TRANSIENT) {
-					// when transient needs are satified they are removed but
-					// their offer can still be passed to satifsy the next consumer
-					remove(need);
-					continue;
 				}
 				else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
 					// when permanent needs are satified they are removed but
@@ -299,15 +318,17 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					// Yet the need often changes when fillNeed() is called
 					// so when it's added back it may have different priorities
 					// modifiers, etc
-
 					remove(need);
 					add(need);
-					break;
 				}
-				break;
+			}
+			else {
+				System.err.println("  - couldn't satisfy resources consumer!!");
 			}
 		}
-
+		else {
+			System.out.println("  - not enough resources yet... ");
+		}
 	}
 
 	@Override
@@ -315,22 +336,30 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		//System.out.println("Needs.onSupplyChange()");
 		//System.out.println("Needs.get(SUPPLY).size() = "+ needs.get(Types.SUPPLY).size());
 
-		for (Need need : nSupplies) {
-			Consumer consumer = need.getOwner();
-			if (consumer.fillNeeds(null)) {
+		// no longer loop on full collection, only pick first need of supply
+		// because it is the most urgent and next ones will wait until next
+		// resources change (after a few frames - less than 1s delay)
+
+		NeedSupply need = (NeedSupply) nSupplies.getFirst();
+		Supplies sup = Supplies.getInstance();
+
+		// immediately reserve supply for this need's owner
+		Consumer owner = need.getOwner();
+		if (sup.hasReserved(owner)) {
+			sup.reserveSupply(need.getSupply(), owner);
+		}
+
+		if (sup.getSupply(need.getOwner()) >= need.getSupply()) {
+			// this is the first supply need in the list
+			// and it can be fulfilled
+
+			if (owner.fillNeeds(null)) {
 				System.out.println("  - supply consumer satisfied !");
 
 				if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
 					// when normal needs are satified they are removed from the
 					// global stack immediately
 					remove(need);
-					break;
-				}
-				else if (need.getModifiers() == Needs.Modifiers.IS_TRANSIENT) {
-					// when transient needs are satified they are removed but
-					// their offer can still be passed to satifsy the next consumer
-					remove(need);
-					continue;
 				}
 				else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
 					// when permanent needs are satified they are removed but
@@ -342,7 +371,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 					remove(need);
 					add(need);
-					break;
 				}
 			}
 		}
