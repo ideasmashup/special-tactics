@@ -15,7 +15,7 @@ import org.ideasmashup.specialtactics.needs.NeedUnit;
 import bwapi.Unit;
 import bwta.BWTA;
 
-public class Base extends MasterAgent implements Consumer, UnitListener, ResourcesListener {
+public class Base extends UnitAgent implements Producer, Consumer, UnitListener {
 
 	protected List<Need> needs; // needs 50 minerals
 
@@ -139,4 +139,20 @@ public class Base extends MasterAgent implements Consumer, UnitListener, Resourc
 	public Filter getFilter() {
 		return this.filter;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.ideasmashup.specialtactics.agents.Producer#canFill(org.ideasmashup.specialtactics.needs.Need)
+	 */
+	@Override
+	public boolean canFill(Need need) {
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.ideasmashup.specialtactics.agents.Producer#addConsumer(org.ideasmashup.specialtactics.agents.Consumer, org.ideasmashup.specialtactics.needs.Need)
+	 */
+	@Override
+	public void addConsumer(Consumer consumer, Need need) {
+	}
+
 }
