@@ -5,6 +5,7 @@ import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
+import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
@@ -36,8 +37,11 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		BUILDING,
 		DONE
 	};
+
 	protected State state;
 	private State prevState;
+
+	protected NeedResources need;
 
 	public MakeSupply() {
 		super();
@@ -65,14 +69,12 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		//       to be eaten up by other minerals consumers
 		supplyType = Units.Types.SUPPLY.getUnitType();
 
-		Resources.getInstance().reserveMinerals(supplyType.mineralPrice(), this);
-		Resources.getInstance().reserveGas(supplyType.gasPrice(), this);
-
 		System.out.println("SUPPLY : Requested ressources for supply building");
-		Needs.getInstance().add(new NeedResources(this,
+		need = new NeedResources(this,
 			Units.Types.SUPPLY.getUnitType().mineralPrice(),
 			Units.Types.SUPPLY.getUnitType().gasPrice()
-		));
+		);
+		Needs.getInstance().add(need);
 
 		// auto-register agent
 		Agents.getInstance().add(this);
@@ -104,7 +106,6 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 					if (worker.build(tp, supplyType)) {
 						// ok building started!!
 						AI.say("building placed for building...");
-						Resources.getInstance().unreserve(this);
 						state = State.BUILDING;
 					}
 					else {
@@ -114,6 +115,9 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 				break;
 			case BUILDING:
+				// release reserved locks
+				Resources.getInstance().unreserve(this);
+
 				if (AI.getPlayer().getRace() == Race.Protoss) {
 					// building is done, release worker
 					state = State.DONE;
@@ -122,6 +126,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			case DONE:
 				// remove from managers
 				Agents.getInstance().remove(this);
+				Needs.getInstance().remove(need);
 				Units.getInstance().removeListener(this);
 
 				// kill this agent and free its worker
@@ -139,7 +144,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public Need[] getNeeds(boolean returnAll) {
-		return new Need[0];
+		return new Need[]{need};
 	}
 
 	@Override
@@ -166,6 +171,18 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		}
 		else {
 			// non-unit offer : assume minerals
+			Resources res = Resources.getInstance();
+			if ((state == State.MOVING || state == State.READY)
+				&& res.getMinerals(this) >= need.getMinerals()
+				&& res.getGas(this) >= need.getGas()) {
+
+				// must lock resources until worker reaches build location)
+				if (!res.hasReserved(this)) {
+					res.reserveMinerals(need.getMinerals(), this);
+					res.reserveGas(need.getGas(), this);
+				}
+				return true;
+			}
 		}
 
 		return false;
