@@ -172,27 +172,23 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	}
 
 	@Override
-	public void onUnitDiscover(Unit unit) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onUnitDiscover(Unit unit) {}
 
 	@Override
-	public void onUnitEvade(Unit unit) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onUnitEvade(Unit unit) {}
 
 	@Override
 	public void onUnitShow(Unit unit) {
-		// TODO Auto-generated method stub
-
+		if (unit == worker) {
+			// zerg worker unburrowed...
+		}
 	}
 
 	@Override
 	public void onUnitHide(Unit unit) {
-		// TODO Auto-generated method stub
-
+		if (unit == worker) {
+			// zerg worker burrowed...
+		}
 	}
 
 	@Override
@@ -205,20 +201,32 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		// TODO Auto-generated method stub
-
+		if (unit == worker) {
+			// worker killed :O
+		}
+		else if (unit == supply) {
+			// supply killed :<
+		}
 	}
 
 	@Override
 	public void onUnitMorph(Unit unit) {
-		// TODO Auto-generated method stub
-
+		if (unit == worker) {
+			// zergs only
+		}
+		else if (unit == supply) {
+			// zergs only
+		}
 	}
 
 	@Override
 	public void onUnitRenegade(Unit unit) {
-		// TODO Auto-generated method stub
-
+		if (unit == worker) {
+			// worker mind controlled... ><°
+		}
+		else if (unit == supply) {
+			// zergs only (depots and plons not mind-controllable)
+		}
 	}
 
 	@Override
