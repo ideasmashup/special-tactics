@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ideasmashup.specialtactics.AI;
-import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 
 public class Resources {
@@ -18,10 +18,10 @@ public class Resources {
 	//       needs-filling API
 
 	// ----
-	protected Map<Object, Integer> reservedMinerals;
+	protected Map<Consumer, Integer> reservedMinerals;
 	protected int reservedMineralsTotal;
 
-	protected Map<Object, Integer> reservedGas;
+	protected Map<Consumer, Integer> reservedGas;
 	protected int reservedGasTotal;
 	// ------
 
@@ -30,10 +30,10 @@ public class Resources {
 	protected Resources() {
 		listeners = new ArrayList<ResourcesListener>();
 
-		reservedMinerals = new HashMap<Object, Integer>();
+		reservedMinerals = new HashMap<Consumer, Integer>();
 		reservedMineralsTotal = 0;
 
-		reservedGas = new HashMap<Object, Integer>();
+		reservedGas = new HashMap<Consumer, Integer>();
 		reservedGasTotal = 0;
 	}
 
@@ -47,7 +47,7 @@ public class Resources {
 		return instance;
 	}
 
-	public void reserveMinerals(int amount, Agent owner) {
+	public void reserveMinerals(int amount, Consumer owner) {
 		if (!reservedMinerals.containsKey(owner)) {
 			System.out.println("Resources reserved "+ amount +" minerals for "+ owner);
 			reservedMinerals.put(owner, amount);
@@ -66,7 +66,7 @@ public class Resources {
 		}
 	}
 
-	public void reserveGas(int amount, Object owner) {
+	public void reserveGas(int amount, Consumer owner) {
 		if (!reservedGas.containsKey(owner)) {
 			System.out.println("Resources reserved "+ amount +" gas for "+ owner);
 			reservedGas.put(owner, amount);
@@ -85,18 +85,39 @@ public class Resources {
 		}
 	}
 
-	public void unreserve(Object owner) {
+	public void unreserve(Consumer owner) {
 		System.out.println("Resources unreserved all resources allocated to "+ owner);
 		reservedMinerals.remove(owner);
 		reservedGas.remove(owner);
 	}
 
 	public int getMinerals() {
+		// return "public" minerals (ones that haven't been reserved yet)
 		return AI.getPlayer().minerals() - reservedMineralsTotal;
 	}
 
+	public int getMinerals(Consumer owner) {
+		// return "private" minerals (public ones + ones that this owner may
+		// have in his "reserved" slot
+
+		// TODO maybe optimize this so that only the first in line can access
+		//      his reserved amount asap?
+		return AI.getPlayer().minerals() - reservedMineralsTotal
+			+ reservedMinerals.get(owner);
+	}
+
 	public int getGas() {
+		// return "public" gas quantity (total available minus reserved)
 		return AI.getPlayer().gas() - reservedGasTotal;
+	}
+
+	public int getGas(Consumer owner) {
+		// return "private" gas + public gas (see: getMinerals(Consumer))
+
+		// TODO maybe optimize this so that only the first in line can access
+		//      his reserved amount asap?
+		return AI.getPlayer().gas() - reservedGasTotal
+			+ reservedGas.get(owner);
 	}
 
 	public void addListener(ResourcesListener ls) {
