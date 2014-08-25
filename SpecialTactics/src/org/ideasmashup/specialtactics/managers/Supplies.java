@@ -14,7 +14,7 @@ import org.ideasmashup.specialtactics.agents.MakeSupply;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 import org.ideasmashup.specialtactics.needs.Need;
 
-public class Supplies implements Consumer {
+public class Supplies {
 
 	protected static Supplies instance = null;
 
@@ -127,15 +127,5 @@ public class Supplies implements Consumer {
 		for (SupplyListener ls : listeners) {
 			ls.onSupplyChange(getSupply());
 		}
-	}
-
-	@Override
-	public Need[] getNeeds(boolean returnAll) {
-		return null;
-	}
-
-	@Override
-	public boolean fillNeeds(Object offer) {
-		return false;
 	}
 }
