@@ -69,40 +69,36 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	}
 
 	@Override
-	public void onUnitShow(Unit unit) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onUnitDiscover(Unit unit) {}
 
 	@Override
-	public void onUnitHide(Unit unit) {
-		// TODO Auto-generated method stub
+	public void onUnitEvade(Unit unit) {}
 
-	}
+	@Override
+	public void onUnitShow(Unit unit) {}
+
+	@Override
+	public void onUnitHide(Unit unit) {}
 
 	@Override
 	public void onUnitCreate(Unit unit) {
-		// TODO Auto-generated method stub
-
+		// this base is being created ? maybe useless, depends if same Base
+		// handles reconstruction?
 	}
 
 	@Override
 	public void onUnitDestroy(Unit unit) {
-		// TODO Auto-generated method stub
-
+		// this base has been destroyed : release all consumers
+		// remove producer, destroy this agent (? a new one will be added?)
 	}
 
 	@Override
 	public void onUnitMorph(Unit unit) {
-		// TODO Auto-generated method stub
-
+		// for zerg hatchery upgrades only !
 	}
 
 	@Override
-	public void onUnitRenegade(Unit unit) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onUnitRenegade(Unit unit) {}
 
 	@Override
 	public void onUnitComplete(Unit unit) {
