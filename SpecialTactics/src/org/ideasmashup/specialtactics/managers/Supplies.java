@@ -121,9 +121,10 @@ public class Supplies {
 		// FIXME remember when supply is laready being produced so that other workers
 		//       continue being used for mining and other activities
 
-		if (getSupply() <= Units.Types.WORKERS.getUnitType().supplyRequired() * 3) {
-			// supply running low, must create a new "supply provider" (e.g. supplier)
-			// unless there are already suppliers in action
+		if (AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() <= Units.Types.WORKERS.getUnitType().supplyRequired() * 2
+			&& suppliers.isEmpty()) {
+			// "real" supply running low, must create a new "supply provider" (e.g. supplier)
+			// unless there are already suppliers in action?
 
 			// kill all suppliers that are inactive
 			List<Agent> zombies = new LinkedList<Agent>();
