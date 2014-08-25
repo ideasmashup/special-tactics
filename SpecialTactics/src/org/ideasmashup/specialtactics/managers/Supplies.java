@@ -12,7 +12,6 @@ import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.agents.MakeSupply;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
-import org.ideasmashup.specialtactics.needs.Need;
 
 public class Supplies {
 
@@ -21,10 +20,10 @@ public class Supplies {
 	protected List<SupplyListener> listeners;
 	protected List<Agent> suppliers;
 
-	// FIXME temporary hack to "reserve" resouces (must replace with async
-	//       needs-filling API
 	protected Map<Consumer, Integer> reservedSupply;
 	protected int reservedSupplyTotal;
+
+	protected LinkedList<Consumer> consumers;
 
 	protected Supplies() {
 		listeners = new ArrayList<SupplyListener>();
@@ -32,6 +31,9 @@ public class Supplies {
 
 		reservedSupply = new HashMap<Consumer, Integer>();
 		reservedSupplyTotal = 0;
+
+		// list of consumers because map isn't ordered
+		consumers = new LinkedList<Consumer>();
 	}
 
 	public static Supplies getInstance() {
@@ -55,8 +57,11 @@ public class Supplies {
 				total += r;
 			}
 			this.reservedSupplyTotal = total;
+			if (!this.consumers.contains(owner)) {
+				this.consumers.addFirst(owner);
+			}
 
-			onSupplyChange(-1);
+			onSupplyChange(getSupply());
 		}
 		else {
 			System.err.println("Cannot add more minerals to already reserved by "+ owner);
@@ -65,10 +70,14 @@ public class Supplies {
 
 	public void unreserveSupply(Consumer owner) {
 		System.out.println("Supplies unreserved allocated to "+ owner);
-		onSupplyChange(-1);
+		this.consumers.remove(owner);
+		this.reservedSupply.remove(owner);
+
+		onSupplyChange(getSupply());
 	}
 
 	public int getSupply() {
+		// public supplies
 		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - reservedSupplyTotal;
 	}
 
@@ -120,6 +129,18 @@ public class Supplies {
 			if (suppliers.isEmpty()) {
 				// generic cross-race agent that creates a supply unit
 				suppliers.add(new MakeSupply());
+			}
+		}
+
+		// check reserved resources to notify their owners
+		Consumer first = this.consumers.peekFirst();
+
+		if (reservedSupply.get(first) >= getSupply(first)) {
+			// the first consumer can be satisfied
+			if (first.fillNeeds(null)) {
+				// consumer satisfied so skip other listeners because minerals
+				// have been consumed so no need to do more in this frame
+				return;
 			}
 		}
 
