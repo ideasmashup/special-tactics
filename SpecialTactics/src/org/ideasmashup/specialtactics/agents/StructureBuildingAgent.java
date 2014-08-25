@@ -17,6 +17,7 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
 
+
 public class StructureBuildingAgent extends MasterAgent implements Consumer {
 
 	protected List<Need> needs;
@@ -34,6 +35,9 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 		// ask for a worker to help build the structure
 		initNeeds(priority);
 		plugNeeds();
+
+		throw new RuntimeException("StructureBuildingAgent not yet properly "
+			+ "implemented! Wait until code cheked, tested and implemented!!");
 	}
 
 	protected void initNeeds(float priority) {
@@ -94,8 +98,8 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 			else {
 				// check ressources, supply and non-unit needs
 				Resources resources = Resources.getInstance();
-				if (resources.getMinerals() >= structureType.mineralPrice()
-						&& resources.getGas() >= structureType.gasPrice()) {
+				if (resources.getMinerals(this) >= structureType.mineralPrice()
+						&& resources.getGas(this) >= structureType.gasPrice()) {
 					resources.reserveMinerals(structureType.mineralPrice(), this);
 					resources.reserveGas(structureType.gasPrice(), this);
 
