@@ -60,7 +60,7 @@ public class Resources {
 	}
 
 	public void reserveMinerals(int amount, Consumer owner) {
-		if (!reservedMinerals.containsKey(owner)) {
+		if (!reservedMinerals.containsKey(owner) && amount  > 0) {
 			System.out.println("Resources reserved "+ amount +" minerals for "+ owner);
 			reservedMinerals.put(owner, amount);
 
@@ -87,7 +87,7 @@ public class Resources {
 	}
 
 	public void reserveGas(int amount, Consumer owner) {
-		if (!reservedGas.containsKey(owner)) {
+		if (!reservedGas.containsKey(owner) && amount > 0) {
 			System.out.println("Resources reserved "+ amount +" gas for "+ owner);
 			reservedGas.put(owner, amount);
 
