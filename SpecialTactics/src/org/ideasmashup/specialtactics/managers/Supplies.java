@@ -66,7 +66,7 @@ public class Supplies {
 
 			updateReservedSupply();
 
-			if (!this.consumers.contains(owner)) {
+			if (!this.consumers.contains(owner) && consumers.getFirst() == owner) {
 				this.consumers.addFirst(owner);
 			}
 
