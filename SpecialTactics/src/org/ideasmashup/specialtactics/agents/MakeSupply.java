@@ -158,7 +158,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 				this.pos = new Position(cp.getCenter().getX(), cp.getCenter().getY());
 
 				System.out.println("SUPPLY : Moving worker #"+ unit.getID() +" to choke point!");
-				worker.move(pos);
+				worker.patrol(pos);
 				state = State.MOVING;
 
 				return true;
