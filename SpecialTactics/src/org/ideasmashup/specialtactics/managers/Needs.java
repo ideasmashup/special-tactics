@@ -150,6 +150,31 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 	}
 
+	public Need[] expand(Need need) {
+		// converts a need that cannot be fulfilled yet into a chain of
+		// fulfillable needs required to build the end unit
+
+		if (need instanceof NeedUnit) {
+			NeedUnit nu = (NeedUnit) need;
+			UnitType[] uts = Units.Requires.getRequirementsFor(nu.getUnitType());
+			LinkedList<Need> needs = new LinkedList<Need>();
+			Units units = Units.getInstance();
+
+			for (UnitType ut : uts) {
+				if (units.contains(ut)) {
+					// only add needs for missing dependencies
+					// for example a Reaver requires : gate, core, robo, bay
+					// so only add : robo, bay if core and gate already built
+					needs.add(new NeedUnit(nu.getOwner(), ut, need.getPriority()));
+				}
+			}
+
+			return needs.toArray(new Need[0]);
+		}
+
+		return null;
+	}
+
 	public void add(Producer producer) {
 		producers.add(producer);
 	}
