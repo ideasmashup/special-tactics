@@ -110,17 +110,48 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	public void add(Need need) {
 		if (need instanceof NeedUnit) {
+
+			NeedUnit nu = (NeedUnit) need;
+
+			// unit can be produced by available producers
+			boolean buildable = false;
+			for (Producer p : producers) {
+				if (p.canFill(need)) {
+					System.out.println("  - unit can be built by "+ p +" producer so we added consumer to its queue");
+					p.addConsumer(need.getOwner(), need);
+					buildable = true;
+					break;
+				}
+			}
+
+			// unit cannot be produced yet (e.g. factory is destroyed or not
+			// built yet) so we must convert "Need marine" into "need depot"
+			// "need barracks" "need marine"
+
+			if (!buildable) {
+				System.out.println("  - this unit cannot be built yet because no producer can produce it!");
+
+				Need[] requirements = expand(need);
+				for (Need req : requirements) {
+					sortedInsert(this.nUnits, req);
+				}
+				System.out.println("  - added "+ requirements.length +" dependencies needs for requested "+ nu.getUnitType());
+			}
+
+			// add needunit (the consumer will be called when the unit is completed)
 			sortedInsert(this.nUnits, need);
 			System.out.println("  - added NeedUnit for "+ need.getOwner().toString());
 			System.out.println("  - total NeedUnit = "+ nUnits.size());
 		}
 		else if (need instanceof NeedResources) {
 			sortedInsert(this.nResources, need);
+
 			System.out.println("  - added NeedResources for "+ need.getOwner().toString());
 			System.out.println("  - total NeedResources = "+ nResources.size());
 		}
 		else if (need instanceof NeedSupply) {
 			sortedInsert(this.nSupplies, need);
+
 			System.out.println("  - added NeedSupply for "+ need.getOwner().toString());
 			System.out.println("  - total NeedSupply now = "+ nSupplies.size());
 		}
