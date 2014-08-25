@@ -46,6 +46,10 @@ public class Resources {
 		return instance;
 	}
 
+	public boolean hasReserved(Consumer owner) {
+		return reservedMinerals.containsKey(owner) || reservedGas.containsKey(owner);
+	}
+
 	public void reserveMinerals(int amount, Consumer owner) {
 		if (!reservedMinerals.containsKey(owner)) {
 			System.out.println("Resources reserved "+ amount +" minerals for "+ owner);

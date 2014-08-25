@@ -46,6 +46,10 @@ public class Supplies {
 		return instance;
 	}
 
+	public boolean hasReserved(Consumer owner) {
+		return reservedSupply.containsKey(owner);
+	}
+
 	public void reserveSupply(int amount, Consumer owner) {
 		if (!reservedSupply.containsKey(owner)) {
 			System.out.println("Supplies reserved "+ amount +" supply for "+ owner);
