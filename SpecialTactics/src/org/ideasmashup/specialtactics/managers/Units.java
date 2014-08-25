@@ -77,6 +77,16 @@ public class Units {
 		//}
 	}
 
+	public boolean contains(UnitType unittype) {
+		List<Unit> units = map.get(Units.Types.getType(unittype));
+
+		for (Unit u : units) {
+			if (u.getType() == unittype) return true;
+		}
+
+		return false;
+	}
+
 	public void addListener(UnitListener ls) {
 		listeners.add(ls);
 	}
