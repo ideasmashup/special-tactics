@@ -108,6 +108,7 @@ public class Brain implements BWEventListener {
 
 		if (frames++ == 0) {
 			AI.say("gl hf");
+			AI.say("HINT: to speed up game type /speed 0");
 		}
 
 		if (frames % 18 == 0) {
@@ -206,7 +207,7 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onUnitCreate(Unit unit) {
 		// add new unit to global Units pool
-		System.out.println("unit #"+ unit.getID() + "("+ unit.getType() +") created");
+		System.out.println("unit #"+ unit.getID() + " ("+ unit.getType() +") created");
 
 		UnitAgent agent;
 
