@@ -519,17 +519,6 @@ public class Units {
 		}
 	}
 
-	/**
-	 * Tells the units manager a new unit has been built.
-	 *
-	 * This method is called automatically whenever a new unit is produced by
-	 * a building, factory, egg, etc...
-	 *
-	 * You can also call this method on units that you no longer need and want
-	 * to give back to the others {@link UnitConsumer}.
-	 *
-	 * @param unit the {@link Unit} twhich is newly available for "consumption"
-	 */
 	public void onUnitComplete(Unit unit) {
 		// call all listeners
 		for (UnitListener ls : listeners) {
