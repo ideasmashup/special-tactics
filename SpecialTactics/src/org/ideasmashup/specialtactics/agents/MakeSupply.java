@@ -5,7 +5,6 @@ import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
-import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.needs.Need;
@@ -34,6 +33,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		START,
 		READY,
 		MOVING,
+		BUILD_TRY,
 		BUILDING,
 		DONE
 	};
@@ -96,20 +96,24 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			case START:
 				break;
 			case READY:
+			case BUILD_TRY:
+				// new state because build can fail even when build() returns true
+				// so building must only start after we have validated that a
+				// supply unit has been actually created
 			case MOVING:
 				TilePosition tp = worker.getTilePosition();
 
 				if (AI.getGame().canBuildHere(worker, tp, supplyType)) {
 					// when moving try to find a place where a supply structure can be built
-					AI.say("found buildable site for new supply");
+					System.out.println("SUPPLY found buildable site for new supply");
 
 					if (worker.build(tp, supplyType)) {
 						// ok building started!!
-						AI.say("building placed for building...");
-						state = State.BUILDING;
+						System.out.println("SUPPLY building building attempt seems ok...");
+						state = State.BUILD_TRY;
 					}
 					else {
-						AI.say("cannot build supply here...");
+						System.err.println("SUPPLY cannot build supply here...");
 					}
 				}
 
@@ -210,9 +214,9 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public void onUnitCreate(Unit unit) {
-		//
-		if (unit.getBuildUnit() == worker) {
-			//
+		if (unit.getType() == supplyType && state == State.BUILD_TRY) {
+			// we are trying to build so this new supply unit should be ours...
+			state = State.BUILDING;
 		}
 	}
 
@@ -248,7 +252,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		if (unit.getType() == supplyType && unit.getPlayer() == AI.getPlayer()) {
+		if (unit.getType() == supplyType && state == State.BUILDING) {
 			// assume the supply unit just built is from our worker... (this is very dodgy!!!)
 			this.state = State.DONE;
 		}
@@ -267,7 +271,8 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	protected Filter filter = new Filter() {
 		@Override
 		public boolean allow(Unit unit) {
-			return unit == worker;
+			// check for agent's worker and supply unit creation
+			return unit == worker || unit.getType() == supplyType;
 		};
 	};
 
