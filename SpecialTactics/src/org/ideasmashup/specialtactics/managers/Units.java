@@ -57,21 +57,27 @@ public class Units {
 
 	public void add(Unit unit) {
 		//if (!ids.contains(unit.getID())) {
-			System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") newly registered");
+
+		// FIXME this code doesn't work probably some Exception or null
+		//       uncomment and see crash
 
 			Types[] types = Types.getTypes(unit);
-			for (Types type : types) {
-				System.out.println(" - assigned type ("+ type.name() +")");
-				if (map.containsKey(type)) {
-					map.get(type).add(unit);
-				}
-				else {
-					ArrayList<Unit> arr = new ArrayList<Unit>();
-					arr.add(unit);
+			//System.out.println("units : types = "+ types);
 
-					map.put(type, arr);
+			if (types != null) {
+				for (Types type : types) {
+					System.out.println(" - assigned type ("+ type.name() +")");
+					if (map.containsKey(type)) {
+						map.get(type).add(unit);
+					}
+					else {
+						ArrayList<Unit> arr = new ArrayList<Unit>();
+						arr.add(unit);
+						map.put(type, arr);
+					}
 				}
 			}
+
 		//}
 		//else {
 		//	System.out.println("unit : #"+ unit.getID() + " ("+ unit.getType() +") already registered");
@@ -269,7 +275,7 @@ public class Units {
 					types.add(type);
 				}
 			}
-			return null;
+			return types.toArray(new Types[0]);
 		}
 
 		public static Types[] getTypes(UnitType ut){
@@ -279,7 +285,7 @@ public class Units {
 					types.add(type);
 				}
 			}
-			return null;
+			return types.toArray(new Types[0]);
 		}
 
 		public static Types getType(UnitType ut){
