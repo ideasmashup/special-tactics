@@ -118,34 +118,29 @@ public class Supplies {
 	public void onSupplyChange(int supply) {
 		// automatically create supply
 
-		// FIXME remember when supply is laready being produced so that other workers
-		//       continue being used for mining and other activities
+		// cleanup-remove all suppliers that are inactive
+		List<Agent> zombies = new LinkedList<Agent>();
+		for (Agent supplier : suppliers) {
+			if (supplier.isDestroyed()) {
+				zombies.add(supplier);
+			}
+		}
+		for (Agent zombie : zombies) {
+			suppliers.remove(zombie);
+		}
 
+		// if real supply (e.g. raw supply value without reserved slots) runs
+		// low and no supplier is alive (e.g. building supply already) add one
 		if (AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() <= Units.Types.WORKERS.getUnitType().supplyRequired() * 2
 			&& suppliers.isEmpty()) {
-			// "real" supply running low, must create a new "supply provider" (e.g. supplier)
-			// unless there are already suppliers in action?
 
-			// no suppliers left alive, need to create a new one
-			// generic cross-race agent that creates a supply unit
+			// create generic cross-race agent that builds a supply unit
 			suppliers.add(new MakeSupply());
-
-			// kill all suppliers that are inactive
-			List<Agent> zombies = new LinkedList<Agent>();
-			for (Agent supplier : suppliers) {
-				if (supplier.isDestroyed()) {
-					zombies.add(supplier);
-				}
-			}
-			for (Agent zombie : zombies) {
-				suppliers.remove(zombie);
-			}
 		}
 
 		// check reserved resources to notify their owners
 		Consumer first = this.consumers.peekFirst();
-
-		if (reservedSupply.get(first) >= getSupply(first)) {
+		if (first != null && reservedSupply.get(first) >= getSupply(first)) {
 			// the first consumer can be satisfied
 			if (first.fillNeeds(null)) {
 				// consumer satisfied so skip other listeners because minerals
