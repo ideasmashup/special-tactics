@@ -153,6 +153,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 				}
 			}
 			else {
+				System.out.println(" - base has no more waiting consumers... production stopped");
 			}
 		}
 
@@ -245,6 +246,8 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 
 		// add this consumer to the list
 		this.consumers.add(uneed);
+
+		System.out.println(" - BASE new consumer added, consumers total = "+ consumers.size());
 	}
 
 }
