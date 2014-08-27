@@ -209,7 +209,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	protected Filter filter = new Filter() {
 		@Override
 		public boolean allow(Unit unit) {
-			return unit == bindee;
+			return unit == bindee || Units.Types.WORKERS.is(unit);
 		};
 	};
 
