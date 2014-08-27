@@ -3,6 +3,7 @@ package org.ideasmashup.specialtactics.agents;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Needs;
@@ -17,6 +18,7 @@ import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BWTA;
 
 public class Base extends UnitAgent implements Producer, Consumer, UnitListener {
 
@@ -67,73 +69,90 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		// typical Base needs are minerals and supply to produce workers
 		// these needs are filled with a "null" offer
 
+		System.out.println("Base.fillNeeds("+ offer +")");
+
 		if (this.bindee.isTraining()) {
 			// already training unit, do nothing to save resources
 		}
 		else if (this.bindee.isIdle()) {
 			// not doing anything let's see if we can build something
-			Resources res = Resources.getInstance();
-			Supplies sup = Supplies.getInstance();
+
 			NeedUnit nu = consumers.peekFirst();
-			UnitType ut = nu.getUnitType();
-			boolean needFilled = false;
+			if (nu != null) {
 
-			System.out.println("base fillNeeds("+ offer +")");
+				// we have a consumer who want a worker
+				System.out.println(" - base still has "+ consumers.size() +" workers consumers waiting");
 
-			if (!hasSupply && sup.getSupply(this) >= ut.supplyRequired()) {
-				hasSupply = true;
-				needFilled = true;
+				UnitType ut = nu.getUnitType();
+				boolean needFilled = false;
 
-				// lock supply for this worker
-				if (sup.hasReserved(this)) {
-					sup.reserveSupply(ut.supplyRequired(), this);
+				Resources res = Resources.getInstance();
+				Supplies sup = Supplies.getInstance();
+
+				if (!hasSupply && sup.getSupply(this) >= ut.supplyRequired()) {
+					hasSupply = true;
+					needFilled = true;
+
+					// lock supply for this worker
+					if (sup.hasReserved(this)) {
+						sup.reserveSupply(ut.supplyRequired(), this);
+					}
 				}
-			}
 
-			if (!hasResources
-				&& res.getMinerals(this) >= ut.mineralPrice()
-				&& res.getGas(this) >= ut.gasPrice()) {
+				if (!hasResources
+					&& res.getMinerals(this) >= ut.mineralPrice()
+					&& res.getGas(this) >= ut.gasPrice()) {
 
-				hasResources = true;
-				needFilled = true;
+					hasResources = true;
+					needFilled = true;
 
-				// lock resources for this worker
-				if (!res.hasReserved(this)) {
-					res.reserveMinerals(ut.mineralPrice(), this);
-					res.reserveGas(ut.gasPrice(), this);
+					// lock resources for this worker
+					if (!res.hasReserved(this)) {
+						res.reserveMinerals(ut.mineralPrice(), this);
+						res.reserveGas(ut.gasPrice(), this);
+					}
 				}
-			}
 
-			if (hasSupply && hasResources) {
+				if (hasSupply && hasResources) {
 
-				System.out.println("  - has enough supply, resources, attempt building worker...");
+					System.out.println("  - has enough supply, resources, attempt building worker...");
 
-				// can build unit (worker) for first consumer
-				boolean building = bindee.train(ut);
+					// can build unit (worker) for first consumer
+					boolean building = bindee.train(ut);
 
-				if (building) {
-					System.out.println("    - SUCCESS : worker building, reseting for next worker request");
+					if (building) {
+						System.out.println("   - SUCCESS : worker building, reseting for next worker");
 
-					// reset flags for next worker building request
-					hasSupply = false;
-					hasResources = false;
+						// reset flags for next worker building request
+						hasSupply = false;
+						hasResources = false;
 
-					// can release all reserved resources
-					res.unreserve(this);
-					sup.unreserveSupply(this);
+						try {
+							// can release all reserved resources
+							res.unreserve(this);
+							sup.unreserveSupply(this);
 
-					// and remove consumer
-					consumers.removeFirst();
+							// and remove consumer
+							consumers.remove();
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						System.out.println("   - BASE removed consumer, consumers waiting = "+ consumers.size());
+					}
+					else {
+						// cannot build... ???
+						System.err.println("ERROR: base couldn't build worker, will try again later...");
+					}
 				}
 				else {
-					// cannot build... ???
-					System.err.println("ERROR: base couldn't build worker, will try again later...");
+					// if one "new" (pending) need has been satisfied return true
+					System.out.println(" - some needs still missing, return false");
+					return needFilled;
 				}
 			}
 			else {
-				// if one "new" (pending) need has been satisfied return true
-				System.out.println(" - some needs still missing, return false");
-				return needFilled;
 			}
 		}
 
