@@ -169,6 +169,24 @@ public class Resources {
 	}
 
 	public void onResourcesChange(int minerals, int gas) {
+		// check reserved resources to notify their owners
+		Consumer first = this.consumers.peekFirst();
+		if (first != null && reservedMinerals.get(first) >= this.getMinerals(first)
+			&& reservedGas.get(first) >= this.getGas(first)) {
+			System.out.println("Ress.change() : first consumer can be satisfied!!");
+
+			// the first consumer can be satisfied
+			if (first.fillNeeds(null)) {
+				System.out.println("  - first consumer has been satisfied!!");
+				// consumer satisfied so skip other listeners because minerals
+				// have been consumed so no need to do more in this frame
+				return;
+			}
+			else {
+				System.out.println("  - first consumer wasn't satisfied!!");
+			}
+		}
+
 		// call all listeners
 		for (ResourcesListener ls : listeners) {
 			ls.onResourcesChange(getMinerals(), getGas());
