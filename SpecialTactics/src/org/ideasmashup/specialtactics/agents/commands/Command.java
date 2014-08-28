@@ -43,8 +43,8 @@ public class Command extends UnitAgent {
 
 			// run the command until it works
 			if (ntc.runCommand(bindee, args)) {
-					// successful command
-					startWaitingForResult();
+				// successful command
+				startWaitingForResult();
 			}
 			else {
 				// unsuccessful -> will retry a few times before failing
