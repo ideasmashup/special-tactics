@@ -16,11 +16,15 @@ public class AI {
 
 	private static final Mirror mirror = new Mirror();
 
+	private static AI ai;
+
 	private static Game game;
 
 	private static Player self;
 
 	private static Brain brain;
+
+	private static GUI gui;
 
 	public void run() {
 		mirror.getModule().setEventListener(new DefaultBWListener() {
@@ -44,6 +48,9 @@ public class AI {
 					brain = new SpectatorBrain(game);
 					System.out.println("AI initialized in 'Spectator mode'");
 				}
+
+				// launch Swing GUI
+				gui = new GUI(ai, brain);
 
 				// force call brain.onStart()
 				brain.onStart();
@@ -69,6 +76,7 @@ public class AI {
 	}
 
 	public static void main(String... args) {
-		new AI().run();
+		ai = new AI();
+		ai.run();
 	}
 }
