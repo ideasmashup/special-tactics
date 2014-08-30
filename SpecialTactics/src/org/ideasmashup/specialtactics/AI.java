@@ -50,7 +50,12 @@ public class AI {
 				}
 
 				// launch Swing GUI
-				gui = new GUI(ai, brain);
+				new Thread("GUI Thread") {
+					@Override
+					public void run() {
+						gui = new GUI(ai, brain);
+					}
+				}.start();
 
 				// force call brain.onStart()
 				brain.onStart();
