@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bwapi.Position;
+import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitCommandType;
+import bwapi.UnitType;
 
 public class Commands {
 
@@ -114,6 +116,12 @@ public class Commands {
 					System.err.println("NOT IMPLEMENTED YET : "+ this.name());
 				case Build:
 					// call function
+					if (args.length == 1) {
+						res = unit.build(unit.getTilePosition(), (UnitType) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.build((TilePosition) args[0], (UnitType) args[1]);
+					}
 					break;
 				case Build_Addon:
 					// call function
