@@ -61,7 +61,14 @@ public class GUI extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				// must stop the AI from Starcraft
 				// maybe close the game too ?
-
+				try {
+					if (isProcessRunning(GAME_PROCESS)) {
+						killProcess(GAME_PROCESS);
+					}
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 
 			@Override
@@ -75,6 +82,24 @@ public class GUI extends JFrame {
 			}
 		});
 		setVisible(true);
+	}
+
+	private boolean isProcessRunning(String serviceName) throws Exception {
+		Process p = Runtime.getRuntime().exec(TASKLIST);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			//System.out.println(line);
+			if (line.contains(serviceName)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void killProcess(String serviceName) throws Exception {
+		Runtime.getRuntime().exec(KILL + serviceName);
 	}
 
 	public class UpdatesThread extends Thread {
