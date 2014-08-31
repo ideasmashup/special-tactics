@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,8 +15,8 @@ import processing.core.PApplet;
 
 public class GUI implements BrainListener {
 
-	private static final int WIDTH = 500;
-	private static final int HEIGHT = 500;
+	private static final int WIDTH = 600;
+	private static final int HEIGHT = 800;
 
 	private final Brain brain;
 	private final UpdatesThread updater;
@@ -29,7 +28,7 @@ public class GUI implements BrainListener {
 
 	public GUI(Brain brain) {
 
-		this.frame = new JFrame("Special Tactics - alpha");
+		this.frame = new JFrame("AI Viewer");
 
 		this.brain = brain;
 		this.updater = new UpdatesThread();
@@ -63,7 +62,6 @@ public class GUI implements BrainListener {
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.setSize(WIDTH, HEIGHT);
-		panel.setBorder(BorderFactory.createTitledBorder("AI data visualization"));
 		panel.add(sketch);
 
 		frame.add(panel);
@@ -122,10 +120,7 @@ public class GUI implements BrainListener {
 
 		@Override
 		public void setup() {
-			int width = WIDTH;
-			int height = HEIGHT;
-
-			size(width, height);
+			size(GUI.WIDTH, GUI.HEIGHT);
 			//background(0);
 		}
 
