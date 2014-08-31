@@ -46,12 +46,14 @@ public class Brain implements BWEventListener {
 	protected int prevMinerals = 0;
 	protected int prevGas = 0;
 	protected int prevSupply = 0;
+	protected BrainListener listener;
 
 	public Brain(Game game) {
 		instance = this;
 
 		this.game = game;
 		this.self = game.self();
+		this.listener = null;
 
 		// must initialize managers in correct order
 		agents = Agents.getInstance();
@@ -74,6 +76,14 @@ public class Brain implements BWEventListener {
 
 	public static Brain get() {
 		return instance;
+	}
+
+	public void setListener(BrainListener ls) {
+		this.listener = ls;
+	}
+
+	public void removeListener(BrainListener ls) {
+		this.listener = null;
 	}
 
 	@Override
