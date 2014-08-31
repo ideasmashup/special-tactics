@@ -1,6 +1,5 @@
 package org.ideasmashup.specialtactics;
 
-import java.awt.GridBagConstraints;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

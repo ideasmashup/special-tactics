@@ -17,6 +17,8 @@ import bwapi.Race;
 
 public class AI {
 
+	private static final boolean SHOW_GUI = true;
+
 	private static final String TASKLIST = "tasklist";
 	private static final String KILL = "taskkill /IM ";
 	private static final String GAME_PROCESS = "StarCraft.exe";
@@ -57,13 +59,18 @@ public class AI {
 				}
 
 				// launch Swing + Processing GUI
-				try {
-					gui = new GUI(brain);
-					gui.show(true);
+				if (SHOW_GUI) {
+					try {
+						gui = new GUI(brain);
+						gui.show(true);
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+						terminate(-1);
+					}
 				}
-				catch(Exception e) {
-					e.printStackTrace();
-					terminate(-1);
+				else {
+					System.err.println("GUI disabled to save cpu and memory. Enable in AI.java by setting SHOW_GUI = true");
 				}
 
 				// force call brain.onStart()
