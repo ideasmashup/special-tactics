@@ -123,7 +123,14 @@ public class GUI extends JFrame {
 		@Override
 		public void run() {
 			while (updating) {
+				// TODO update processing sketch data ?
 
+				try {
+					sleep(1000);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
