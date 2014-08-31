@@ -445,7 +445,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		return this.filter;
 	}
 
-	@Deprecated
 	public static enum Types {// n instanceof NeedUnit | NeedResources...
 		UNIT,
 		RESOURCES,
