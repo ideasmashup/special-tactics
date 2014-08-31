@@ -1,6 +1,5 @@
 package org.ideasmashup.specialtactics;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -8,23 +7,27 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.ideasmashup.specialtactics.brains.Brain;
 
+import processing.core.PApplet;
 
 public class GUI extends JFrame {
 
 	private static final long serialVersionUID = -7875436614181661200L;
 
-	private final AI ai;
-	private final Brain brain;
-	private final UpdatesThread updater;
-
-	private final boolean updating;
-
 	private static final String TASKLIST = "tasklist";
 	private static final String KILL = "taskkill /IM ";
 	private static final String GAME_PROCESS = "StarCraft.exe";
+
+	private final AI ai;
+	private final Brain brain;
+	private final UpdatesThread updater;
+	private final boolean updating;
+
+	private PApplet sketch;
+	private JPanel panel;
 
 	public GUI(AI ai, Brain brain) {
 		super("Special Tactics - alpha");
@@ -36,14 +39,26 @@ public class GUI extends JFrame {
 		this.updating = true;
 
 		initGUI();
+		initAI();
+
+		// run sketch
+		sketch.init();
+
 	}
 
-	private void initAI(AI ai, Brain brain) {
+	private void initAI() {
 		// start thread that updates AI details to display items like queues...
 		updater.start();
 	}
 
 	private void initGUI() {
+		// create Processing sketch
+		sketch = new RealtimeSketch();
+
+		panel = new JPanel();
+		panel.setBounds(20, 20, 600, 600);
+		panel.add(sketch);
+		add(panel);
 
 		setAlwaysOnTop(true);
 		pack();
@@ -94,7 +109,6 @@ public class GUI extends JFrame {
 				//
 			}
 		});
-		setVisible(true);
 	}
 
 	private boolean isProcessRunning(String serviceName) throws Exception {
@@ -136,6 +150,32 @@ public class GUI extends JFrame {
 
 		public void updateGraph() {
 
+		}
+	}
+
+	// processing sketch
+
+	public class RealtimeSketch extends PApplet {
+
+		private static final long serialVersionUID = 3698978875827336499L;
+
+
+		@Override
+		public void setup() {
+			size(500, 500);
+			background(0);
+		}
+
+		@Override
+		public void draw() {
+			// from: http://www.sebastianoliva.com/en/en/2010/05/using-a-processing-sketch-as-a-java-component/trackback/
+
+			background(0);
+			fill(200);
+			ellipseMode(CENTER);
+			ellipse(mouseX, mouseY, 40, 40);
+
+			}
 		}
 	}
 }
