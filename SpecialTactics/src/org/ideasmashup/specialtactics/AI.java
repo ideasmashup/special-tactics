@@ -58,8 +58,8 @@ public class AI {
 
 				// launch Swing + Processing GUI
 				try {
-					gui = new GUI(ai, brain);
-					gui.setVisible(true);
+					gui = new GUI(brain);
+					gui.show(true);
 				}
 				catch(Exception e) {
 					e.printStackTrace();

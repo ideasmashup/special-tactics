@@ -4,33 +4,34 @@ import java.awt.GridBagConstraints;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.ideasmashup.specialtactics.brains.Brain;
+import org.ideasmashup.specialtactics.brains.BrainListener;
 
 import processing.core.PApplet;
 
-public class GUI extends JFrame {
+public class GUI implements BrainListener {
 
-	private static final long serialVersionUID = -7875436614181661200L;
+	private static final int WIDTH = 500;
+	private static final int HEIGHT = 500;
 
-	private final AI ai;
 	private final Brain brain;
 	private final UpdatesThread updater;
 	private final boolean updating;
 
 	private PApplet sketch;
 	private JPanel panel;
+	private final JFrame frame;
 
-	public GUI(AI ai, Brain brain) {
-		super("Special Tactics - alpha");
+	public GUI(Brain brain) {
 
-		this.ai = ai;
+		this.frame = new JFrame("Special Tactics - alpha");
+
 		this.brain = brain;
 		this.updater = new UpdatesThread();
 
@@ -39,9 +40,11 @@ public class GUI extends JFrame {
 		initGUI();
 		initAI();
 
+		// attach itself to brain events
+		brain.setListener(this);
+
 		// run sketch
 		sketch.init();
-
 	}
 
 	private void initAI() {
@@ -58,27 +61,22 @@ public class GUI extends JFrame {
 	}
 
 	private void buildLayout() {
-		GridBagConstraints gbc = new GridBagConstraints();
-
 		panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+		panel.setSize(WIDTH, HEIGHT);
 		panel.setBorder(BorderFactory.createTitledBorder("AI data visualization"));
-		panel.add(sketch, gbc);
+		panel.add(sketch);
 
-		gbc.gridx = 0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 1;
-		gbc.weightx = gbc.weighty = 1;
-
-		getContentPane().add(panel, gbc);
+		frame.add(panel);
 	}
 
 	private void plugBehavior() {
-		setAlwaysOnTop(true);
-		setSize(500, 500);
-		setResizable(false);
-		setLocation(new Point(10, 50));
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		frame.setAlwaysOnTop(true);
+		frame.setSize(WIDTH, HEIGHT);
+		frame.setResizable(false);
+		frame.setLocation(new Point(10, 50));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// must stop the AI from Starcraft
@@ -86,6 +84,10 @@ public class GUI extends JFrame {
 				AI.terminate(0);
 			}
 		});
+	}
+
+	public void show(boolean visible) {
+		frame.setVisible(visible);
 	}
 
 	public class UpdatesThread extends Thread {
@@ -121,7 +123,10 @@ public class GUI extends JFrame {
 
 		@Override
 		public void setup() {
-			size(getParent().getWidth(), getParent().getHeight());
+			int width = WIDTH;
+			int height = HEIGHT;
+
+			size(width, height);
 			//background(0);
 		}
 
@@ -129,8 +134,8 @@ public class GUI extends JFrame {
 		public void draw() {
 			// from: http://www.sebastianoliva.com/en/en/2010/05/using-a-processing-sketch-as-a-java-component/trackback/
 
-//			background(0);
-//			fill(200);
+			background(0);
+			fill(200);
 			ellipseMode(CENTER);
 			ellipse(mouseX, mouseY, 40, 40);
 
