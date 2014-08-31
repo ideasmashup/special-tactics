@@ -108,7 +108,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 	}
 
-	public void add(Need need) {
+	public void addNeed(Need need) {
 		if (need instanceof NeedUnit) {
 
 			NeedUnit nu = (NeedUnit) need;
@@ -160,7 +160,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 	}
 
-	public void remove(Need need) {
+	public void removeNeed(Need need) {
 		if (need instanceof NeedUnit) {
 			this.nUnits.remove(need);
 			System.out.println("  - removed NeedUnit for "+ need.getOwner().toString());
@@ -206,11 +206,11 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		return null;
 	}
 
-	public void add(Producer producer) {
+	public void addProducer(Producer producer) {
 		producers.add(producer);
 	}
 
-	public void remove(Producer producer) {
+	public void removeProducer(Producer producer) {
 		producers.remove(producer);
 	}
 
@@ -269,13 +269,13 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
 						// when normal needs are satified they are removed from the
 						// global stack immediately
-						remove(need);
+						removeNeed(need);
 						break;
 					}
 					else if (need.getModifiers() == Needs.Modifiers.IS_TRANSIENT) {
 						// when transient needs are satified they are removed but
 						// their offer can still be passed to satifsy the next consumer
-						remove(need);
+						removeNeed(need);
 						continue;
 					}
 					else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
@@ -286,8 +286,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 						// so when it's added back it may have different priorities
 						// modifiers, etc
 
-						remove(need);
-						add(need);
+						removeNeed(need);
+						addNeed(need);
 						break;
 					}
 					break;
@@ -334,7 +334,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 				if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
 					// when normal needs are satified they are removed from the
 					// global stack immediately
-					remove(need);
+					removeNeed(need);
 				}
 				else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
 					// when permanent needs are satified they are removed but
@@ -343,8 +343,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					// Yet the need often changes when fillNeed() is called
 					// so when it's added back it may have different priorities
 					// modifiers, etc
-					remove(need);
-					add(need);
+					removeNeed(need);
+					addNeed(need);
 				}
 			}
 			else {
@@ -380,7 +380,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 				if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
 					// when normal needs are satified they are removed from the
 					// global stack immediately
-					remove(need);
+					removeNeed(need);
 				}
 				else if (need.getModifiers() == Needs.Modifiers.IS_PERMANENT) {
 					// when permanent needs are satified they are removed but
@@ -390,11 +390,12 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					// so when it's added back it may have different priorities
 					// modifiers, etc
 
-					remove(need);
-					add(need);
+					removeNeed(need);
+					addNeed(need);
 				}
 			}
 		}
+
 	}
 
 	protected Filter filter = new Filter() {

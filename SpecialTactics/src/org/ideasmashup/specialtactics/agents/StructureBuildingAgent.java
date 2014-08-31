@@ -50,7 +50,7 @@ public class StructureBuildingAgent extends MasterAgent implements Consumer {
 	protected void plugNeeds() {
 		for (Need need : needs) {
 			if (!need.isSatisfied()) {
-				Needs.getInstance().add(need);
+				Needs.getInstance().addNeed(need);
 			}
 		}
 	}

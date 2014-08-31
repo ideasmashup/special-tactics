@@ -47,7 +47,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 
 		// register itself to units events
 		Units.getInstance().addListener(this);
-		Needs.getInstance().add(this);
+		Needs.getInstance().addProducer(this);
 	}
 
 	@Override
@@ -241,8 +241,8 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		UnitType ut = uneed.getUnitType();
 
 		// add the corresponding supply and resources needs
-		Needs.getInstance().add(new NeedResources(this, ut.mineralPrice(), ut.gasPrice()));
-		Needs.getInstance().add(new NeedSupply(this, ut.supplyRequired()));
+		Needs.getInstance().addNeed(new NeedResources(this, ut.mineralPrice(), ut.gasPrice()));
+		Needs.getInstance().addNeed(new NeedSupply(this, ut.supplyRequired()));
 
 		// add this consumer to the list
 		this.consumers.add(uneed);
