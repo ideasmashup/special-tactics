@@ -1,11 +1,13 @@
 package org.ideasmashup.specialtactics;
 
+import java.awt.GridBagConstraints;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -16,10 +18,6 @@ import processing.core.PApplet;
 public class GUI extends JFrame {
 
 	private static final long serialVersionUID = -7875436614181661200L;
-
-	private static final String TASKLIST = "tasklist";
-	private static final String KILL = "taskkill /IM ";
-	private static final String GAME_PROCESS = "StarCraft.exe";
 
 	private final AI ai;
 	private final Brain brain;
@@ -52,81 +50,42 @@ public class GUI extends JFrame {
 	}
 
 	private void initGUI() {
-		// create Processing sketch
-		sketch = new RealtimeSketch();
+		// create Processing "sketch" (see docs)
+		sketch = new ProcessingApplet();
+
+		buildLayout();
+		plugBehavior();
+	}
+
+	private void buildLayout() {
+		GridBagConstraints gbc = new GridBagConstraints();
 
 		panel = new JPanel();
-		panel.setBounds(20, 20, 600, 600);
-		panel.add(sketch);
-		add(panel);
+		panel.setBorder(BorderFactory.createTitledBorder("AI data visualization"));
+		panel.add(sketch, gbc);
 
+		gbc.gridx = 0;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridx = 1;
+		gbc.weightx = gbc.weighty = 1;
+
+		getContentPane().add(panel, gbc);
+	}
+
+	private void plugBehavior() {
 		setAlwaysOnTop(true);
-		pack();
+		setSize(500, 500);
+		setResizable(false);
 		setLocation(new Point(10, 50));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		addWindowListener(new WindowListener() {
-			@Override
-			public void windowOpened(WindowEvent e) {
-				//
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e) {
-				//
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {
-				//
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				//
-			}
-
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// must stop the AI from Starcraft
 				// maybe close the game too ?
-				try {
-					if (isProcessRunning(GAME_PROCESS)) {
-						killProcess(GAME_PROCESS);
-					}
-				}
-				catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e) {
-				//
-			}
-
-			@Override
-			public void windowActivated(WindowEvent e) {
-				//
+				AI.terminate(0);
 			}
 		});
-	}
-
-	private boolean isProcessRunning(String serviceName) throws Exception {
-		Process p = Runtime.getRuntime().exec(TASKLIST);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		String line;
-		while ((line = reader.readLine()) != null) {
-			//System.out.println(line);
-			if (line.contains(serviceName)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private void killProcess(String serviceName) throws Exception {
-		Runtime.getRuntime().exec(KILL + serviceName);
 	}
 
 	public class UpdatesThread extends Thread {

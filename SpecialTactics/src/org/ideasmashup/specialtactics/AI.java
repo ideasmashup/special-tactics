@@ -1,5 +1,8 @@
 package org.ideasmashup.specialtactics;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.brains.ProtossBrain;
 import org.ideasmashup.specialtactics.brains.SpectatorBrain;
@@ -13,6 +16,10 @@ import bwapi.Player;
 import bwapi.Race;
 
 public class AI {
+
+	private static final String TASKLIST = "tasklist";
+	private static final String KILL = "taskkill /IM ";
+	private static final String GAME_PROCESS = "StarCraft.exe";
 
 	private static final Mirror mirror = new Mirror();
 
@@ -56,6 +63,7 @@ public class AI {
 				}
 				catch(Exception e) {
 					e.printStackTrace();
+					terminate(-1);
 				}
 
 				// force call brain.onStart()
@@ -68,6 +76,40 @@ public class AI {
 
 		mirror.startGame();
 	}
+
+	public static void terminate(int exitcode) {
+		// kill starcraft.exe process
+		try {
+			if (isProcessRunning(GAME_PROCESS)) {
+				killProcess(GAME_PROCESS);
+			}
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		// kill bot
+		System.exit(exitcode);
+	}
+
+	private static boolean isProcessRunning(String serviceName) throws Exception {
+		Process p = Runtime.getRuntime().exec(TASKLIST);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			//System.out.println(line);
+			if (line.contains(serviceName)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static void killProcess(String serviceName) throws Exception {
+		Runtime.getRuntime().exec(KILL + serviceName);
+	}
+
 
 	public static Game getGame() {
 		return game;
