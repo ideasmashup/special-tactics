@@ -3,6 +3,8 @@ package org.ideasmashup.specialtactics;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -12,7 +14,10 @@ import org.gicentre.utils.multisketch.EmbeddedSketch;
 import org.gicentre.utils.stat.BarChart;
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.brains.BrainListener;
+import org.ideasmashup.specialtactics.managers.Needs;
+import org.ideasmashup.specialtactics.managers.Needs.Types;
 
+import cern.colt.Arrays;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -140,8 +145,17 @@ public class GUI implements BrainListener {
 
 		// ------------------ Sketch-wide variables ---------------------------
 
-		BarChart barChart;
-		PFont titleFont, smallFont;
+		Needs needs = Needs.getInstance();
+
+		PFont titleFont, smallFont, tinyFont;
+		BarChart bcPro, bcRes, bcSup, bcUni;
+
+		LinkedList<Float> nRes = new LinkedList<Float>();
+		LinkedList<Float> nSup = new LinkedList<Float>();
+		LinkedList<Float> nUni = new LinkedList<Float>();
+		LinkedList<Float> nPro = new LinkedList<Float>();
+
+		private static final int PLOTS_MAX = 10;
 
 		// ------------------ Initialisation ----------------------------------
 
@@ -153,23 +167,18 @@ public class GUI implements BrainListener {
 
 				// /////////////// Setup sketch ///////////////////////////
 				smooth();
-				noLoop();
+				//noLoop();
+				frameRate(1);
 
 				titleFont = loadFont("Helvetica-22.vlw");
 				smallFont = loadFont("Helvetica-12.vlw");
+				tinyFont = createDefaultFont(8);
 				textFont(smallFont);
 
-				barChart = new BarChart(this);
-				barChart.setData(new float[] { 2462, 2801, 3280, 3983, 4490, 4894, 5642, 6322,
-						6489, 6401, 7657, 9649, 9767, 12167, 15154, 18200, 23124, 28645 });
-				barChart.setBarLabels(new String[] { "1830", "1840", "1850", "1860", "1870",
-						"1880", "1890", "1900", "1910", "1920", "1930", "1940", "1950", "1960",
-						"1970", "1980", "1990", "2000" });
-				barChart.setBarColour(color(200, 80, 80, 100));
-				barChart.setBarGap(2);
-				barChart.setValueFormat("$###,###");
-				barChart.showValueAxis(true);
-				barChart.showCategoryAxis(true);
+				bcPro = initChart(nPro);
+				bcRes = initChart(nRes);
+				bcSup = initChart(nSup);
+				bcUni = initChart(nUni);
 				// ///////////////////////////////////////////////////////
 			}
 			catch (Exception e) {
@@ -181,22 +190,43 @@ public class GUI implements BrainListener {
 
 		@Override
 		public void draw() {
-			// from: http://www.sebastianoliva.com/en/en/2010/05/using-a-processing-sketch-as-a-java-component/trackback/
-
-			// from: http://blog.blprnt.com/blog/blprnt/tutorial-processing-javascript-and-data-visualization
+			// example: http://www.sebastianoliva.com/en/en/2010/05/using-a-processing-sketch-as-a-java-component/trackback/
+			// example: http://blog.blprnt.com/blog/blprnt/tutorial-processing-javascript-and-data-visualization
 
 			// don't remove try catch otherwise errors not shown!!
 			try {
 				// /////////////// Draw sketch ///////////////////////////
-				background(255);
-				barChart.draw(10, 10, width - 50, height - 50);
+
+				// add data to internal collections
+				nPro.addFirst((float) needs.getProducersCount());
+				if (nPro.size() > PLOTS_MAX) nPro.removeLast();
+
+				nRes.addFirst((float) needs.getNeedsCount(Types.RESOURCES));
+				if (nRes.size() > PLOTS_MAX) nRes.removeLast();
+
+				nSup.addFirst((float) needs.getNeedsCount(Types.SUPPLY));
+				if (nSup.size() > PLOTS_MAX) nSup.removeLast();
+
+				nUni.addFirst((float) needs.getNeedsCount(Types.UNIT));
+				if (nUni.size() > PLOTS_MAX) nUni.removeLast();
+
+				// clear background
+				background(0);
 				fill(120);
+
+
+				// plot all data
+				plotChart(bcPro, "Producers", nPro, 100, 100);
+				plotChart(bcRes, "Needs (min/gas)", nRes, 250, 100);
+				plotChart(bcSup, "Needs (supply)", nSup, 400, 100);
+				plotChart(bcUni, "Needs (units)", nUni, 550, 100);
+
+				// add titles
 				textFont(titleFont);
-				text("Units in production", 70, 30);
-				float textHeight = textAscent();
+				text("Overview of internal queues", 10, 30);
 				textFont(smallFont);
-				text("Total production per UnitType", 70,
-						30 + textHeight);
+				text("Total items per queue", 10, 50);
+
 				// ///////////////////////////////////////////////////////
 			}
 			catch (Exception e) {
@@ -234,5 +264,50 @@ public class GUI implements BrainListener {
 
 		// -------------------------- Private methods -------------------------
 
+		private BarChart initChart(List<Float> data) {
+			BarChart bc = new BarChart(this);
+
+			bc.setBarColour(color(200, 80, 80, 100));
+			bc.setBarGap(2);
+			bc.setValueFormat("###,###");
+			bc.showValueAxis(true);
+			bc.showCategoryAxis(false);
+
+			return bc;
+		}
+
+		private void plotChart(BarChart bc, String title, List<Float> data, int top, int height) {
+
+			bc.setData(values(data));
+//			bc.setBarLabels(labels(data));
+
+			stroke(0);
+			textFont(smallFont);
+			text(title, 10, top + textAscent());
+			textFont(tinyFont);
+			bc.draw(10, top + 20, width-20, height);
+		}
+
+		private float[] values(List<Float> list) {
+			float[] floats = new float[list.size()];
+			int i = 0;
+
+			for (Float f : list) {
+				floats[i++] = (f != null ? f : Float.NaN);
+			}
+
+			return floats;
+		}
+
+		private String[] labels(List<Float> list) {
+			String[] strings = new String[list.size()];
+			int i = 0;
+
+			for (Float f : list) {
+				strings[i++] = (f != null ? Float.toString(f) : "");
+			}
+
+			return strings;
+		}
 	}
 }

@@ -1,6 +1,8 @@
 package org.ideasmashup.specialtactics.managers;
 
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Consumer;
@@ -181,6 +183,30 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 	}
 
+	public List<Need> getNeeds(Types type) {
+		switch (type) {
+			case RESOURCES:
+				return Collections.unmodifiableList(nResources);
+			case SUPPLY:
+				return Collections.unmodifiableList(nSupplies);
+			case UNIT:
+				return Collections.unmodifiableList(nUnits);
+		}
+		return null;
+	}
+
+	public int getNeedsCount(Types type) {
+		switch (type) {
+			case RESOURCES:
+				return nResources.size();
+			case SUPPLY:
+				return nSupplies.size();
+			case UNIT:
+				return nUnits.size();
+		}
+		return 0;
+	}
+
 	public Need[] expand(Need need) {
 		// converts a need that cannot be fulfilled yet into a chain of
 		// fulfillable needs required to build the end unit
@@ -212,6 +238,14 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	public void removeProducer(Producer producer) {
 		producers.remove(producer);
+	}
+
+	public List<Producer> getProducers() {
+		return Collections.unmodifiableList(producers);
+	}
+
+	public int getProducersCount() {
+		return producers.size();
 	}
 
 	@Override
