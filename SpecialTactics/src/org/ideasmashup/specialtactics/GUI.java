@@ -11,9 +11,6 @@ import javax.swing.JFrame;
 
 import org.ideasmashup.specialtactics.brains.Brain;
 
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
-import edu.uci.ics.jung.visualization.VisualizationImageServer;
 
 public class GUI extends JFrame {
 
@@ -47,17 +44,6 @@ public class GUI extends JFrame {
 	}
 
 	private void initGUI() {
-		DirectedSparseGraph g = new DirectedSparseGraph();
-		g.addVertex("Vertex1");
-		g.addVertex("Vertex2");
-		g.addVertex("Vertex3");
-		g.addEdge("Edge1", "Vertex1", "Vertex2");
-		g.addEdge("Edge2", "Vertex1", "Vertex3");
-		g.addEdge("Edge3", "Vertex3", "Vertex1");
-		VisualizationImageServer vs = new VisualizationImageServer(new CircleLayout(g),
-				new Dimension(200, 200));
-
-		getContentPane().add(vs);
 
 		setAlwaysOnTop(true);
 		pack();
