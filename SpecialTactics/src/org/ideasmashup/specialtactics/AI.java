@@ -49,13 +49,14 @@ public class AI {
 					System.out.println("AI initialized in 'Spectator mode'");
 				}
 
-				// launch Swing GUI
-				new Thread("GUI Thread") {
-					@Override
-					public void run() {
-						gui = new GUI(ai, brain);
-					}
-				}.start();
+				// launch Swing + Processing GUI
+				try {
+					gui = new GUI(ai, brain);
+					gui.setVisible(true);
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
 
 				// force call brain.onStart()
 				brain.onStart();
