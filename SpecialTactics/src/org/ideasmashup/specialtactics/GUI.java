@@ -196,10 +196,10 @@ public class GUI implements BrainListener {
 				textFont(smallFont);
 
 				bcMaster = initMasterChart();
-				bcPro = initChart(nPro);
-				bcRes = initChart(nRes);
-				bcSup = initChart(nSup);
-				bcUni = initChart(nUni);
+				bcPro = initChart(nPro, color(200, 80, 80, 100));
+				bcRes = initChart(nRes, color(10, 100, 255, 100));
+				bcSup = initChart(nSup, color(10, 200, 80, 100));
+				bcUni = initChart(nUni, color(100, 100, 100, 100));
 				// ///////////////////////////////////////////////////////
 			}
 			catch (Exception e) {
@@ -348,10 +348,10 @@ public class GUI implements BrainListener {
 			bcMaster.draw(10, top + 20, width - 10, height);
 		}
 
-		private BarChart initChart(List<Float> data) {
+		private BarChart initChart(List<Float> data, int color) {
 			BarChart bc = new BarChart(this);
 
-			bc.setBarColour(color(200, 80, 80, 100));
+			bc.setBarColour(color);
 			bc.setBarGap(2);
 			bc.setValueFormat("###,###");
 			bc.showValueAxis(true);
