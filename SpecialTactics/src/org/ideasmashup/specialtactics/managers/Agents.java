@@ -27,6 +27,10 @@ public class Agents {
 		return instance;
 	}
 
+	public int getAgentsCount() {
+		return agents.size();
+	}
+
 	public boolean contains(Agent agent) {
 		return agents.contains(agent);
 	}
