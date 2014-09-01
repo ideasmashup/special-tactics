@@ -78,7 +78,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		else if (this.bindee.isIdle()) {
 			// not doing anything let's see if we can build something
 
-			NeedUnit nu = consumers.peekFirst();
+			NeedUnit nu = consumers.getFirst();
 			if (nu != null) {
 
 				// we have a consumer who want a worker
@@ -134,7 +134,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 							sup.unreserveSupply(this);
 
 							// and remove consumer
-							consumers.remove();
+							consumers.removeFirst();
 						}
 						catch (Exception e) {
 							e.printStackTrace();
@@ -204,7 +204,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 			// FIXME magic number 400 should be replaced by radius calculation?
 			//System.out.println(" - worker build at "+ distance +" from base");
 			// this is a worker produced by us, so remove one consumer
-
+			consumers.removeFirst();
 		}
 	}
 
