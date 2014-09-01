@@ -18,9 +18,12 @@ import org.gicentre.utils.multisketch.EmbeddedSketch;
 import org.gicentre.utils.stat.BarChart;
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.brains.BrainListener;
+import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Needs.Types;
 import org.ideasmashup.specialtactics.managers.Producers;
+import org.ideasmashup.specialtactics.managers.Resources;
+import org.ideasmashup.specialtactics.managers.Supplies;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -221,6 +224,8 @@ public class GUI implements BrainListener {
 				float fUni = masterValues[2] = needs.getNeedsCount(Types.UNIT);
 				float fPro = masterValues[3] = producers.getProducersCount();
 				float fCon = masterValues[4] = producers.getConsumersCount();
+				float fAge = Agents.getInstance().getAgentsCount();
+
 				float fRMin = Resources.getInstance().getReservedMinerals();
 				float fRGas = Resources.getInstance().getReservedGas();
 				float fRSup = Supplies.getInstance().getReservedSupply();
