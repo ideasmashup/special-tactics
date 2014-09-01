@@ -87,6 +87,10 @@ public class Supplies {
 		onSupplyChange(getSupply());
 	}
 
+	public int getReservedSupply() {
+		return reservedSupplyTotal;
+	}
+
 	public int getSupply() {
 		// public supplies
 		return AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() - reservedSupplyTotal;
