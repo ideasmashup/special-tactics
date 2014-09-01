@@ -111,9 +111,9 @@ public class GUI implements BrainListener {
 			}
 		});
 		gameControls.setAlwaysOnTop(true);
-		gameControls.setSize(500, 100);
+		gameControls.setSize(600, 100);
 		gameControls.setResizable(false);
-		gameControls.setLocation(10, 50 + HEIGHT + 100);
+		gameControls.setLocation(620, 50 + HEIGHT - 110);
 	}
 
 	private void buildGameControlToolbar() {
@@ -122,7 +122,7 @@ public class GUI implements BrainListener {
 		final JPanel pContent = new JPanel();
 		pContent.setLayout(new BoxLayout(pContent, BoxLayout.PAGE_AXIS));
 		final JPanel pSpeed = new JPanel();
-		pSpeed.setLayout(new BorderLayout(10, 10));
+		pSpeed.setLayout(new BorderLayout(10, 0));
 		pSpeed.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Speed"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		final JButton bSpeedMinus = new JButton("<");
 		final JLabel lSpeed = new JLabel();
