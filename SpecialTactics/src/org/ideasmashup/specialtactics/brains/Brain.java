@@ -8,6 +8,7 @@ import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
+import org.ideasmashup.specialtactics.agents.AsyncOrders;
 import org.ideasmashup.specialtactics.agents.Scout;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.managers.Agents;
@@ -36,6 +37,7 @@ public class Brain implements BWEventListener {
 
 	// MANAGER classes
 	protected Agents agents;
+	protected AsyncOrders orders;
 	protected Units units;
 	protected Resources resources;
 	protected Supplies supplies;
@@ -57,6 +59,7 @@ public class Brain implements BWEventListener {
 
 		// must initialize managers in correct order
 		agents = Agents.getInstance();
+		orders = AsyncOrders.getInstance();
 		units = Units.getInstance();
 		resources = Resources.getInstance();
 		supplies = Supplies.getInstance();
