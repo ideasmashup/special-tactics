@@ -41,7 +41,8 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	protected State state;
 	private State prevState;
 
-	protected NeedResources need;
+	protected NeedResources needResources;
+	protected NeedUnit needUnit;
 
 	public MakeSupply() {
 		super();
@@ -62,7 +63,8 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		// first need a worker to build the depot it will be "booked temporarily"
 		// so that the "next in line" consumer will already have it
 		System.out.println("SUPPLY : Requested next worker for supply building");
-		Needs.getInstance().addNeed(new NeedUnit(this, Units.Types.WORKERS.getUnitType(), 0));
+		needUnit = new NeedUnit(this, Units.Types.WORKERS.getUnitType(), 0);
+		Needs.getInstance().addNeed(needUnit);
 
 		// then we must "reserve" 100 minerals to be able to build the supply
 		// FIXME ugly workaround to prevent minerals and gas for the pylons/dpot
@@ -70,11 +72,11 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 		supplyType = Units.Types.SUPPLY.getUnitType();
 
 		System.out.println("SUPPLY : Requested ressources for supply building");
-		need = new NeedResources(this,
+		needResources = new NeedResources(this,
 			Units.Types.SUPPLY.getUnitType().mineralPrice(),
 			Units.Types.SUPPLY.getUnitType().gasPrice()
 		);
-		Needs.getInstance().addNeed(need);
+		Needs.getInstance().addNeed(needResources);
 
 		// auto-register agent
 		Agents.getInstance().add(this);
@@ -148,11 +150,13 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	@Override
 	public Need[] getNeeds(boolean returnAll) {
-		return new Need[]{need};
+		return new Need[]{needResources};
 	}
 
 	@Override
 	public boolean fillNeeds(Object offer) {
+		if (state == State.DONE) return false;
+
 		if (offer instanceof Unit) {
 			Unit unit = (Unit) offer;
 			if (unit.getType().isWorker()) {
@@ -177,14 +181,15 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			// non-unit offer : assume minerals
 			Resources res = Resources.getInstance();
 			if ((state == State.MOVING || state == State.READY)
-				&& res.getMinerals(this) >= need.getMinerals()
-				&& res.getGas(this) >= need.getGas()) {
+				&& res.getMinerals(this) >= needResources.getMinerals()
+				&& res.getGas(this) >= needResources.getGas()) {
 
 				// must lock resources until worker reaches build location)
 				if (!res.hasReserved(this)) {
-					res.reserveMinerals(need.getMinerals(), this);
-					res.reserveGas(need.getGas(), this);
+					res.reserveMinerals(needResources.getMinerals(), this);
+					res.reserveGas(needResources.getGas(), this);
 				}
+
 				return true;
 			}
 		}
