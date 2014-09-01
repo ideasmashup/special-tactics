@@ -56,17 +56,12 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	protected LinkedList<Need> nResources;
 	protected LinkedList<Need> nSupplies;
 
-	protected LinkedList<Producer> producers;
-
 	protected static Needs instance = null;
 
 	protected Needs() {
-		// init local fields
 		this.nUnits = new LinkedList<Need>();
 		this.nResources = new LinkedList<Need>();
 		this.nSupplies = new LinkedList<Need>();
-
-		this.producers = new LinkedList<Producer>();
 	}
 
 	public static Needs getInstance() {
@@ -115,23 +110,23 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 			NeedUnit nu = (NeedUnit) need;
 
-			// unit can be produced by available producers
-			boolean buildable = false;
-			for (Producer p : producers) {
-				if (p.canFill(need)) {
-					System.out.println("  - unit can be built by "+ p +" producer so we added consumer to its queue");
-					p.addConsumer(need.getOwner(), need);
-					buildable = true;
-					break;
-				}
+			// check if unit can be produced by available producers
+
+			if (Producers.getInstance().canProduce(need)) {
+
+				// add needunit (the consumer will be called when the unit is completed)
+				Producers.getInstance().addConsumer(need);
+				sortedInsert(this.nUnits, need);
+
+				System.out.println("  - added NeedUnit for "+ need.getOwner().toString());
+
 			}
+			else {
+				// unit cannot be produced yet (e.g. factory is destroyed or not
+				// built yet) so we must convert "Need marine" into "need depot"
+				// "need barracks" "need marine"
 
-			// unit cannot be produced yet (e.g. factory is destroyed or not
-			// built yet) so we must convert "Need marine" into "need depot"
-			// "need barracks" "need marine"
-
-			if (!buildable) {
-				System.out.println("  - this unit cannot be built yet because no producer can produce it!");
+				System.out.println("  - this unit cannot be built yet because no producer can produce it! Expanding requirements!");
 
 				Need[] requirements = expand(need);
 				for (Need req : requirements) {
@@ -140,9 +135,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 				System.out.println("  - added "+ requirements.length +" dependencies needs for requested "+ nu.getUnitType());
 			}
 
-			// add needunit (the consumer will be called when the unit is completed)
-			sortedInsert(this.nUnits, need);
-			System.out.println("  - added NeedUnit for "+ need.getOwner().toString());
 			System.out.println("  - total NeedUnit = "+ nUnits.size());
 		}
 		else if (need instanceof NeedResources) {
@@ -230,22 +222,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		}
 
 		return null;
-	}
-
-	public void addProducer(Producer producer) {
-		producers.add(producer);
-	}
-
-	public void removeProducer(Producer producer) {
-		producers.remove(producer);
-	}
-
-	public List<Producer> getProducers() {
-		return Collections.unmodifiableList(producers);
-	}
-
-	public int getProducersCount() {
-		return producers.size();
 	}
 
 	@Override
