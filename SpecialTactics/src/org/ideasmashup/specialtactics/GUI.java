@@ -251,7 +251,7 @@ public class GUI implements BrainListener {
 				fill(120);
 
 				// plot master chart
-				plotMasterChart(90, 130);
+				plotMasterChart("Collections sizes", 90, 130);
 
 				// plot all data
 				plotChart(bcPro, "Producers", nPro, 250, 100);
@@ -339,11 +339,12 @@ public class GUI implements BrainListener {
 			return bc;
 		}
 
-		private void plotMasterChart(int top, int height) {
+		private void plotMasterChart(String title, int top, int height) {
 			bcMaster.setData(masterValues);
 
 			stroke(0);
 			textFont(smallFont);
+			text(title, 10, top + textAscent());
 			textFont(tinyFont);
 			bcMaster.draw(10, top + 20, width - 10, height);
 		}
