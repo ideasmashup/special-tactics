@@ -230,16 +230,16 @@ public class GUI implements BrainListener {
 				float fRGas = Resources.getInstance().getReservedGas();
 				float fRSup = Supplies.getInstance().getReservedSupply();
 
-				nPro.addFirst(fPro);
+				nPro.addFirst(fAge);
 				if (nPro.size() > PLOTS_MAX) nPro.removeLast();
 
-				nRes.addFirst(fRes);
+				nRes.addFirst(fRMin);
 				if (nRes.size() > PLOTS_MAX) nRes.removeLast();
 
-				nSup.addFirst(fSup);
+				nSup.addFirst(fRGas);
 				if (nSup.size() > PLOTS_MAX) nSup.removeLast();
 
-				nUni.addFirst(fUni);
+				nUni.addFirst(fRSup);
 				if (nUni.size() > PLOTS_MAX) nUni.removeLast();
 
 				// activate zooming
@@ -254,16 +254,16 @@ public class GUI implements BrainListener {
 				plotMasterChart("Collections sizes", 90, 130);
 
 				// plot all data
-				plotChart(bcPro, "Producers", nPro, 250, 100);
-				plotChart(bcRes, "Needs (min/gas)", nRes, 400, 100);
-				plotChart(bcSup, "Needs (supply)", nSup, 550, 100);
-				plotChart(bcUni, "Needs (units)", nUni, 700, 100);
+				plotChart(bcPro, "Total active agents : "+ fAge, nPro, 300, 70);
+				plotChart(bcRes, "Reserved minerals : "+ fRMin, nRes, 400, 70);
+				plotChart(bcSup, "Reserved gas : "+ fRGas, nSup, 500, 70);
+				plotChart(bcUni, "Reserved supply : "+ fRSup, nUni, 600, 70);
 
 				// add titles
 				textFont(titleFont);
-				text("Overview of internal queues", 10, 30);
+				text("Overview of internal data", 10, 30);
 				textFont(smallFont);
-				text("Total items per queue", 10, 50);
+				text("Current amounts stored", 10, 50);
 
 				// non-zoomed stuff here
 				popMatrix();
