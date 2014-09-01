@@ -199,6 +199,7 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitDiscover(Unit unit) {
+		units.add(unit);
 		units.onUnitDiscover(unit);
 	}
 
@@ -241,7 +242,7 @@ public class Brain implements BWEventListener {
 		// TODO verify that call order is correct for new Agents that implement
 		//      UnitListener and may be called after/before? they are created
 
-		units.add(unit);
+//		units.add(unit);
 		units.onUnitCreate(unit);
 	}
 

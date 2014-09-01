@@ -210,7 +210,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 			Units units = Units.getInstance();
 
 			for (UnitType ut : uts) {
-				if (units.contains(ut)) {
+				if (units.getOwnBuildings(Units.Types.getType(ut)).contains(ut)) {
 					// only add needs for missing dependencies
 					// for example a Reaver requires : gate, core, robo, bay
 					// so only add : robo, bay if core and gate already built
