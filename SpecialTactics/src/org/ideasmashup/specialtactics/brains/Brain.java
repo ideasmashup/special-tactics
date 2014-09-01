@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.AsyncOrders;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
-import org.ideasmashup.specialtactics.agents.AsyncOrders;
-import org.ideasmashup.specialtactics.agents.Scout;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
+import org.ideasmashup.specialtactics.agents.scouts.FindEnemyMain;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
@@ -72,9 +72,12 @@ public class Brain implements BWEventListener {
 		agents.add(clock);
 
 		// creates scouting agent
-		final Scout scout = new Scout(null);
-		units.addListener(scout);
+//		final Scout scout = new Scout(null);
+//		units.addListener(scout);
+//		agents.add(scout);
+		final FindEnemyMain scout = new FindEnemyMain(null);
 		agents.add(scout);
+
 	}
 
 	public static Brain get() {
