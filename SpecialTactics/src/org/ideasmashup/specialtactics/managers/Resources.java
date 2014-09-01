@@ -117,6 +117,10 @@ public class Resources {
 		onResourcesChange(getMinerals(), getGas());
 	}
 
+	public int getReservedMinerals() {
+		return reservedMineralsTotal;
+	}
+
 	public int getMinerals() {
 		// return "public" minerals (ones that haven't been reserved yet)
 		return AI.getPlayer().minerals() - reservedMineralsTotal;
@@ -135,6 +139,10 @@ public class Resources {
 		}
 
 		return minerals;
+	}
+
+	public int getReservedGas() {
+		return reservedGasTotal;
 	}
 
 	public int getGas() {
