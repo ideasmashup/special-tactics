@@ -3,6 +3,8 @@ package org.ideasmashup.specialtactics;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,16 +12,19 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.gicentre.utils.move.ZoomPan;
+import org.gicentre.utils.move.ZoomPanListener;
 import org.gicentre.utils.multisketch.EmbeddedSketch;
 import org.gicentre.utils.stat.BarChart;
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.brains.BrainListener;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Needs.Types;
+import org.ideasmashup.specialtactics.managers.Producers;
 
-import cern.colt.Arrays;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PVector;
 
 public class GUI implements BrainListener {
 
@@ -145,6 +150,9 @@ public class GUI implements BrainListener {
 		// giCentre classes
 		PFont titleFont, smallFont, tinyFont;
 		BarChart bcPro, bcRes, bcSup, bcUni;
+		ZoomPan zoomer;
+		PVector mousePos;
+		NumberFormat formatter = new DecimalFormat("#.0");
 
 		// real-time variations charts values
 		LinkedList<Float> nRes = new LinkedList<Float>();
@@ -173,6 +181,10 @@ public class GUI implements BrainListener {
 				//noLoop();
 				frameRate(1);
 
+				zoomer = new ZoomPan(this);
+
+				// Monitor end of zoom/pan events.
+				zoomer.addZoomPanListener(new ZoomListener());
 
 				titleFont = loadFont("Helvetica-22.vlw");
 				smallFont = loadFont("Helvetica-12.vlw");
@@ -221,6 +233,10 @@ public class GUI implements BrainListener {
 				nUni.addFirst(fUni);
 				if (nUni.size() > PLOTS_MAX) nUni.removeLast();
 
+				// activate zooming
+				pushMatrix();
+				zoomer.transform();
+
 				// start drawing everything
 				background(0);
 				fill(120);
@@ -240,6 +256,14 @@ public class GUI implements BrainListener {
 				textFont(smallFont);
 				text("Total items per queue", 10, 50);
 
+				// non-zoomed stuff here
+				popMatrix();
+				textAlign(LEFT, BOTTOM);
+
+				// Get the mouse position taking into account any zooming and
+				// panning.
+				mousePos = zoomer.getMouseCoord();
+
 				// ///////////////////////////////////////////////////////
 			}
 			catch (Exception e) {
@@ -254,6 +278,9 @@ public class GUI implements BrainListener {
 			if (key == ' ') {
 				// exit on spacebar
 				AI.terminate(0);
+			}
+			else if (key == 'r') {
+				zoomer.reset();
 			}
 
 			if (key == CODED) {
@@ -274,6 +301,21 @@ public class GUI implements BrainListener {
 		}
 
 		// -------------------------- Nested classes --------------------------
+
+		class ZoomListener implements ZoomPanListener {
+			@Override
+			public void panEnded() {
+				println("Panning stopped");
+			}
+			else if (key == 'r') {
+				zoomer.reset();
+			}
+
+			@Override
+			public void zoomEnded() {
+				println("Zooming stopped");
+			}
+		}
 
 		// -------------------------- Private methods -------------------------
 
