@@ -221,6 +221,9 @@ public class GUI implements BrainListener {
 				float fUni = masterValues[2] = needs.getNeedsCount(Types.UNIT);
 				float fPro = masterValues[3] = producers.getProducersCount();
 				float fCon = masterValues[4] = producers.getConsumersCount();
+				float fRMin = Resources.getInstance().getReservedMinerals();
+				float fRGas = Resources.getInstance().getReservedGas();
+				float fRSup = Supplies.getInstance().getReservedSupply();
 
 				nPro.addFirst(fPro);
 				if (nPro.size() > PLOTS_MAX) nPro.removeLast();
