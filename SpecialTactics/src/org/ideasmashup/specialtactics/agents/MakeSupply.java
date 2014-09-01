@@ -98,11 +98,15 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			case START:
 				break;
 			case READY:
+				// already has a worker
+				Needs.getInstance().removeNeed(needUnit);
 			case BUILD_TRY:
 				// new state because build can fail even when build() returns true
 				// so building must only start after we have validated that a
 				// supply unit has been actually created
 			case MOVING:
+				// move and wait for adequate resources in fillNeed()
+				// try to build now
 				TilePosition tp = worker.getTilePosition();
 
 				if (AI.getGame().canBuildHere(worker, tp, supplyType)) {
@@ -123,6 +127,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			case BUILDING:
 				// release reserved locks
 				Resources.getInstance().unreserve(this);
+				Needs.getInstance().removeNeed(needResources);
 
 				if (AI.getPlayer().getRace() == Race.Protoss) {
 					// building is done, release worker
@@ -132,7 +137,6 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 			case DONE:
 				// remove from managers
 				Agents.getInstance().remove(this);
-				Needs.getInstance().removeNeed(need);
 				Units.getInstance().removeListener(this);
 
 				// kill this agent and free its worker
