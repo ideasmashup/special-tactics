@@ -179,9 +179,10 @@ public class GUI implements BrainListener {
 				// /////////////// Setup sketch ///////////////////////////
 				smooth();
 				//noLoop();
-				frameRate(1);
+				frameRate(16);
 
 				zoomer = new ZoomPan(this);
+				zoomer.allowZoomButton(false);
 
 				// Monitor end of zoom/pan events.
 				zoomer.addZoomPanListener(new ZoomListener());
