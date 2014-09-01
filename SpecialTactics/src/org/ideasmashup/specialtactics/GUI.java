@@ -306,15 +306,12 @@ public class GUI implements BrainListener {
 		class ZoomListener implements ZoomPanListener {
 			@Override
 			public void panEnded() {
-				println("Panning stopped");
-			}
-			else if (key == 'r') {
-				zoomer.reset();
+				//println("Panning stopped");
 			}
 
 			@Override
 			public void zoomEnded() {
-				println("Zooming stopped");
+				//println("Zooming stopped");
 			}
 		}
 

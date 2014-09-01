@@ -3,7 +3,6 @@ package org.ideasmashup.specialtactics.agents;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Needs;
@@ -19,7 +18,6 @@ import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import bwta.BWTA;
 
 public class Base extends UnitAgent implements Producer, Consumer, UnitListener {
 
@@ -238,15 +236,15 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	@Override
 	public void addConsumer(Consumer consumer, Need need) {
 		// add new consumer (a worker consumer)
-		NeedUnit uneed = (NeedUnit) need;
-		UnitType ut = uneed.getUnitType();
+		NeedUnit nu = (NeedUnit) need;
+		UnitType ut = nu.getUnitType();
 
 		// add the corresponding supply and resources needs
 		Needs.getInstance().addNeed(new NeedResources(this, ut.mineralPrice(), ut.gasPrice()));
 		Needs.getInstance().addNeed(new NeedSupply(this, ut.supplyRequired()));
 
 		// add this consumer to the list
-		this.consumers.add(uneed);
+		this.consumers.add(nu);
 
 		System.out.println(" - BASE new consumer added, consumers total = "+ consumers.size());
 	}
