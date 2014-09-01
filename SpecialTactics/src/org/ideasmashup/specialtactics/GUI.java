@@ -29,7 +29,7 @@ import processing.core.PVector;
 public class GUI implements BrainListener {
 
 	private static final int WIDTH = 600;
-	private static final int HEIGHT = 800;
+	private static final int HEIGHT = 900;
 
 	private final Brain brain;
 	private final UpdatesThread updater;
@@ -83,8 +83,8 @@ public class GUI implements BrainListener {
 	private void plugBehavior() {
 		frame.setAlwaysOnTop(true);
 		frame.setSize(WIDTH, HEIGHT);
-		frame.setResizable(false);
 		frame.setLocation(new Point(10, 50));
+//		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
