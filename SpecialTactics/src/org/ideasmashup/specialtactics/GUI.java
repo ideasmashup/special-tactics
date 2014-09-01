@@ -136,26 +136,29 @@ public class GUI implements BrainListener {
 
 		private static final long serialVersionUID = 3698978875827336499L;
 
-		// Sketch to show how to construct a slide show containg text, images
-		// and sketches.
-		// Can use the full screen but only if Hansi Raber's 'fullscreen'
-		// library is installed.
-		// Version 1.4, 10th August, 2010.
-		// Author Jo Wood, giCentre.
-
 		// ------------------ Sketch-wide variables ---------------------------
 
+		// AI managers objects
 		Needs needs = Needs.getInstance();
+		Producers producers = Producers.getInstance();
 
+		// giCentre classes
 		PFont titleFont, smallFont, tinyFont;
 		BarChart bcPro, bcRes, bcSup, bcUni;
 
+		// real-time variations charts values
 		LinkedList<Float> nRes = new LinkedList<Float>();
 		LinkedList<Float> nSup = new LinkedList<Float>();
 		LinkedList<Float> nUni = new LinkedList<Float>();
 		LinkedList<Float> nPro = new LinkedList<Float>();
 
-		private static final int PLOTS_MAX = 10;
+		// aggregated summary chart
+		BarChart bcMaster;
+		String[] masterLabels = new String[] { "Needs (res)", "Need (supply)", "Need (units)",
+				"Producers", "Consumers" };
+		float[] masterValues = new float[] { 0, 0, 0, 0, 0 };
+
+		static final int PLOTS_MAX = 16;
 
 		// ------------------ Initialisation ----------------------------------
 
@@ -170,11 +173,13 @@ public class GUI implements BrainListener {
 				//noLoop();
 				frameRate(1);
 
+
 				titleFont = loadFont("Helvetica-22.vlw");
 				smallFont = loadFont("Helvetica-12.vlw");
 				tinyFont = createDefaultFont(8);
 				textFont(smallFont);
 
+				bcMaster = initMasterChart();
 				bcPro = initChart(nPro);
 				bcRes = initChart(nRes);
 				bcSup = initChart(nSup);
@@ -198,28 +203,36 @@ public class GUI implements BrainListener {
 				// /////////////// Draw sketch ///////////////////////////
 
 				// add data to internal collections
-				nPro.addFirst((float) needs.getProducersCount());
+				float fRes = masterValues[0] = needs.getNeedsCount(Types.RESOURCES);
+				float fSup = masterValues[1] = needs.getNeedsCount(Types.SUPPLY);
+				float fUni = masterValues[2] = needs.getNeedsCount(Types.UNIT);
+				float fPro = masterValues[3] = producers.getProducersCount();
+				float fCon = masterValues[4] = producers.getConsumersCount();
+
+				nPro.addFirst(fPro);
 				if (nPro.size() > PLOTS_MAX) nPro.removeLast();
 
-				nRes.addFirst((float) needs.getNeedsCount(Types.RESOURCES));
+				nRes.addFirst(fRes);
 				if (nRes.size() > PLOTS_MAX) nRes.removeLast();
 
-				nSup.addFirst((float) needs.getNeedsCount(Types.SUPPLY));
+				nSup.addFirst(fSup);
 				if (nSup.size() > PLOTS_MAX) nSup.removeLast();
 
-				nUni.addFirst((float) needs.getNeedsCount(Types.UNIT));
+				nUni.addFirst(fUni);
 				if (nUni.size() > PLOTS_MAX) nUni.removeLast();
 
-				// clear background
+				// start drawing everything
 				background(0);
 				fill(120);
 
+				// plot master chart
+				plotMasterChart(90, 130);
 
 				// plot all data
-				plotChart(bcPro, "Producers", nPro, 100, 100);
-				plotChart(bcRes, "Needs (min/gas)", nRes, 250, 100);
-				plotChart(bcSup, "Needs (supply)", nSup, 400, 100);
-				plotChart(bcUni, "Needs (units)", nUni, 550, 100);
+				plotChart(bcPro, "Producers", nPro, 250, 100);
+				plotChart(bcRes, "Needs (min/gas)", nRes, 400, 100);
+				plotChart(bcSup, "Needs (supply)", nSup, 550, 100);
+				plotChart(bcUni, "Needs (units)", nUni, 700, 100);
 
 				// add titles
 				textFont(titleFont);
@@ -263,6 +276,29 @@ public class GUI implements BrainListener {
 		// -------------------------- Nested classes --------------------------
 
 		// -------------------------- Private methods -------------------------
+
+		private BarChart initMasterChart() {
+			BarChart bc = new BarChart(this);
+
+			bc.setBarColour(color(100, 100, 200, 100));
+			bc.setBarGap(2);
+			bc.setValueFormat("###,###");
+			bc.showValueAxis(true);
+			bc.setData(masterValues);
+			bc.setBarLabels(masterLabels);
+			bc.showCategoryAxis(true);
+
+			return bc;
+		}
+
+		private void plotMasterChart(int top, int height) {
+			bcMaster.setData(masterValues);
+
+			stroke(0);
+			textFont(smallFont);
+			textFont(tinyFont);
+			bcMaster.draw(10, top + 20, width - 10, height);
+		}
 
 		private BarChart initChart(List<Float> data) {
 			BarChart bc = new BarChart(this);
