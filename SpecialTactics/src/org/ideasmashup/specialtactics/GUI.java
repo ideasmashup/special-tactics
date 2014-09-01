@@ -169,7 +169,7 @@ public class GUI implements BrainListener {
 				"Producers", "Consumers" };
 		float[] masterValues = new float[] { 0, 0, 0, 0, 0 };
 
-		static final int PLOTS_MAX = 16;
+		static final int PLOTS_MAX = 50;
 
 		// ------------------ Initialisation ----------------------------------
 
@@ -182,7 +182,7 @@ public class GUI implements BrainListener {
 				// /////////////// Setup sketch ///////////////////////////
 				smooth();
 				//noLoop();
-				frameRate(16);
+				frameRate(8);
 
 				zoomer = new ZoomPan(this);
 				zoomer.allowZoomButton(false);
