@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Needs;
+import org.ideasmashup.specialtactics.managers.Producers;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.managers.Units;
@@ -47,7 +48,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 
 		// register itself to units events
 		Units.getInstance().addListener(this);
-		Needs.getInstance().addProducer(this);
+		Producers.getInstance().addProducer(this);
 	}
 
 	@Override
