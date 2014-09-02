@@ -46,6 +46,10 @@ public class Supplies {
 		return instance;
 	}
 
+	public int getSuppliersCount() {
+		return suppliers.size();
+	}
+
 	public boolean hasReserved(Consumer owner) {
 		return reservedSupply.containsKey(owner);
 	}
