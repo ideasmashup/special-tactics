@@ -327,12 +327,12 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		int mRequired = need.getMinerals();
 		int gRequired = need.getGas();
 
-		System.out.println("- first resources consumer "+ owner +" needs "+ mRequired +" and "+ gRequired);
+		//System.out.println("- first resources consumer "+ owner +" needs "+ mRequired +" and "+ gRequired);
 
 		int mAvailable = res.getMinerals(owner);
 		int gAvailable = res.getGas(owner);
 
-		System.out.println("- can give it "+ mAvailable +" minerals and "+ gAvailable +" gas");
+		//System.out.println("- can give it "+ mAvailable +" minerals and "+ gAvailable +" gas");
 
 		if (mAvailable >= mRequired && gAvailable >= gRequired) {
 			// this is the first resources need in the list
