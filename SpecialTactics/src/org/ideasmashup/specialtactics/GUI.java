@@ -368,7 +368,7 @@ public class GUI implements BrainListener {
 
 			stroke(0);
 			textFont(smallFont);
-			text(title, 10, top + textAscent());
+			text(title, 10, top + textAscent() + 10);
 			textFont(tinyFont);
 			bc.draw(10, top + 20, width-20, height);
 		}
