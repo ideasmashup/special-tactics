@@ -152,7 +152,7 @@ public class GUI implements BrainListener {
 
 		// giCentre classes
 		PFont titleFont, smallFont, tinyFont;
-		BarChart bcPro, bcRes, bcSup, bcUni;
+		BarChart bcPro, bcRes, bcSup, bcUni, bcSup2;
 		ZoomPan zoomer;
 		PVector mousePos;
 		NumberFormat formatter = new DecimalFormat("#.0");
@@ -160,6 +160,7 @@ public class GUI implements BrainListener {
 		// real-time variations charts values
 		LinkedList<Float> nRes = new LinkedList<Float>();
 		LinkedList<Float> nSup = new LinkedList<Float>();
+		LinkedList<Float> nSup2 = new LinkedList<Float>();
 		LinkedList<Float> nUni = new LinkedList<Float>();
 		LinkedList<Float> nPro = new LinkedList<Float>();
 
@@ -197,6 +198,7 @@ public class GUI implements BrainListener {
 
 				bcMaster = initMasterChart();
 				bcPro = initChart(nPro, color(200, 80, 80, 100));
+				bcSup2 = initChart(nSup2, color(200, 100, 10, 100));
 				bcRes = initChart(nRes, color(10, 100, 255, 100));
 				bcSup = initChart(nSup, color(10, 200, 80, 100));
 				bcUni = initChart(nUni, color(100, 100, 100, 100));
@@ -229,9 +231,13 @@ public class GUI implements BrainListener {
 				float fRMin = Resources.getInstance().getReservedMinerals();
 				float fRGas = Resources.getInstance().getReservedGas();
 				float fRSup = Supplies.getInstance().getReservedSupply();
+				float fSup2 = Supplies.getInstance().getSuppliersCount();
 
 				nPro.addFirst(fAge);
 				if (nPro.size() > PLOTS_MAX) nPro.removeLast();
+
+				nSup2.addFirst(fSup2);
+				if (nSup2.size() > PLOTS_MAX) nSup2.removeLast();
 
 				nRes.addFirst(fRMin);
 				if (nRes.size() > PLOTS_MAX) nRes.removeLast();
@@ -255,9 +261,10 @@ public class GUI implements BrainListener {
 
 				// plot all data
 				plotChart(bcPro, "Total active agents : "+ fAge, nPro, 300, 70);
-				plotChart(bcRes, "Reserved minerals : "+ fRMin, nRes, 400, 70);
-				plotChart(bcSup, "Reserved gas : "+ fRGas, nSup, 500, 70);
-				plotChart(bcUni, "Reserved supply : "+ fRSup, nUni, 600, 70);
+				plotChart(bcSup2, "Total active suppliers : "+ fSup2, nSup2, 400, 70);
+				plotChart(bcRes, "Reserved minerals : "+ fRMin, nRes, 500, 70);
+				plotChart(bcSup, "Reserved gas : "+ fRGas, nSup, 600, 70);
+				plotChart(bcUni, "Reserved supply : "+ fRSup, nUni, 700, 70);
 
 				// add titles
 				textFont(titleFont);
