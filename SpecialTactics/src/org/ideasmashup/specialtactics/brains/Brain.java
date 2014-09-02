@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Agent;
+import org.ideasmashup.specialtactics.agents.AsyncOrders;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.Clock;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
-import org.ideasmashup.specialtactics.agents.Scout;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
+import org.ideasmashup.specialtactics.agents.scouts.FindEnemyMain;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
@@ -36,6 +37,7 @@ public class Brain implements BWEventListener {
 
 	// MANAGER classes
 	protected Agents agents;
+	protected AsyncOrders orders;
 	protected Units units;
 	protected Resources resources;
 	protected Supplies supplies;
@@ -57,6 +59,7 @@ public class Brain implements BWEventListener {
 
 		// must initialize managers in correct order
 		agents = Agents.getInstance();
+		orders = AsyncOrders.getInstance();
 		units = Units.getInstance();
 		resources = Resources.getInstance();
 		supplies = Supplies.getInstance();
@@ -69,9 +72,12 @@ public class Brain implements BWEventListener {
 		agents.add(clock);
 
 		// creates scouting agent
-		final Scout scout = new Scout(null);
-		units.addListener(scout);
+//		final Scout scout = new Scout(null);
+//		units.addListener(scout);
+//		agents.add(scout);
+		final FindEnemyMain scout = new FindEnemyMain(null);
 		agents.add(scout);
+
 	}
 
 	public static Brain get() {
@@ -196,6 +202,7 @@ public class Brain implements BWEventListener {
 
 	@Override
 	public void onUnitDiscover(Unit unit) {
+		units.add(unit);
 		units.onUnitDiscover(unit);
 	}
 
@@ -238,7 +245,7 @@ public class Brain implements BWEventListener {
 		// TODO verify that call order is correct for new Agents that implement
 		//      UnitListener and may be called after/before? they are created
 
-		units.add(unit);
+//		units.add(unit);
 		units.onUnitCreate(unit);
 	}
 

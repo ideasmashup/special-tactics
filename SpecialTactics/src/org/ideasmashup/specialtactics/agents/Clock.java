@@ -1,6 +1,7 @@
 package org.ideasmashup.specialtactics.agents;
 
 import org.ideasmashup.specialtactics.AI;
+import org.ideasmashup.specialtactics.FrameRate;
 
 import bwapi.Game;
 import bwapi.Position;
@@ -23,11 +24,6 @@ public class Clock extends DefaultAgent {
 	protected Position textPos = new Position(10, 10);
 	protected Position clockPos = new Position(60, 10);
 
-	// TODO move to more global class (Utils?)
-	protected static final double FPS_NORMAL = 14.93;
-	protected static final double FPS_FAST = 17.86;
-	protected static final double FPS_FASTER = 20.83;
-
 	public Clock() {
 		super();
 		init();
@@ -43,9 +39,9 @@ public class Clock extends DefaultAgent {
 	public void update() {
 		double fps = game.getFPS();
 		if(fps <= 0)
-			fps = FPS_NORMAL;
+			fps = FrameRate.NORMAL.getFPS();
 		realTime += 1D / fps;
-		gameTime += 1D / FPS_NORMAL;
+		gameTime += 1D / FrameRate.NORMAL.getFPS();
 		game.drawTextScreen(textPos.getX(), textPos.getY(),
 			"CLOCK" + "\n" +
 			"Real:" + "\n" +

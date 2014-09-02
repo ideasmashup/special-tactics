@@ -1,10 +1,14 @@
 package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
@@ -34,14 +38,24 @@ import bwapi.UpgradeType;
 public class Units {
 
 	protected List<Integer> ids;
-	protected Map<Types, ArrayList<Unit>> map;
+	protected Map<Types, Set<Unit>> neutralUnits;
+	protected Map<Types, Set<Unit>> neutralBuildings;
+	protected Map<Types, Set<Unit>> myUnits;
+	protected Map<Types, Set<Unit>> myBuildings;
+	protected Map<Types, Set<Unit>> enemyUnits;
+	protected Map<Types, Set<Unit>> enemyBuildings;
 	protected List<UnitListener> listeners;
 
 	protected static Units instance = null;
 
 	protected Units() {
 		ids = new ArrayList<Integer>();
-		map = new HashMap<Types, ArrayList<Unit>>();
+		neutralUnits = new HashMap<Types, Set<Unit>>();
+		neutralBuildings = new HashMap<Types, Set<Unit>>();
+		myUnits = new HashMap<Types, Set<Unit>>();
+		myBuildings = new HashMap<Types, Set<Unit>>();
+		enemyUnits = new HashMap<Types, Set<Unit>>();
+		enemyBuildings = new HashMap<Types, Set<Unit>>();
 		listeners = new ArrayList<UnitListener>();
 	}
 
@@ -58,23 +72,34 @@ public class Units {
 	public void add(Unit unit) {
 		//if (!ids.contains(unit.getID())) {
 
-		// FIXME this code doesn't work probably some Exception or null
-		//       uncomment and see crash
-
 			Types[] types = Types.getTypes(unit);
-			//System.out.println("units : types = "+ types);
-
-			if (types != null) {
-				for (Types type : types) {
-					System.out.println(" - assigned type ("+ type.name() +")");
-					if (map.containsKey(type)) {
-						map.get(type).add(unit);
-					}
-					else {
-						ArrayList<Unit> arr = new ArrayList<Unit>();
-						arr.add(unit);
-						map.put(type, arr);
-					}
+			for (Types type : types) {
+				System.out.println(" - assigned type ("+ type.name() +")");
+				Map<Types, Set<Unit>> map = null;
+				UnitType utype = unit.getType();
+				if(utype.isNeutral()) {
+					if(utype.isBuilding())
+						map = neutralBuildings;
+					else
+						map = neutralUnits;
+				} else if(unit.getPlayer() == AI.getPlayer()) {
+					if(unit.getType().isBuilding())
+						map = myBuildings;
+					else
+						map = myUnits;
+				} else {
+					if(unit.getType().isBuilding())
+						map = enemyBuildings;
+					else
+						map = enemyUnits;
+				}
+				if (map.containsKey(type)) {
+					map.get(type).add(unit);
+				}
+				else {
+					Set<Unit> arr = new HashSet<Unit>();
+					arr.add(unit);
+					map.put(type, arr);
 				}
 			}
 
@@ -84,15 +109,15 @@ public class Units {
 		//}
 	}
 
-	public boolean contains(UnitType unittype) {
-		List<Unit> units = map.get(Units.Types.getType(unittype));
-
-		for (Unit u : units) {
-			if (u.getType() == unittype) return true;
-		}
-
-		return false;
-	}
+//	public boolean contains(UnitType unittype) {
+//		Set<Unit> units = map.get(Units.Types.getType(unittype));
+//
+//		for (Unit u : units) {
+//			if (u.getType() == unittype) return true;
+//		}
+//
+//		return false;
+//	}
 
 	public void addListener(UnitListener ls) {
 		listeners.add(ls);
@@ -106,8 +131,33 @@ public class Units {
 		listeners.clear();
 	}
 
-	public Unit[] get(Types type) {
-		return map.get(type).toArray(new Unit[0]);
+//	public Unit[] get(Types type) {
+//		return map.get(type).toArray(new Unit[0]);
+//	}
+
+	public Collection<Unit> getNeutralUnits(final Types type) {
+		final Set<Unit> units = neutralUnits.get(type);
+		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
+	}
+	public Collection<Unit> getNeutralBuildings(final Types type) {
+		final Set<Unit> units = neutralBuildings.get(type);
+		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
+	}
+	public Collection<Unit> getOwnUnits(final Types type) {
+		final Set<Unit> units = myUnits.get(type);
+		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
+	}
+	public Collection<Unit> getOwnBuildings(final Types type) {
+		final Set<Unit> units = myBuildings.get(type);
+		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
+	}
+	public Collection<Unit> getEnemyUnits(final Types type) {
+		final Set<Unit> units = enemyUnits.get(type);
+		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
+	}
+	public Collection<Unit> getEnemyBuildings(final Types type) {
+		final Set<Unit> units = enemyBuildings.get(type);
+		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
 
 	public static enum Types {

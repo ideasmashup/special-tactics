@@ -1,21 +1,30 @@
 package org.ideasmashup.specialtactics;
 
+import java.awt.BorderLayout;
 import java.awt.Point;
+import java.awt.Window.Type;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.gicentre.utils.move.ZoomPan;
 import org.gicentre.utils.move.ZoomPanListener;
 import org.gicentre.utils.multisketch.EmbeddedSketch;
 import org.gicentre.utils.stat.BarChart;
+import org.ideasmashup.specialtactics.agents.AsyncOrders;
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.brains.BrainListener;
 import org.ideasmashup.specialtactics.managers.Agents;
@@ -41,6 +50,9 @@ public class GUI implements BrainListener {
 	private PApplet sketch;
 	private JPanel panel;
 	private final JFrame frame;
+
+	private JFrame gameControls;
+	private FrameRate currentFrameRate;
 
 	public GUI(Brain brain) {
 
@@ -71,6 +83,7 @@ public class GUI implements BrainListener {
 		sketch = new ProcessingApplet();
 
 		buildLayout();
+		buildGameControlToolbar();
 		plugBehavior();
 	}
 
@@ -97,10 +110,58 @@ public class GUI implements BrainListener {
 				AI.terminate(0);
 			}
 		});
+		gameControls.setAlwaysOnTop(true);
+		gameControls.setSize(600, 100);
+		gameControls.setResizable(false);
+		gameControls.setLocation(620, 50 + HEIGHT - 110);
+	}
+
+	private void buildGameControlToolbar() {
+		gameControls = new JFrame("Game controls");
+		gameControls.setType(Type.UTILITY);
+		final JPanel pContent = new JPanel();
+		pContent.setLayout(new BoxLayout(pContent, BoxLayout.PAGE_AXIS));
+		final JPanel pSpeed = new JPanel();
+		pSpeed.setLayout(new BorderLayout(10, 0));
+		pSpeed.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Speed"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		final JButton bSpeedMinus = new JButton("<");
+		final JLabel lSpeed = new JLabel();
+		lSpeed.setHorizontalAlignment(JLabel.CENTER);
+		final JButton bSpeedPlus = new JButton(">");
+		final ActionListener actionSpeed = new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				final List<FrameRate> rates = Arrays.asList(FrameRate.values());
+				int currentIndex = rates.indexOf(currentFrameRate);
+				currentFrameRate = rates.get(e.getSource() == bSpeedMinus ? --currentIndex : ++currentIndex);
+				final int index = currentIndex;
+				final int speed = currentFrameRate.getLocalSpeed();
+				final String name = currentFrameRate.name();
+				AsyncOrders.getInstance().addOrder(new Runnable() {
+					@Override
+					public void run() {
+						AI.getGame().setLocalSpeed(speed);
+						bSpeedMinus.setEnabled(index > 0);
+						bSpeedPlus.setEnabled(index < rates.size() - 1);
+						lSpeed.setText(name.replace("_", " "));
+					}
+				});
+			}
+		};
+		bSpeedMinus.addActionListener(actionSpeed);
+		bSpeedPlus.addActionListener(actionSpeed);
+		pSpeed.add(bSpeedMinus, BorderLayout.WEST);
+		pSpeed.add(lSpeed, BorderLayout.CENTER);
+		pSpeed.add(bSpeedPlus, BorderLayout.EAST);
+		pContent.add(pSpeed);
+		gameControls.setContentPane(pContent);
+		currentFrameRate = FrameRate.FASTEST;
+		lSpeed.setText(currentFrameRate.name().replace("_", " "));
 	}
 
 	public void show(boolean visible) {
 		frame.setVisible(visible);
+		gameControls.setVisible(visible);
 	}
 
 	public class UpdatesThread extends Thread {
