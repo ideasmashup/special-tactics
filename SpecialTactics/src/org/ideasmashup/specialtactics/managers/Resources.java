@@ -21,6 +21,9 @@ public class Resources {
 	protected int reservedGasTotal;
 	protected LinkedList<Consumer> consumers;
 
+	protected double minPM;
+	protected double gasPM;
+
 	protected static Resources instance = null;
 
 	protected Resources() {
@@ -28,9 +31,11 @@ public class Resources {
 
 		reservedMinerals = new HashMap<Consumer, Integer>();
 		reservedMineralsTotal = 0;
+		minPM = 0;
 
 		reservedGas = new HashMap<Consumer, Integer>();
 		reservedGasTotal = 0;
+		gasPM = 0;
 
 		// list of consumers because map isn't ordered
 		consumers = new LinkedList<Consumer>();
@@ -177,6 +182,10 @@ public class Resources {
 	}
 
 	public void onResourcesChange(int minerals, int gas) {
+
+		// compute minerals and gas per minute
+
+
 		// check reserved resources to notify their owners
 		Consumer first = this.consumers.peekFirst();
 		if (first != null && reservedMinerals.get(first) >= this.getMinerals(first)
