@@ -213,7 +213,7 @@ public class GUI implements BrainListener {
 
 		// giCentre classes
 		PFont titleFont, smallFont, tinyFont;
-		BarChart bcPro, bcRes, bcSup, bcUni, bcSup2;
+		BarChart bcPro, bcRes, bcSup, bcUni, bcSup2, bcUMin, bcUGas;
 		ZoomPan zoomer;
 		PVector mousePos;
 		NumberFormat formatter = new DecimalFormat("#.0");
@@ -224,6 +224,8 @@ public class GUI implements BrainListener {
 		LinkedList<Float> nSup2 = new LinkedList<Float>();
 		LinkedList<Float> nUni = new LinkedList<Float>();
 		LinkedList<Float> nPro = new LinkedList<Float>();
+		LinkedList<Float> nUMin = new LinkedList<Float>();
+		LinkedList<Float> nUGas = new LinkedList<Float>();
 
 		// aggregated summary chart
 		BarChart bcMaster;
@@ -263,6 +265,8 @@ public class GUI implements BrainListener {
 				bcRes = initChart(nRes, color(10, 100, 255, 100));
 				bcSup = initChart(nSup, color(10, 200, 80, 100));
 				bcUni = initChart(nUni, color(100, 100, 100, 100));
+				bcUMin = initChart(nUMin, color(0, 0, 100, 100));
+				bcUGas = initChart(nUGas, color(0, 100, 0, 100));
 				// ///////////////////////////////////////////////////////
 			}
 			catch (Exception e) {
@@ -293,6 +297,8 @@ public class GUI implements BrainListener {
 				float fRGas = Resources.getInstance().getReservedGas();
 				float fRSup = Supplies.getInstance().getReservedSupply();
 				float fSup2 = Supplies.getInstance().getSuppliersCount();
+				float fUMin = Resources.getInstance().getUnusedMinerals();
+				float fUGas = Resources.getInstance().getUnusedGas();
 
 				nPro.addFirst(fAge);
 				if (nPro.size() > PLOTS_MAX) nPro.removeLast();
@@ -309,6 +315,12 @@ public class GUI implements BrainListener {
 				nUni.addFirst(fRSup);
 				if (nUni.size() > PLOTS_MAX) nUni.removeLast();
 
+				nUMin.addFirst(fUMin);
+				if (nUMin.size() > PLOTS_MAX) nUMin.removeLast();
+
+				nUGas.addFirst(fUGas);
+				if (nUGas.size() > PLOTS_MAX) nUGas.removeLast();
+
 				// activate zooming
 				pushMatrix();
 				zoomer.transform();
@@ -321,11 +333,13 @@ public class GUI implements BrainListener {
 				plotMasterChart("Collections sizes", 90, 130);
 
 				// plot all data
-				plotChart(bcPro, "Total active agents : "+ fAge, nPro, 300, 70);
-				plotChart(bcSup2, "Total active suppliers : "+ fSup2, nSup2, 400, 70);
-				plotChart(bcRes, "Reserved minerals : "+ fRMin, nRes, 500, 70);
-				plotChart(bcSup, "Reserved gas : "+ fRGas, nSup, 600, 70);
-				plotChart(bcUni, "Reserved supply : "+ fRSup, nUni, 700, 70);
+				plotChart(bcPro, "Total active agents : "+ fAge, nPro, 300, 40);
+				plotChart(bcSup2, "Total active suppliers : "+ fSup2, nSup2, 360, 40);
+				plotChart(bcRes, "Reserved minerals : "+ fRMin, nRes, 420, 40);
+				plotChart(bcUMin, "Unused minerals : "+ fUMin, nUMin, 480, 40);
+				plotChart(bcSup, "Reserved gas : "+ fRGas, nSup, 540, 40);
+				plotChart(bcUGas, "Unused gas : "+ fUGas, nUGas, 600, 40);
+				plotChart(bcUni, "Reserved supply : "+ fRSup, nUni, 660, 40);
 
 				// add titles
 				textFont(titleFont);
