@@ -163,7 +163,7 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 		if (offer instanceof Unit) {
 			Unit unit = (Unit) offer;
-			if (unit.getType().isWorker()) {
+			if (unit.getType().isWorker() && worker == null) {
 				System.out.println("SUPPLY : Received new worker #"+ unit.getID() +"!");
 				state = State.READY;
 
@@ -179,6 +179,9 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 				state = State.MOVING;
 
 				return true;
+			}
+			else {
+				return false;
 			}
 		}
 		else {
