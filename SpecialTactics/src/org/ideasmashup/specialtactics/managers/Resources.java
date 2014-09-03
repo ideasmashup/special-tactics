@@ -22,7 +22,7 @@ public class Resources {
 	protected int reservedGasTotal;
 	protected LinkedList<Consumer> consumers;
 
-	protected long lastCheck;
+	protected int lastCheck;
 	protected int lastMin;
 	protected int lastGas;
 	protected float avgUnusedMinerals;
@@ -42,8 +42,7 @@ public class Resources {
 		reservedGasTotal = 0;
 		avgUnusedGas = 0;
 		lastGas = 0;
-
-		lastCheck = new Date().getTime();
+		lastCheck = 0;
 
 		// list of consumers because map isn't ordered
 		consumers = new LinkedList<Consumer>();
@@ -199,12 +198,25 @@ public class Resources {
 
 	public void onResourcesChange(int minerals, int gas) {
 
-		// compute minerals and gas left (per 5s)
-		long now = new Date().getTime();
+		// compute minerals and gas left
+		lastCheck++;
 
-		if (now - lastCheck > 5000) {
-			// calculate average every 5s
-			lastCheck = now;
+		if (lastMin > getMinerals()) {
+			// whenever some resource is consumed, update average so that
+			// it takes usage into account quickly
+			lastMin = getMinerals();
+			avgUnusedMinerals = (avgUnusedMinerals + lastMin) / 2;
+		}
+		if (lastGas > getGas()) {
+			// whenever some resource is consumed, update average so that
+			// it takes usage into account quickly
+			lastGas = getGas();
+			avgUnusedGas = (avgUnusedGas + lastGas) / 2;
+		}
+
+		if (lastCheck > 5) {
+			// calculate average
+			lastCheck = 0;
 
 			lastMin = getMinerals();
 			lastGas = getGas();
@@ -212,21 +224,6 @@ public class Resources {
 			avgUnusedMinerals = (avgUnusedMinerals + lastMin) / 2;
 			avgUnusedGas = (avgUnusedGas + lastGas) / 2;
 		}
-		else {
-			if (lastMin > getMinerals()) {
-				// whenever some resource is consumed, update average so that
-				// it takes usage into account quickly
-				lastMin = getMinerals();
-				avgUnusedMinerals = (avgUnusedMinerals + lastMin) / 2;
-			}
-			if (lastGas > getGas()) {
-				// whenever some resource is consumed, update average so that
-				// it takes usage into account quickly
-				lastGas = getGas();
-				avgUnusedGas = (avgUnusedGas + lastGas) / 2;
-			}
-		}
-
 
 		// check reserved resources to notify their owners
 		Consumer first = this.consumers.peekFirst();
