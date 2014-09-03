@@ -139,7 +139,7 @@ public class Supplies {
 
 		// if real supply (e.g. raw supply value without reserved slots) runs
 		// low and no supplier is alive (e.g. building supply already) add one
-		if (AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() <= Units.Types.WORKERS.getUnitType().supplyRequired() * 2
+		if (AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() == Units.Types.WORKERS.getUnitType().supplyRequired() * 2
 			&& suppliers.isEmpty()) {
 
 			// create generic cross-race agent that builds a supply unit
