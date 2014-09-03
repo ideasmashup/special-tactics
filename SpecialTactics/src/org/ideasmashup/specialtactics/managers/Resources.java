@@ -2,6 +2,7 @@ package org.ideasmashup.specialtactics.managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,8 +22,11 @@ public class Resources {
 	protected int reservedGasTotal;
 	protected LinkedList<Consumer> consumers;
 
-	protected double minPM;
-	protected double gasPM;
+	protected long lastCheck;
+	protected int lastMin;
+	protected int lastGas;
+	protected float avgUnusedMinerals;
+	protected float avgUnusedGas;
 
 	protected static Resources instance = null;
 
@@ -31,11 +35,15 @@ public class Resources {
 
 		reservedMinerals = new HashMap<Consumer, Integer>();
 		reservedMineralsTotal = 0;
-		minPM = 0;
+		avgUnusedMinerals = 0;
+		lastMin = 0;
 
 		reservedGas = new HashMap<Consumer, Integer>();
 		reservedGasTotal = 0;
-		gasPM = 0;
+		avgUnusedGas = 0;
+		lastGas = 0;
+
+		lastCheck = new Date().getTime();
 
 		// list of consumers because map isn't ordered
 		consumers = new LinkedList<Consumer>();
@@ -126,6 +134,10 @@ public class Resources {
 		return reservedMineralsTotal;
 	}
 
+	public float getUnusedMinerals() {
+		return avgUnusedMinerals;
+	}
+
 	public int getMinerals() {
 		// return "public" minerals (ones that haven't been reserved yet)
 		return AI.getPlayer().minerals() - reservedMineralsTotal;
@@ -148,6 +160,10 @@ public class Resources {
 
 	public int getReservedGas() {
 		return reservedGasTotal;
+	}
+
+	public float getUnusedGas() {
+		return avgUnusedGas;
 	}
 
 	public int getGas() {
@@ -183,7 +199,33 @@ public class Resources {
 
 	public void onResourcesChange(int minerals, int gas) {
 
-		// compute minerals and gas per minute
+		// compute minerals and gas left (per 5s)
+		long now = new Date().getTime();
+
+		if (now - lastCheck > 5000) {
+			// calculate average every 5s
+			lastCheck = now;
+
+			lastMin = getMinerals();
+			lastGas = getGas();
+
+			avgUnusedMinerals = (avgUnusedMinerals + lastMin) / 2;
+			avgUnusedGas = (avgUnusedGas + lastGas) / 2;
+		}
+		else {
+			if (lastMin > getMinerals()) {
+				// whenever some resource is consumed, update average so that
+				// it takes usage into account quickly
+				lastMin = getMinerals();
+				avgUnusedMinerals = (avgUnusedMinerals + lastMin) / 2;
+			}
+			if (lastGas > getGas()) {
+				// whenever some resource is consumed, update average so that
+				// it takes usage into account quickly
+				lastGas = getGas();
+				avgUnusedGas = (avgUnusedGas + lastGas) / 2;
+			}
+		}
 
 
 		// check reserved resources to notify their owners
