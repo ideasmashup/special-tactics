@@ -10,7 +10,7 @@ import java.util.Map;
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Consumer;
-import org.ideasmashup.specialtactics.agents.MakeSupply;
+import org.ideasmashup.specialtactics.agents.MakeStructure;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
 
 public class Supplies {
@@ -143,7 +143,7 @@ public class Supplies {
 			&& suppliers.isEmpty()) {
 
 			// create generic cross-race agent that builds a supply unit
-			suppliers.add(new MakeSupply());
+			suppliers.add(new MakeStructure(Units.Types.SUPPLY.getUnitType()));
 		}
 
 		// check reserved resources to notify their owners
