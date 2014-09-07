@@ -227,8 +227,9 @@ public class Resources {
 
 		// check reserved resources to notify their owners
 		Consumer first = this.consumers.peekFirst();
-		if (first != null && reservedMinerals.get(first) >= this.getMinerals(first)
-			&& reservedGas.get(first) >= this.getGas(first)) {
+		if (first != null
+			&& reservedMinerals.get(first) != null && reservedMinerals.get(first) >= this.getMinerals(first)
+			&& reservedGas.get(first) != null && reservedGas.get(first) >= this.getGas(first)) {
 			System.out.println("Ress.change() : first consumer can be satisfied!!");
 
 			// the first consumer can be satisfied
