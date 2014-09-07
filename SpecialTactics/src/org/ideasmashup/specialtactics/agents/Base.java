@@ -76,8 +76,8 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		else if (this.bindee.isIdle()) {
 			// not doing anything let's see if we can build something
 
-			NeedUnit nu = consumers.getFirst();
-			if (nu != null) {
+			if (!consumers.isEmpty()) {
+				NeedUnit nu = consumers.getFirst();
 
 				// we have a consumer who want a worker
 				System.out.println(" - base still has "+ consumers.size() +" workers consumers waiting");
