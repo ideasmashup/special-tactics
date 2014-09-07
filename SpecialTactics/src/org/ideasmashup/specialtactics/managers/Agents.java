@@ -1,11 +1,10 @@
 package org.ideasmashup.specialtactics.managers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.ideasmashup.specialtactics.agents.Agent;
-import org.ideasmashup.specialtactics.agents.UnitAgent;
 
 public class Agents {
 
@@ -14,7 +13,7 @@ public class Agents {
 	protected static Agents instance = null;
 
 	protected Agents() {
-		agents = new ArrayList<Agent>();
+		agents = new CopyOnWriteArrayList<Agent>(); // concurrent
 	}
 
 	public static Agents getInstance() {
@@ -36,10 +35,12 @@ public class Agents {
 	}
 
 	public void add(Agent agent) {
+		System.out.println("Agents : added "+ agent);
 		agents.add(agent);
 	}
 
 	public void remove(Agent agent) {
+		System.out.println("Agents : removed "+ agent);
 		agents.remove(agent);
 	}
 
