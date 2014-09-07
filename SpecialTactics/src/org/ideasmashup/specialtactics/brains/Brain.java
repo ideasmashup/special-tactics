@@ -122,52 +122,64 @@ public class Brain implements BWEventListener {
 		// Low priority code running every 20 frames instead of on every frame
 		// https://code.google.com/p/bwapi/wiki/StarcraftGuide#What_is_Starcraft%27s_frame_rate?
 
-		if (frames++ == 0) {
-			AI.say("gl hf");
-			AI.say("HINT: to speed up game type /speed 0");
-		}
+		try {
+			//
+			if (frames++ == 0) {
+				AI.say("gl hf");
+				AI.say("HINT: to speed up game type /speed 0");
 
-		if (frames % 18 == 0) {
-			int curGas = self.gas();
-			int curMinerals = self.minerals();
-			int curSupply = self.supplyTotal() - self.supplyUsed();
-
-			if (prevMinerals != curMinerals || prevGas != curGas) {
-				prevGas = curGas;
-				prevMinerals = curMinerals;
-
-				resources.onResourcesChange(curMinerals, curGas);
+				// FIXME convert this agent into a manager when possible
+				//       currently an agent for quick prototyping-testing
+				Agent agent = new ExperimentalProduction();
+				agents.add(agent);
 			}
 
-			if (prevSupply != curSupply) {
-				prevSupply = curSupply;
+			if (frames % 18 == 0) {
+				int curGas = self.gas();
+				int curMinerals = self.minerals();
+				int curSupply = self.supplyTotal() - self.supplyUsed();
 
-				supplies.onSupplyChange(curSupply);
+				if (prevMinerals != curMinerals || prevGas != curGas) {
+					prevGas = curGas;
+					prevMinerals = curMinerals;
+
+					resources.onResourcesChange(curMinerals, curGas);
+				}
+
+				if (prevSupply != curSupply) {
+					prevSupply = curSupply;
+
+					supplies.onSupplyChange(curSupply);
+				}
 			}
-		}
 
-		// High priority code running on every frame for intensive micro
-		// this includes running all agents update()
+			// High priority code running on every frame for intensive micro
+			// this includes running all agents update()
 
-		List<Agent> zombies = new LinkedList<Agent>();
+			List<Agent> zombies = new LinkedList<Agent>();
+			List<Agent> list = agents.getList();
 
-		for (Agent agent : agents.getList()) {
-			// update living agents and burn - previously on AMC's - the walking dead
-			if (agent.isDestroyed()) {
-				zombies.add(agent);
+			for (Agent agent : list) {
+				// update living agents and burn - previously on AMC's - the walking dead
+				if (agent.isDestroyed()) {
+					zombies.add(agent);
+				}
+				else {
+					agent.update();
+				}
 			}
-			else {
-				agent.update();
+
+			// cleanup zombies
+			for (Agent zombie : zombies) {
+				agents.remove(zombie);
 			}
-		}
 
-		// cleanup zombies
-		for (Agent zombie : zombies) {
-			agents.remove(zombie);
+			// TODO call all ops and high-level classes to do
+			//      strategic | global stuff
 		}
-
-		// TODO call all ops and high-level classes to do
-		//      strategic | global stuff
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
