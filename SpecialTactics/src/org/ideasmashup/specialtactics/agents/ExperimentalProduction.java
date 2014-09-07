@@ -51,14 +51,16 @@ public class ExperimentalProduction extends DefaultAgent {
 		super.update();
 
 		// remove last builder if finished
-		MakeStructure last = builders.getLast();
-		if (last != null && last.isDestroyed()) {
-			builders.remove(last);
-			last = null;
+		if (!builders.isEmpty()) {
+			MakeStructure last = builders.getLast();
+			if (last != null && last.isDestroyed()) {
+				builders.remove(last);
+				last = null;
+			}
 		}
 
 		// start spending only when there is at least one supply structure
-		if (AI.getPlayer().supplyTotal() >= 11) {
+		if (AI.getPlayer().supplyTotal() >= 11 && !queue.isEmpty()) {
 			// check if we can spend the price for first queued item
 			Resources res = Resources.getInstance();
 			UnitType first = queue.getFirst();
