@@ -8,6 +8,7 @@ import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.AsyncOrders;
 import org.ideasmashup.specialtactics.agents.Base;
 import org.ideasmashup.specialtactics.agents.Clock;
+import org.ideasmashup.specialtactics.agents.ExperimentalProduction;
 import org.ideasmashup.specialtactics.agents.MineralPatch;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.agents.scouts.FindEnemyMain;
