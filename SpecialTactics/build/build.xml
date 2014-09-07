@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir=".." default="create_run_jar" name="Build SpecialTactics">
+    <target name="create_run_jar">
+        <property name="lib.folder" value="lib" />
+        <property name="build.output.folder" value="build" />
+        <property name="build.output.jar" value="${build.output.folder}/SpecialTactics.jar" />
+        <path id="build-classpath">
+            <fileset dir="${lib.folder}">
+                <include name="*.jar" />
+            </fileset>
+        </path>
+        <manifestclasspath property="lib.list" jarfile="${build.output.jar}">
+            <classpath refid="build-classpath"/>
+        </manifestclasspath>
+        <jar destfile="${build.output.jar}">
+            <manifest>
+                <attribute name="Main-Class" value="org.ideasmashup.specialtactics.AI" />
+                <attribute name="Class-Path" value="${lib.list}" />
+            </manifest>
+            <fileset dir="bin" />
+        </jar>
+    </target>
+</project>
