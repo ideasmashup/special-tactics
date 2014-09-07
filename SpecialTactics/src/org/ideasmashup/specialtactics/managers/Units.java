@@ -234,6 +234,17 @@ public class Units {
 			new UnitType[]{},
 			new UnitType[]{}
 		),
+		GROUND_T1(
+			new UnitType[]{
+				UnitType.Protoss_Zealot,
+			},
+			new UnitType[]{
+				UnitType.Terran_Marine,
+			},
+			new UnitType[]{
+				UnitType.Zerg_Zergling,
+			}
+		),
 		GROUND_RANGED(
 			new UnitType[]{},
 			new UnitType[]{},
