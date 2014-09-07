@@ -19,7 +19,8 @@ public enum FrameRate {
 	FASTEST(42),
 	FASTEST_x2(21),
 	FASTEST_x4(10),
-	FASTEST_x8(5);
+	FASTEST_x8(5),
+	FASTEST_MAX(0);
 
 	private int localSpeed;
 
