@@ -103,6 +103,10 @@ public class Commands {
 			boolean res = false;
 
 			switch (this) {
+				default:
+					// not implemented yet !!
+					System.err.println("NOT IMPLEMENTED YET : "+ this.name());
+					break;
 				case Attack_Move:
 					// call function
 					res = unit.attack((Position) args[0]);
@@ -111,9 +115,6 @@ public class Commands {
 					// call function
 					res = unit.attack((Unit) args[0]);
 					break;
-				default:
-					// not implemented yet !!
-					System.err.println("NOT IMPLEMENTED YET : "+ this.name());
 				case Build:
 					// call function
 					if (args.length == 1) {
@@ -125,33 +126,52 @@ public class Commands {
 					break;
 				case Build_Addon:
 					// call function
+					res = unit.buildAddon((UnitType) args[0]);
 					break;
 				case Train:
 					// call function
+					res = unit.train((UnitType) args[0]);
 					break;
 				case Morph:
 					// call function
+					res = unit.morph((UnitType) args[0]);
 					break;
 				case Research:
 					// call function
+					res = unit.research((TechType) args[0]);
 					break;
 				case Upgrade:
 					// call function
+					res = unit.upgrade((UpgradeType) args[0]);
 					break;
 				case Set_Rally_Position:
 					// call function
+					res = unit.setRallyPoint((Position) args[0]);
 					break;
 				case Set_Rally_Unit:
 					// call function
+					res = unit.setRallyPoint((Unit) args[0]);
 					break;
 				case Move:
 					// call function
+					if (args.length == 1) {
+						res = unit.move((Position) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.move((Position) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Patrol:
 					// call function
 					break;
 				case Hold_Position:
 					// call function
+					if (args.length == 0) {
+						res = unit.holdPosition();
+					}
+					else if (args.length == 1) {
+						res = unit.holdPosition((Boolean) args[0]);
+					}
 					break;
 				case Stop:
 					// call function
@@ -170,33 +190,42 @@ public class Commands {
 					break;
 				case Burrow:
 					// call function
+					res = unit.burrow();
 					break;
 				case Unburrow:
 					// call function
+					res = unit.unburrow();
 					break;
 				case Cloak:
 					// call function
+					res = unit.cloak();
 					break;
 				case Decloak:
 					// call function
+					res = unit.decloak();
 					break;
 				case Siege:
 					// call function
+					res = unit.siege();
 					break;
 				case Unsiege:
 					// call function
+					res = unit.unsiege();
 					break;
 				case Lift:
 					// call function
+					res = unit.lift();
 					break;
 				case Land:
 					// call function
+					res = unit.land((TilePosition) args[0]);
 					break;
 				case Load:
 					// call function
 					break;
 				case Unload:
 					// call function
+					res = unit.unload((Unit) args[0]);
 					break;
 				case Unload_All:
 					// call function
@@ -206,33 +235,43 @@ public class Commands {
 					break;
 				case Right_Click_Position:
 					// call function
+					res = unit.rightClick((Position) args[0]);
 					break;
 				case Right_Click_Unit:
 					// call function
+					res = unit.rightClick((Unit) args[0]);
 					break;
 				case Halt_Construction:
 					// call function
+					res = unit.haltConstruction();
 					break;
 				case Cancel_Construction:
 					// call function
+					res = unit.cancelConstruction();
 					break;
 				case Cancel_Addon:
 					// call function
+					res = unit.cancelAddon();
 					break;
 				case Cancel_Train:
 					// call function
+					res = unit.cancelTrain();
 					break;
 				case Cancel_Train_Slot:
 					// call function
+					res = unit.cancelTrain((Integer) args[0]);
 					break;
 				case Cancel_Morph:
 					// call function
+					res = unit.cancelMorph();
 					break;
 				case Cancel_Research:
 					// call function
+					res = unit.cancelResearch();
 					break;
 				case Cancel_Upgrade:
 					// call function
+					res = unit.cancelUpgrade();
 					break;
 				case Use_Tech:
 					// call function
