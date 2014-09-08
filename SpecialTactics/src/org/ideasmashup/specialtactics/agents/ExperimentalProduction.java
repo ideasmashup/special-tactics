@@ -1,13 +1,16 @@
 package org.ideasmashup.specialtactics.agents;
 
-import java.util.Collection;
 import java.util.LinkedList;
 
 import org.ideasmashup.specialtactics.AI;
+import org.ideasmashup.specialtactics.listeners.UnitListener;
+import org.ideasmashup.specialtactics.managers.Agents;
+import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
-import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.managers.Units;
+import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.managers.Units.Types;
+import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -21,7 +24,7 @@ import bwapi.UnitType;
  * @author William ANGER
  *
  */
-public class ExperimentalProduction extends DefaultAgent {
+public class ExperimentalProduction extends DefaultAgent implements UnitListener {
 
 	protected LinkedList<UnitType> queue;
 	protected LinkedList<MakeStructure> builders;
@@ -35,15 +38,10 @@ public class ExperimentalProduction extends DefaultAgent {
 
 	private void initQueue() {
 		// need T1, T1, T1, T1...
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
-		queue.addFirst(Units.Types.PROD_T1.getUnitType());
+		queue.add(Units.Types.PROD_T1.getUnitType());
+		queue.add(Units.Types.PROD_T1.getUnitType());
+		queue.add(Units.Types.PROD_T1.getUnitType());
+		queue.add(Units.Types.PROD_T1.getUnitType());
 	}
 
 	@Override
@@ -78,5 +76,74 @@ public class ExperimentalProduction extends DefaultAgent {
 				System.out.println("Production : waiting requests = "+ queue.size());
 			}
 		}
+	}
+
+	@Override
+	public void onUnitDiscover(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitEvade(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitShow(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitHide(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitCreate(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitDestroy(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitMorph(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitRenegade(Unit unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onUnitComplete(Unit unit) {
+		if (unit.getType().canProduce()) {
+			// this is a T1 production structure... attach UnitProductionAgent
+			System.out.println("Production : completed "+ unit +" creating producer...");
+			ExperimentalProducer ep = new ExperimentalProducer(unit);
+			Agents.getInstance().add(ep);
+		}
+	}
+
+	@Override
+	public Filter getFilter() {
+		// TODO Auto-generated method stub
+		return new Filter() {
+			@Override
+			public boolean allow(Unit unit) {
+				return Types.PROD_T1.is(unit);
+			}
+		};
 	}
 }
