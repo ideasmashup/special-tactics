@@ -4,6 +4,7 @@ import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
+import org.ideasmashup.specialtactics.managers.Producers;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
@@ -96,7 +97,6 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 					break;
 				case READY:
 					// already has a worker
-					Needs.getInstance().removeNeed(needUnit);
 				case BUILD_TRY:
 					// new state because build can fail even when build() returns true
 					// so building must only start after we have validated that a
@@ -127,8 +127,8 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 					Needs.getInstance().removeNeed(needResources);
 
 					if (AI.getPlayer().getRace() == Race.Protoss) {
-						// building is done, release worker
-						state = State.DONE;
+						// free worker asap
+						freeWorker();
 					}
 					break;
 				case DONE:
@@ -174,6 +174,8 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 					System.out.println("Structure : moving worker #"+ unit.getID() +" to choke point!");
 					worker.patrol(pos);
 					state = State.MOVING;
+
+					Needs.getInstance().removeNeed(needUnit);
 
 					return true;
 				}
@@ -271,10 +273,13 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 		protected void freeWorker() {
 			// liberate worker for other consumers to reclaim it
 			// unless we are zerg and the unit has morphed and thus vanished
-			if (worker.getPlayer().getRace() != Race.Zerg) {
+			if (worker != null && worker.getPlayer().getRace() != Race.Zerg) {
+				System.out.println("Structure : freeing worker "+ worker);
+				worker.stop();
+
 				Units.getInstance().onUnitComplete(worker);
+				this.worker = null;
 			}
-			this.worker = null;
 		}
 
 		protected Filter filter = new Filter() {
