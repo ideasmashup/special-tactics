@@ -76,7 +76,7 @@ public class GUI extends GuiWindow {
 	@Override
 	protected void plugBehavior() {
 		frame.setAlwaysOnTop(true);
-		frame.setSize(WIDTH, HEIGHT / 5);
+		frame.setSize(WIDTH, HEIGHT);
 		frame.setResizable(false);
 		frame.setLocation(new Point(10, 50));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
