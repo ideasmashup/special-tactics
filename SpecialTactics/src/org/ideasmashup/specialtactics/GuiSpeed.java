@@ -36,7 +36,7 @@ public class GuiSpeed extends GuiWindow {
 		gameControls.setAlwaysOnTop(true);
 		gameControls.setSize(600, 100);
 		gameControls.setResizable(false);
-		gameControls.setLocation(620, 50 + GUI.HEIGHT - 110);
+		gameControls.setLocation(10, 50 + GUI.HEIGHT);
 	}
 
 	private void buildGameControlToolbar() {

@@ -16,7 +16,7 @@ import org.ideasmashup.specialtactics.brains.Brain;
 public class GUI extends GuiWindow {
 
 	public static final int WIDTH = 600;
-	public static final int HEIGHT = 900;
+	public static final int HEIGHT = 200;
 
 	private final Brain brain;
 
@@ -34,7 +34,6 @@ public class GUI extends GuiWindow {
 
 		// FIXME load GUI elements/frames to open from config file
 	}
-
 
 	@Override
 	protected void buildLayout() {
