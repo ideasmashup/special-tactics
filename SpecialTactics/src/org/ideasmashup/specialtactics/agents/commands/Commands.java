@@ -165,6 +165,12 @@ public class Commands {
 					break;
 				case Patrol:
 					// call function
+					if (args.length == 1) {
+						res = unit.patrol((Position) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.patrol((Position) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Hold_Position:
 					// call function
@@ -177,18 +183,53 @@ public class Commands {
 					break;
 				case Stop:
 					// call function
+					// FIXME implement native function call
+					if (args.length == 0) {
+						res = unit.stop();
+					}
+					else if (args.length == 1) {
+						res = unit.stop((Boolean) args[1]);
+					}
 					break;
 				case Follow:
 					// call function
+					if (args.length == 1) {
+						res = unit.follow((Unit) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.follow((Unit) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Gather:
 					// call function
+					if (args.length == 1) {
+						res = unit.gather((Unit) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.gather((Unit) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Return_Cargo:
 					// call function
+					if (args.length == 0) {
+						res = unit.returnCargo();
+					}
+					else if (args.length == 1) {
+						res = unit.returnCargo((Boolean) args[1]);
+					}
 					break;
 				case Repair:
 					// call function
+					// TODO implement smart-repairs with an agent that looks
+					//      for repairable units within an area or group that
+					//      can be repaired
+
+					if (args.length == 1) {
+						res = unit.repair((Unit) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.repair((Unit) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Burrow:
 					// call function
@@ -224,6 +265,12 @@ public class Commands {
 					break;
 				case Load:
 					// call function
+					if (args.length == 1) {
+						res = unit.load((Unit) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.load((Unit) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Unload:
 					// call function
@@ -231,17 +278,34 @@ public class Commands {
 					break;
 				case Unload_All:
 					// call function
+					res = unit.unloadAll();
 					break;
 				case Unload_All_Position:
 					// call function
+					if (args.length == 1) {
+						res = unit.unloadAll((Position) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.unloadAll((Position) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Right_Click_Position:
 					// call function
-					res = unit.rightClick((Position) args[0]);
+					if (args.length == 1) {
+						res = unit.rightClick((Position) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.rightClick((Position) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Right_Click_Unit:
 					// call function
-					res = unit.rightClick((Unit) args[0]);
+					if (args.length == 1) {
+						res = unit.rightClick((Unit) args[0]);
+					}
+					else if (args.length == 2) {
+						res = unit.rightClick((Unit) args[0], (Boolean) args[1]);
+					}
 					break;
 				case Halt_Construction:
 					// call function
@@ -277,21 +341,27 @@ public class Commands {
 					break;
 				case Use_Tech:
 					// call function
+					res = unit.useTech((TechType) args[0]);
 					break;
 				case Use_Tech_Position:
 					// call function
+					res = unit.useTech((TechType) args[0], (Position) args[1]);
 					break;
 				case Use_Tech_Unit:
 					// call function
+					res = unit.useTech((TechType) args[0], (Unit) args[1]);
 					break;
 				case Place_COP:
 					// call function
+					res = unit.placeCOP((TilePosition) args[0]);
 					break;
 				case None:
 					// call function
+					// This is a blank command : do nothing...
 					break;
 				case Unknown:
 					// call function
+					System.err.println("Command : UNKNOWN !");
 					break;
 			}
 
