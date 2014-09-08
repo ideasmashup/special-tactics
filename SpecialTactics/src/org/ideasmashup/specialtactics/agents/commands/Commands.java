@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bwapi.Position;
+import bwapi.TechType;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitCommandType;
 import bwapi.UnitType;
+import bwapi.UpgradeType;
 
 public class Commands {
 
