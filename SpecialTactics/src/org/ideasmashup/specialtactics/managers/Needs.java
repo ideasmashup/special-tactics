@@ -273,14 +273,13 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		//System.out.println("Needs.onUnitComplete()");
-		//System.out.println("Needs.get(UNIT).size() = "+ needs.get(Types.UNIT).size());
+		System.out.println("Needs.onUnitComplete()");
 
 		for (Need need : nUnits) {
 			if (need.canReceive(unit)) {
 				Consumer consumer = need.getOwner();
 				if (consumer.fillNeeds(unit)) {
-					System.out.println("  - consumer satisfied !");
+					System.out.println("  - consumer "+ consumer +" satisfied with "+ unit +" !");
 
 					if (need.getModifiers() == Needs.Modifiers.IS_NORMAL) {
 						// when normal needs are satified they are removed from the
@@ -309,11 +308,6 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 					break;
 				}
 			}
-		}
-
-		if (nUnits.size() == 0) {
-			// no more needs...
-			AI.say("All mineral patchs say they are satisfied...");
 		}
 	}
 
