@@ -76,7 +76,6 @@ public class ExperimentalProducer extends UnitAgent implements Producer, Consume
 	public void update() {
 		super.update();
 
-		System.out.println("Producer : up!!");
 		Resources res = Resources.getInstance();
 		UnitType type = Types.GROUND_T1.getUnitType();
 
