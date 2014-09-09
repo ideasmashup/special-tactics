@@ -156,19 +156,25 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	public void removeNeed(Need need) {
 		if (need instanceof NeedUnit) {
-			this.nUnits.remove(need);
-			System.out.println("  - removed NeedUnit for "+ need.getOwner().toString());
-			System.out.println("  - total NeedUnit now = "+ nUnits.size());
+			if (this.nUnits.contains(need)) {
+				this.nUnits.remove(need);
+				System.out.println("  - removed NeedUnit for "+ need.getOwner().toString());
+				System.out.println("  - total NeedUnit now = "+ nUnits.size());
+			}
 		}
 		else if (need instanceof NeedResources) {
-			this.nResources.remove(need);
-			System.out.println("  - removed NeedResources for "+ need.getOwner().toString());
-			System.out.println("  - total NeedResources now = "+ nResources.size());
+			if (this.nResources.contains(need)) {
+				this.nResources.remove(need);
+				System.out.println("  - removed NeedResources for "+ need.getOwner().toString());
+				System.out.println("  - total NeedResources now = "+ nResources.size());
+			}
 		}
 		else if (need instanceof NeedSupply) {
-			this.nSupplies.remove(need);
-			System.out.println("  - removed NeedSupply for "+ need.getOwner().toString());
-			System.out.println("  - total NeedSupply now = "+ nSupplies.size());
+			if (this.nSupplies.contains(need)) {
+				this.nSupplies.remove(need);
+				System.out.println("  - removed NeedSupply for "+ need.getOwner().toString());
+				System.out.println("  - total NeedSupply now = "+ nSupplies.size());
+			}
 		}
 		else {
 			System.err.println("  - not removed because of unknown Need type : "+ need);
