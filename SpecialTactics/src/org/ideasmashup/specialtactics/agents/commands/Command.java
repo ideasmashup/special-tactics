@@ -12,6 +12,7 @@ import bwapi.UnitCommandType;
 public class Command extends UnitAgent {
 
 	protected Commands.States state;
+	protected Commands.Types type;
 	protected Commands.NativeTypes ntc;
 	protected Object[] args;
 	protected LinkedList<CommandListener> ls;
