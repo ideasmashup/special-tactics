@@ -117,16 +117,18 @@ public class Resources {
 	}
 
 	public void unreserve(Consumer owner) {
-		System.out.println("Resources unreserved all resources allocated to "+ owner);
+		if (consumers.contains(owner)) {
+			System.out.println("Resources unreserved all resources allocated to "+ owner);
 
-		this.consumers.remove(owner);
-		this.reservedMinerals.remove(owner);
-		this.reservedGas.remove(owner);
+			this.consumers.remove(owner);
+			this.reservedMinerals.remove(owner);
+			this.reservedGas.remove(owner);
 
-		updateReservedMineralsTotal();
-		updateReservedGasTotal();
+			updateReservedMineralsTotal();
+			updateReservedGasTotal();
 
-		onResourcesChange(getMinerals(), getGas());
+			onResourcesChange(getMinerals(), getGas());
+		}
 	}
 
 	public int getReservedMinerals() {
