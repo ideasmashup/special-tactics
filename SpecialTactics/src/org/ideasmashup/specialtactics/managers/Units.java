@@ -13,6 +13,7 @@ import java.util.Set;
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 
+import bwapi.Player;
 import bwapi.Race;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -595,6 +596,7 @@ public class Units {
 	}
 
 	public static interface Filter{
+		public abstract boolean allow(Player player);
 		public abstract boolean allow(Unit unit);
 	}
 }
