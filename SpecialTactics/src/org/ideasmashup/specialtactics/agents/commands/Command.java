@@ -20,7 +20,7 @@ public class Command extends UnitAgent {
 	protected boolean givesObject; // will return an Object to listeners?
 	protected boolean wantForward; // must get returned Object of prev command?
 
-	public Command(Unit bindee) {
+	protected Command(Unit bindee) {
 		super(bindee);
 		this.ls = new LinkedList<CommandListener>();
 		this.maxRetries = 100;
