@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
@@ -18,6 +19,7 @@ import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedSupply;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
@@ -279,15 +281,23 @@ public class ExperimentalProducer extends UnitAgent implements Producer, Consume
 //		}
 	}
 
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Player player) {
+			return player == AI.getPlayer();
+		}
+
+		@Override
+		public boolean allow(Unit unit) {
+			return Types.GROUND_T1.is(unit) || Types.PROD_T1.is(unit);
+		}
+	};
+
+
 	@Override
 	public Filter getFilter() {
 		// TODO Auto-generated method stub
-		return new Filter() {
-			@Override
-			public boolean allow(Unit unit) {
-				return Types.GROUND_T1.is(unit) || Types.PROD_T1.is(unit);
-			}
-		};
+		return filter;
 	}
 
 

@@ -12,6 +12,7 @@ import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.managers.Units.Types;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -136,14 +137,21 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 		}
 	}
 
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Player player) {
+			return player == AI.getPlayer();
+		}
+
+		@Override
+		public boolean allow(Unit unit) {
+			return Types.PROD_T1.is(unit);
+		}
+	};
+
 	@Override
 	public Filter getFilter() {
 		// TODO Auto-generated method stub
-		return new Filter() {
-			@Override
-			public boolean allow(Unit unit) {
-				return Types.PROD_T1.is(unit);
-			}
-		};
+		return filter;
 	}
 }

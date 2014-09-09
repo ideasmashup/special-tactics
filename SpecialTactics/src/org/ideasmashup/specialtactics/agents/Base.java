@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Producers;
@@ -16,6 +17,7 @@ import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedSupply;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -206,6 +208,11 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	}
 
 	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Player player) {
+			return player == AI.getPlayer();
+		}
+
 		@Override
 		public boolean allow(Unit unit) {
 			return unit == bindee || Units.Types.WORKERS.is(unit);

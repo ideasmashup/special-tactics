@@ -11,6 +11,7 @@ import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Player;
 import bwapi.Position;
 import bwapi.Race;
 import bwapi.TilePosition;
@@ -282,10 +283,15 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 
 	protected Filter filter = new Filter() {
 		@Override
+		public boolean allow(Player player) {
+			return player == AI.getPlayer();
+		}
+
+		@Override
 		public boolean allow(Unit unit) {
 			// check for agent's worker and supply unit creation
 			return unit == worker || unit.getType() == supplyType;
-		};
+		}
 	};
 
 	@Override

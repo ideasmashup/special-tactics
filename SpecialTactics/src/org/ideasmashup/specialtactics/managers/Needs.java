@@ -17,6 +17,7 @@ import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedSupply;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -410,10 +411,15 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	protected Filter filter = new Filter() {
 		@Override
+		public boolean allow(Player player) {
+			return true; //player == AI.getPlayer(); // watch all players
+		}
+
+		@Override
 		public boolean allow(Unit unit) {
 			// needs manager listens to all units events so allow all
 			return true;
-		};
+		}
 	};
 
 	@Override
