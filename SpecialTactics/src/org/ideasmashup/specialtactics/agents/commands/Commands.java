@@ -25,13 +25,15 @@ public class Commands {
 	}
 
 	public static enum States {
-		PAUSED,
-		RUNNING,
-		WAITING_RESULT,
-		FAILURE,
-		SUCCESS,
-		STOPPED,
-		CANCELED,
+		PAUSED,          // paused until external/internal stimulus wake up
+		WAITING_NEEDS,   // needing some need fulfilled before continuing
+		WAITING_CONDS,   // needing some condition before continuing
+		RUNNING,         // all needs ok, now running the command
+		WAITING_RESULT,  // ran successfuly but result not yet completed
+		FAILURE,         // couldn't run at all
+		SUCCESS,         // ran and result now produced/completed
+		STOPPED,         // ran ok but was stopped for some reason (attack?)
+		CANCELED,        // was cancelled
 	}
 
 	public static enum NativeTypes {
@@ -106,19 +108,15 @@ public class Commands {
 
 			switch (this) {
 				default:
-					// not implemented yet !!
-					System.err.println("NOT IMPLEMENTED YET : "+ this.name());
+					System.err.println("Command : NOT IMPLEMENTED YET "+ this.name());
 					break;
 				case Attack_Move:
-					// call function
 					res = unit.attack((Position) args[0]);
 					break;
 				case Attack_Unit:
-					// call function
 					res = unit.attack((Unit) args[0]);
 					break;
 				case Build:
-					// call function
 					if (args.length == 1) {
 						res = unit.build(unit.getTilePosition(), (UnitType) args[0]);
 					}
@@ -127,35 +125,27 @@ public class Commands {
 					}
 					break;
 				case Build_Addon:
-					// call function
 					res = unit.buildAddon((UnitType) args[0]);
 					break;
 				case Train:
-					// call function
 					res = unit.train((UnitType) args[0]);
 					break;
 				case Morph:
-					// call function
 					res = unit.morph((UnitType) args[0]);
 					break;
 				case Research:
-					// call function
 					res = unit.research((TechType) args[0]);
 					break;
 				case Upgrade:
-					// call function
 					res = unit.upgrade((UpgradeType) args[0]);
 					break;
 				case Set_Rally_Position:
-					// call function
 					res = unit.setRallyPoint((Position) args[0]);
 					break;
 				case Set_Rally_Unit:
-					// call function
 					res = unit.setRallyPoint((Unit) args[0]);
 					break;
 				case Move:
-					// call function
 					if (args.length == 1) {
 						res = unit.move((Position) args[0]);
 					}
@@ -164,7 +154,6 @@ public class Commands {
 					}
 					break;
 				case Patrol:
-					// call function
 					if (args.length == 1) {
 						res = unit.patrol((Position) args[0]);
 					}
@@ -173,7 +162,6 @@ public class Commands {
 					}
 					break;
 				case Hold_Position:
-					// call function
 					if (args.length == 0) {
 						res = unit.holdPosition();
 					}
@@ -182,7 +170,6 @@ public class Commands {
 					}
 					break;
 				case Stop:
-					// call function
 					// FIXME implement native function call
 					if (args.length == 0) {
 						res = unit.stop();
@@ -192,7 +179,6 @@ public class Commands {
 					}
 					break;
 				case Follow:
-					// call function
 					if (args.length == 1) {
 						res = unit.follow((Unit) args[0]);
 					}
@@ -201,7 +187,6 @@ public class Commands {
 					}
 					break;
 				case Gather:
-					// call function
 					if (args.length == 1) {
 						res = unit.gather((Unit) args[0]);
 					}
@@ -210,7 +195,6 @@ public class Commands {
 					}
 					break;
 				case Return_Cargo:
-					// call function
 					if (args.length == 0) {
 						res = unit.returnCargo();
 					}
@@ -219,7 +203,6 @@ public class Commands {
 					}
 					break;
 				case Repair:
-					// call function
 					// TODO implement smart-repairs with an agent that looks
 					//      for repairable units within an area or group that
 					//      can be repaired
@@ -232,39 +215,30 @@ public class Commands {
 					}
 					break;
 				case Burrow:
-					// call function
 					res = unit.burrow();
 					break;
 				case Unburrow:
-					// call function
 					res = unit.unburrow();
 					break;
 				case Cloak:
-					// call function
 					res = unit.cloak();
 					break;
 				case Decloak:
-					// call function
 					res = unit.decloak();
 					break;
 				case Siege:
-					// call function
 					res = unit.siege();
 					break;
 				case Unsiege:
-					// call function
 					res = unit.unsiege();
 					break;
 				case Lift:
-					// call function
 					res = unit.lift();
 					break;
 				case Land:
-					// call function
 					res = unit.land((TilePosition) args[0]);
 					break;
 				case Load:
-					// call function
 					if (args.length == 1) {
 						res = unit.load((Unit) args[0]);
 					}
@@ -273,15 +247,12 @@ public class Commands {
 					}
 					break;
 				case Unload:
-					// call function
 					res = unit.unload((Unit) args[0]);
 					break;
 				case Unload_All:
-					// call function
 					res = unit.unloadAll();
 					break;
 				case Unload_All_Position:
-					// call function
 					if (args.length == 1) {
 						res = unit.unloadAll((Position) args[0]);
 					}
@@ -290,7 +261,6 @@ public class Commands {
 					}
 					break;
 				case Right_Click_Position:
-					// call function
 					if (args.length == 1) {
 						res = unit.rightClick((Position) args[0]);
 					}
@@ -299,7 +269,6 @@ public class Commands {
 					}
 					break;
 				case Right_Click_Unit:
-					// call function
 					if (args.length == 1) {
 						res = unit.rightClick((Unit) args[0]);
 					}
@@ -308,59 +277,45 @@ public class Commands {
 					}
 					break;
 				case Halt_Construction:
-					// call function
 					res = unit.haltConstruction();
 					break;
 				case Cancel_Construction:
-					// call function
 					res = unit.cancelConstruction();
 					break;
 				case Cancel_Addon:
-					// call function
 					res = unit.cancelAddon();
 					break;
 				case Cancel_Train:
-					// call function
 					res = unit.cancelTrain();
 					break;
 				case Cancel_Train_Slot:
-					// call function
 					res = unit.cancelTrain((Integer) args[0]);
 					break;
 				case Cancel_Morph:
-					// call function
 					res = unit.cancelMorph();
 					break;
 				case Cancel_Research:
-					// call function
 					res = unit.cancelResearch();
 					break;
 				case Cancel_Upgrade:
-					// call function
 					res = unit.cancelUpgrade();
 					break;
 				case Use_Tech:
-					// call function
 					res = unit.useTech((TechType) args[0]);
 					break;
 				case Use_Tech_Position:
-					// call function
 					res = unit.useTech((TechType) args[0], (Position) args[1]);
 					break;
 				case Use_Tech_Unit:
-					// call function
 					res = unit.useTech((TechType) args[0], (Unit) args[1]);
 					break;
 				case Place_COP:
-					// call function
 					res = unit.placeCOP((TilePosition) args[0]);
 					break;
 				case None:
-					// call function
 					// This is a blank command : do nothing...
 					break;
 				case Unknown:
-					// call function
 					System.err.println("Command : UNKNOWN !");
 					break;
 			}
