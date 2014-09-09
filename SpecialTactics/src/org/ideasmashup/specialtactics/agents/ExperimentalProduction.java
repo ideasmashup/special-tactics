@@ -41,6 +41,9 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 		queue.add(Units.Types.PROD_T1.getUnitType());
 		queue.add(Units.Types.PROD_T1.getUnitType());
 		queue.add(Units.Types.PROD_T1.getUnitType());
+
+		// watch PROD_T1 events
+		Units.getInstance().addListener(this);
 	}
 
 	@Override
