@@ -5,12 +5,10 @@ import java.util.LinkedList;
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
-import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.managers.Units.Types;
-import org.ideasmashup.specialtactics.needs.NeedUnit;
 
 import bwapi.Player;
 import bwapi.Unit;
@@ -129,12 +127,10 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-		if (unit.getType().canProduce()) {
-			// this is a T1 production structure... attach UnitProductionAgent
-			System.out.println("Production : completed "+ unit +" creating producer...");
-			ExperimentalProducer ep = new ExperimentalProducer(unit);
-			Agents.getInstance().add(ep);
-		}
+		// this is a T1 production structure... attach UnitProductionAgent
+		System.out.println("Production : completed "+ unit +" #"+ unit.getID() +" creating producer...");
+		ExperimentalProducer ep = new ExperimentalProducer(unit);
+		Agents.getInstance().add(ep);
 	}
 
 	protected Filter filter = new Filter() {
