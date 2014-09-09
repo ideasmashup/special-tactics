@@ -77,7 +77,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 			// not doing anything let's see if we can build something
 
 			if (!consumers.isEmpty()) {
-				NeedUnit nu = consumers.getFirst();
+				NeedUnit nu = consumers.peekFirst();
 
 				// we have a consumer who want a worker
 				System.out.println(" - base still has "+ consumers.size() +" workers consumers waiting");
@@ -131,8 +131,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 							res.unreserve(this);
 							sup.unreserveSupply(this);
 
-							// and remove consumer
-							consumers.removeFirst();
+							// will remove consumer when the unit is actually fully produced
 						}
 						catch (Exception e) {
 							e.printStackTrace();
