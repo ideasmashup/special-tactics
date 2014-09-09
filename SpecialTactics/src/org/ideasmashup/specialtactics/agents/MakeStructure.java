@@ -275,9 +275,12 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 			// liberate worker for other consumers to reclaim it
 			// unless we are zerg and the unit has morphed and thus vanished
 			if (worker != null && worker.getPlayer().getRace() != Race.Zerg) {
-				System.out.println("Structure : freeing worker "+ worker);
-				worker.stop();
+				System.out.println("Structure : freeing worker "+ worker.getID());
 
+				// first remove all worlers needs
+				Needs.getInstance().removeNeed(needUnit);
+
+				worker.stop();
 				Units.getInstance().onUnitComplete(worker);
 				this.worker = null;
 			}
