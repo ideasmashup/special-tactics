@@ -1,12 +1,11 @@
 package org.ideasmashup.specialtactics.managers;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.Consumer;
-import org.ideasmashup.specialtactics.agents.Producer;
 import org.ideasmashup.specialtactics.agents.UnitAgent;
 import org.ideasmashup.specialtactics.listeners.ResourcesListener;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
@@ -111,8 +110,32 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 			NeedUnit nu = (NeedUnit) need;
 
-			// check if unit can be produced by available producers
+			// special case for critical needs
+			if (nu.isCritical()) {
+				// check if the player already has (busy) units of requested unit type
+				List<Unit> candidates = Units.getInstance().getRequestableUnits(nu.getTypes());
 
+				if (candidates.size() > 0) {
+					System.out.println("Units : critical unit need : found requestable "+ candidates.size() +" units");
+					Unit candidate = candidates.get(0);
+
+					if (nu.getOwner().fillNeeds(candidate)) {
+						// use candidate immediately and don't even add the need to queue
+						// because it's already satisfied
+
+						System.out.println("Units : critical unit need satisfied !");
+						return;
+					}
+					else {
+						System.err.println("Units : couldn't satisfy critical need with requestables... waiting for next produced unit!");
+					}
+				}
+				else {
+					// no available candidate : continue and add Need as first in queue
+				}
+			}
+
+			// check if unit can be produced by available producers
 			if (Producers.getInstance().canProduce(need)) {
 
 				// add needunit (the consumer will be called when the unit is completed)
