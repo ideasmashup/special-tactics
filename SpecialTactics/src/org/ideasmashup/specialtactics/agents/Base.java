@@ -203,8 +203,10 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 			// FIXME magic number 400 should be replaced by radius calculation?
 			//System.out.println(" - worker build at "+ distance +" from base");
 			// this is a worker produced by us, so remove one consumer
-			consumers.removeFirst();
 		}
+			if (Types.WORKERS.is(unit) && !consumers.isEmpty()) {
+				consumers.removeFirst();
+			}
 	}
 
 	protected Filter filter = new Filter() {
