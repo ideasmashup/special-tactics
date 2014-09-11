@@ -3,11 +3,13 @@ package org.ideasmashup.specialtactics.agents;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Color;
 import bwapi.Unit;
 import bwta.BWTA;
 
@@ -92,11 +94,13 @@ public class MineralPatch extends MasterAgent implements Consumer {
 		else {
 			// can still be mined : mining micro-management of all servants
 			for (Unit servant : servants) {
+				AI.getGame().drawLineMap(servant.getPosition().getX(), servant.getPosition().getY(), bindee.getPosition().getX(), bindee.getPosition().getY(), Color.Blue);
+
 				if (servant.isGatheringMinerals()) {
 					// collecting minerals so keep doing it
 					//System.out.println("MineralPatch : worker #"+ servant.getID()+" ignored because it's mining something");
 				}
-				else if (servant.isIdle()) {
+				else if (servant.isIdle()) {// || !servant.isMoving()) {
 					if (servant.isCarryingMinerals()) {
 						//System.out.println("MineralPatch : worker #"+ servant.getID()+" with mineral moved back to base");
 						// carrying minerals so move back to base
