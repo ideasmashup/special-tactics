@@ -13,6 +13,7 @@ import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Color;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.Race;
@@ -43,13 +44,15 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 
 		protected NeedResources needResources;
 		protected NeedUnit needUnit;
+		protected boolean isCritical;
 
-		public MakeStructure(UnitType type) {
+		public MakeStructure(UnitType type, boolean buildAsap) {
 			super();
 			this.pos = null;
 			this.worker = null;
 			this.structure = null;
 			this.type = type;
+			this.isCritical = buildAsap;
 
 			initNeeds();
 		}
@@ -61,10 +64,21 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 			state = State.START;
 			prevState = null;
 
+			// FIXME priority set to critical to immediately fetch worker
+			//       but should be set fro constructor parameter, because all
+			//       structures don't need immediate construction
+			float priority = (isCritical) ? Need.CRITICAL : Need.NORMAL;
+
 			// first need a worker to build the depot it will be "booked temporarily"
 			// so that the "next in line" consumer will already have it
 			System.out.println("Structure : requested (next) worker to build "+ type);
-			needUnit = new NeedUnit(this, Units.Types.WORKERS.getUnitType(), 0, Modifiers.IS_TRANSIENT);
+			if (AI.getPlayer().getRace() != Race.Zerg) {
+				needUnit = new NeedUnit(this, Units.Types.WORKERS.getUnitType(), priority, Modifiers.IS_TRANSIENT);
+			}
+			else {
+				// zerg workers are morphed so it's impossible to reuse the worker...
+				needUnit = new NeedUnit(this, Units.Types.WORKERS.getUnitType(), priority, Modifiers.IS_NORMAL);
+			}
 			Needs.getInstance().addNeed(needUnit);
 
 			// then we must "reserve" rseources to be able to build the supply
@@ -106,6 +120,7 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 				case MOVING:
 					// move and wait for adequate resources in fillNeed()
 					// try to build now
+					AI.getGame().drawLineMap(worker.getPosition().getX(), worker.getPosition().getY(), pos.getX(), pos.getY(), Color.Orange);
 					TilePosition tp = worker.getTilePosition();
 
 					if (AI.getGame().canBuildHere(worker, tp, type)) {
@@ -169,12 +184,27 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 					// assign worker
 					this.worker = unit;
 
-					// force unit to move to choke
-					Chokepoint cp = BWTA.getNearestChokepoint(unit.getPosition());
-					this.pos = new Position(cp.getCenter().getX(), cp.getCenter().getY());
+//					if (Units.getInstance().getOwnBuildings().size() == 1) {
+						// force unit to move to choke (if first pylon)
 
-					System.out.println("Structure : moving worker #"+ unit.getID() +" to choke point!");
-					worker.patrol(pos);
+						Chokepoint cp = BWTA.getNearestChokepoint(unit.getPosition());
+						this.pos = new Position(cp.getCenter().getX(), cp.getCenter().getY());
+
+						System.out.println("Structure : moving worker #"+ unit.getID() +" to choke point!");
+						worker.patrol(pos);
+//					}
+//					else {
+//						if (AI.getPlayer().getRace() == Race.Protoss) {
+//							// force to move within a powered field
+//							Unit[] pylons = Units.getInstance().getOwnBuildings(Types.SUPPLY).toArray(new Unit[0]);
+//							Unit pylon = pylons[(int) (Math.random() * pylons.length)];
+//							this.pos = pylon.getPosition();
+//
+//							System.out.println("Structure : moving worker #"+ unit.getID() +" to pylon!");
+//							worker.patrol(pos);
+//						}
+//					}
+
 					state = State.MOVING;
 
 					Needs.getInstance().removeNeed(needUnit);
