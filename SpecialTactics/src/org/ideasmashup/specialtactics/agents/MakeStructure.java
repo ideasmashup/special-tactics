@@ -4,10 +4,11 @@ import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
-import org.ideasmashup.specialtactics.managers.Producers;
+import org.ideasmashup.specialtactics.managers.Needs.Modifiers;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
+import org.ideasmashup.specialtactics.managers.Units.Types;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
@@ -63,7 +64,7 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 			// first need a worker to build the depot it will be "booked temporarily"
 			// so that the "next in line" consumer will already have it
 			System.out.println("Structure : requested (next) worker to build "+ type);
-			needUnit = new NeedUnit(this, Units.Types.WORKERS.getUnitType(), 0);
+			needUnit = new NeedUnit(this, Units.Types.WORKERS.getUnitType(), 0, Modifiers.IS_TRANSIENT);
 			Needs.getInstance().addNeed(needUnit);
 
 			// then we must "reserve" rseources to be able to build the supply
@@ -161,7 +162,7 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 
 			if (offer instanceof Unit) {
 				Unit unit = (Unit) offer;
-				if (unit.getType().isWorker() && worker == null) {
+				if (unit.getType().isWorker() && worker == null && state != State.BUILDING) {
 					System.out.println("Structure : received worker #"+ unit.getID() +"!");
 					state = State.READY;
 
@@ -184,7 +185,7 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 					return false;
 				}
 			}
-			else {
+			else if (state != State.BUILD_TRY && state != State.BUILDING) {
 				// non-unit offer : assume minerals
 				Resources res = Resources.getInstance();
 				if ((state == State.MOVING || state == State.READY)
@@ -279,10 +280,10 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 
 				// first remove all worlers needs
 				Needs.getInstance().removeNeed(needUnit);
+				Needs.getInstance().removeNeed(needResources);
 
-				worker.stop();
 				Units.getInstance().onUnitComplete(worker);
-				this.worker = null;
+				worker = null;
 			}
 		}
 
