@@ -44,6 +44,10 @@ public abstract class Need {
 		return this.owner;
 	}
 
+	public boolean isCritical() {
+		return this.priority == CRITICAL;
+	}
+
 	public boolean isSatisfied() {
 		return isSatisfied;
 	}
