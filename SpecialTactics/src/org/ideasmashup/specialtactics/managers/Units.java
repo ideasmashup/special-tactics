@@ -110,15 +110,29 @@ public class Units {
 		//}
 	}
 
-//	public boolean contains(UnitType unittype) {
-//		Set<Unit> units = map.get(Units.Types.getType(unittype));
-//
-//		for (Unit u : units) {
-//			if (u.getType() == unittype) return true;
-//		}
-//
-//		return false;
-//	}
+	public boolean contains(UnitType unittype) {
+		Types types = Types.getType(unittype);
+
+		if (unittype.isBuilding()) {
+			// look into own buildings
+			return !myBuildings.get(types).isEmpty();
+		}
+		else {
+			// look into own units
+			return !myUnits.get(types).isEmpty();
+		}
+	}
+
+	public boolean contains(Types types) {
+		if (types.getUnitType().isBuilding()) {
+			// look into own buildings
+			return !myBuildings.get(types).isEmpty();
+		}
+		else {
+			// look into own units
+			return !myUnits.get(types).isEmpty();
+		}
+	}
 
 	public void addListener(UnitListener ls) {
 		listeners.add(ls);
