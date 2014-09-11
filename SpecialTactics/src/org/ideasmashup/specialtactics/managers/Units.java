@@ -154,22 +154,86 @@ public class Units {
 		final Set<Unit> units = neutralUnits.get(type);
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
+
 	public Collection<Unit> getNeutralBuildings(final Types type) {
 		final Set<Unit> units = neutralBuildings.get(type);
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
+
 	public Collection<Unit> getOwnUnits(final Types type) {
 		final Set<Unit> units = myUnits.get(type);
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
+
 	public Collection<Unit> getOwnBuildings(final Types type) {
 		final Set<Unit> units = myBuildings.get(type);
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
+
+	public List<Unit> getRequestableUnits(final Types type) {
+		final Set<Unit> units = myUnits.get(type);
+		final List<Unit> lesser = new ArrayList<Unit>(); // more busy
+		final List<Unit> better = new ArrayList<Unit>(); // less busy
+
+		if (units == null || !units.isEmpty()) {
+			// filter units between ones that are better to interrupt vs others
+			for (Unit unit : units) {
+				if (Types.WORKERS.is(unit)) {
+					// try to pickup workers that aren't mining
+
+					if (unit.isMoving() && !unit.isCarryingMinerals() && !unit.isCarryingGas()) {
+						// great candidate
+						better.add(unit);
+					}
+					else {
+						// poor candidate
+						lesser.add(unit);
+					}
+				}
+				else if (!unit.isAttacking()
+						&& !unit.isBeingHealed()
+						&& !unit.isHallucination()
+						&& !unit.isBlind()
+						&& !unit.isCloaked()
+						&& !unit.isEnsnared()
+						&& !unit.isHoldingPosition()
+						&& !unit.isIrradiated()
+						&& !unit.isLoaded()
+						&& !unit.isLockedDown()
+						&& !unit.isMaelstrommed()
+						&& !unit.isMorphing()
+						&& !unit.isParasited()
+						&& !unit.isPlagued()
+						&& !unit.isSieged()
+						&& !unit.isStasised()
+						&& !unit.isStimmed()
+						&& !unit.isStuck()
+						&& !unit.isUnderAttack()
+						&& !unit.isUnderDarkSwarm()
+						&& !unit.isUnderDisruptionWeb()
+						&& !unit.isUnderStorm()) {
+
+					// try to pickup units that aren't attacking, crippled, tactical, burrowed...
+					if (unit.isMoving() && !unit.isCarryingMinerals() && !unit.isCarryingGas()) {
+						// great candidate
+						better.add(unit);
+					}
+					else {
+						// poor candidate
+						lesser.add(unit);
+					}
+				}
+			}
+		}
+
+		return (better.isEmpty()) ? lesser : better;
+	}
+
 	public Collection<Unit> getEnemyUnits(final Types type) {
 		final Set<Unit> units = enemyUnits.get(type);
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
+
 	public Collection<Unit> getEnemyBuildings(final Types type) {
 		final Set<Unit> units = enemyBuildings.get(type);
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
