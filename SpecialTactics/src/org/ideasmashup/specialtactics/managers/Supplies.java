@@ -12,6 +12,7 @@ import org.ideasmashup.specialtactics.agents.Agent;
 import org.ideasmashup.specialtactics.agents.Consumer;
 import org.ideasmashup.specialtactics.agents.MakeStructure;
 import org.ideasmashup.specialtactics.listeners.SupplyListener;
+import org.ideasmashup.specialtactics.managers.Units.Types;
 
 public class Supplies {
 
@@ -139,11 +140,16 @@ public class Supplies {
 
 		// if real supply (e.g. raw supply value without reserved slots) runs
 		// low and no supplier is alive (e.g. building supply already) add one
-		if (AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() == Units.Types.WORKERS.getUnitType().supplyRequired() * 2
-			&& suppliers.isEmpty()) {
+		int prods = Units.getInstance().getOwnBuildings(Types.PROD).size();
+		int threshold = Units.Types.WORKERS.getUnitType().supplyRequired() * (2 + prods);
+
+		if (AI.getPlayer().supplyTotal() - AI.getPlayer().supplyUsed() <= threshold
+			//&& suppliers.isEmpty()
+			) {
 
 			// create generic cross-race agent that builds a supply unit
-			suppliers.add(new MakeStructure(Units.Types.SUPPLY.getUnitType()));
+			// to not interrupt eco, we will request the next produced worker
+			suppliers.add(new MakeStructure(Units.Types.SUPPLY.getUnitType(), false));
 		}
 
 		// check reserved resources to notify their owners
