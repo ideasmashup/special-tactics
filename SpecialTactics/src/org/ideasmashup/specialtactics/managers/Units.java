@@ -170,6 +170,14 @@ public class Units {
 		return units != null ? Collections.unmodifiableCollection(units) : Collections.unmodifiableCollection(new HashSet<Unit>());
 	}
 
+	public Collection<Unit> getOwnBuildings() {
+		final Set<Unit> units = new HashSet<Unit>();
+		for (Set<Unit> su : myBuildings.values()) {
+			units.addAll(su);
+		}
+		return Collections.unmodifiableCollection(units);
+	}
+
 	public List<Unit> getRequestableUnits(final Types type) {
 		final Set<Unit> units = myUnits.get(type);
 		final List<Unit> lesser = new ArrayList<Unit>(); // more busy
