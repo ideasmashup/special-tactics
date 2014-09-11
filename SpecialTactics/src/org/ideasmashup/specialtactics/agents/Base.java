@@ -12,6 +12,7 @@ import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.managers.Units.Filter;
+import org.ideasmashup.specialtactics.managers.Units.Types;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedSupply;
@@ -198,15 +199,15 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		// this base has just completed (maybe useful for zerg, maybe useful for
 		// base rebuilding if we allow the same agent to persist across rebuilds
 
-		double distance = unit.getPosition().getDistance(bindee.getPosition());
-		if (distance < 400) {
+		//double distance = unit.getPosition().getDistance(bindee.getPosition());
+		//if (distance < 400 && ) {
 			// FIXME magic number 400 should be replaced by radius calculation?
 			//System.out.println(" - worker build at "+ distance +" from base");
 			// this is a worker produced by us, so remove one consumer
-		}
 			if (Types.WORKERS.is(unit) && !consumers.isEmpty()) {
 				consumers.removeFirst();
 			}
+		//}
 	}
 
 	protected Filter filter = new Filter() {
