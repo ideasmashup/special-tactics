@@ -32,16 +32,6 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 		queue = new LinkedList<UnitType>();
 		builders = new LinkedList<MakeStructure>();
 
-		initQueue();
-	}
-
-	private void initQueue() {
-		// need T1, T1, T1, T1...
-		queue.add(Units.Types.PROD_T1.getUnitType());
-		queue.add(Units.Types.PROD_T1.getUnitType());
-		queue.add(Units.Types.PROD_T1.getUnitType());
-		queue.add(Units.Types.PROD_T1.getUnitType());
-
 		// watch PROD_T1 events
 		Units.getInstance().addListener(this);
 	}
@@ -60,10 +50,10 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 		}
 
 		// start spending only when there is at least one supply structure
-		if (AI.getPlayer().supplyTotal() >= 11 && !queue.isEmpty()) {
+		if (AI.getPlayer().supplyTotal() >= 11 && Units.getInstance().getOwnBuildings(Types.PROD).size() < 6) {
 			// check if we can spend the price for first queued item
 			Resources res = Resources.getInstance();
-			UnitType first = queue.getFirst();
+			UnitType first = Types.PROD_T1.getUnitType();//queue.getFirst();
 
 			if (first != null
 				&& res.getUnusedMinerals() >= first.mineralPrice()
@@ -72,7 +62,7 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 				// build structure asap using a "builder agent"
 				MakeStructure builder = new MakeStructure(first);
 				builders.addFirst(builder);
-				queue.removeFirst();
+				//queue.removeFirst();
 
 				System.out.println("Production : created new builder for "+ first);
 				System.out.println("Production : waiting requests = "+ queue.size());

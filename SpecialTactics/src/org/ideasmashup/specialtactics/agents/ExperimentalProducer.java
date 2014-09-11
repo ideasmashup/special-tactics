@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
-import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Producers;
 import org.ideasmashup.specialtactics.managers.Resources;
@@ -19,11 +18,12 @@ import org.ideasmashup.specialtactics.needs.NeedResources;
 import org.ideasmashup.specialtactics.needs.NeedSupply;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
 
+import bwapi.Color;
 import bwapi.Player;
+import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
-import bwta.Chokepoint;
 
 public class ExperimentalProducer extends UnitAgent implements Producer, Consumer, UnitListener {
 
@@ -54,8 +54,8 @@ public class ExperimentalProducer extends UnitAgent implements Producer, Consume
 		Producers.getInstance().addProducer(this);
 
 		// set rallypoint to choke
-		Chokepoint cp = BWTA.getNearestChokepoint(bindee.getPosition());
-		bindee.setRallyPoint(cp.getCenter());
+		//Chokepoint cp = BWTA.getNearestChokepoint(bindee.getPosition());
+		//bindee.setRallyPoint(cp.getCenter());
 
 
 		// request new zealots to itself
@@ -272,12 +272,13 @@ public class ExperimentalProducer extends UnitAgent implements Producer, Consume
 
 	@Override
 	public void onUnitComplete(Unit unit) {
-//		if (Types.PROD_T1.is(unit)) {
-//			unit.train(Types.GROUND_T1.getUnitType());
-//		}
-//		else if (Types.GROUND_T1.is(unit)) {
-//			bindee.train(Types.GROUND_T1.getUnitType());
-//		}
+		if (Types.GROUND_T1.is(unit)) {
+			// attack to natural
+			Position pos = BWTA.getNearestChokepoint(bindee.getPosition()).getCenter();
+			AI.getGame().drawLineMap(unit.getPosition().getX(), unit.getPosition().getY(), pos.getX(), pos.getY(), Color.Red);
+			unit.attack(pos);
+		}
+
 	}
 
 	protected Filter filter = new Filter() {
