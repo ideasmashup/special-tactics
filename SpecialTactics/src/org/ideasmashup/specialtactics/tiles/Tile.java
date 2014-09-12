@@ -48,7 +48,12 @@ public class Tile implements Serializable {
 	}
 
 	public Trail getTrail(Tiles.Trails trail) {
-		return trails.get(trail);
+		Trail value = trails.get(trail);
+		if (value == null) {
+			value = new Trail();
+			trails.put(trail, value);
+		}
+		return value;
 	}
 
 	public Collection<Trail> getTrails() {
