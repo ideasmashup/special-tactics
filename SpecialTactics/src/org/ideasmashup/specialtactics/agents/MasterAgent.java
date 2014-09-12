@@ -2,6 +2,7 @@ package org.ideasmashup.specialtactics.agents;
 
 import java.util.List;
 
+import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Units;
 
 import bwapi.Unit;
