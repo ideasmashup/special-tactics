@@ -194,6 +194,10 @@ public class Brain implements BWEventListener {
 		else {
 			//
 		}
+
+		// in all cases terminate AI and save all AI/game data
+		Tiles.getInstance().saveTiles();
+		AI.terminate(0);
 	}
 
 	@Override
