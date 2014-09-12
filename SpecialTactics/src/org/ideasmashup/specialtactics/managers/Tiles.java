@@ -114,6 +114,12 @@ public class Tiles extends DefaultAgent {
 		return instance;
 	}
 
+	public Tile getTile(TilePosition tp) {
+		// highlight this tile
+		AI.getGame().drawBoxMap(tp.getX() * Tile.WIDTH + 1, tp.getY() * Tile.HEIGHT + 1, (tp.getX() + 1) * Tile.WIDTH - 1, (tp.getY() + 1) * Tile.HEIGHT - 1, Color.Purple, false);
+		return tiles[tp.getY()][tp.getX()];
+	}
+
 	public static enum Trails {
 		TRAIL_MINING,      // float : trail sum by workers passing on tile
 		TRAIL_MOVING,      // float : trail sum by units moving on tile
