@@ -16,6 +16,7 @@ import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
+import org.ideasmashup.specialtactics.managers.Tiles;
 import org.ideasmashup.specialtactics.managers.Units;
 
 import bwapi.BWEventListener;
@@ -113,7 +114,6 @@ public class Brain implements BWEventListener {
 				- tag choke
 				- tag base outline (drop defense)
 		*/
-
 	}
 
 	@Override
@@ -133,6 +133,9 @@ public class Brain implements BWEventListener {
 				//       currently an agent for quick prototyping-testing
 				Agent agent = new ExperimentalProduction();
 				agents.add(agent);
+
+				// FIXME grid drawing for debugging! (remove Agent impl. later)
+				Tiles.getInstance();
 			}
 
 			if (frames % 18 == 0) {
