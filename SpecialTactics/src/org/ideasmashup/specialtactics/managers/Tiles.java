@@ -1,23 +1,31 @@
 package org.ideasmashup.specialtactics.managers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Date;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.DefaultAgent;
 import org.ideasmashup.specialtactics.tiles.Tile;
 
 import bwapi.Color;
+import bwapi.Game;
+import bwapi.TilePosition;
 
 
 public class Tiles extends DefaultAgent {
 
+	private static final String PERSISTENT_FILENAME = "tiles-persistent.grid";
 	private static Tiles instance = null;
 
-	private final String filename;
+	private final String path;
+
 
 	private Tile[][] tiles;
 	private int columns, rows;
@@ -26,7 +34,7 @@ public class Tiles extends DefaultAgent {
 	private Tiles() {
 		super();
 
-		this.filename = AI.getGame().mapHash() + ".tls";
+		this.path = "data/tiles/" + AI.getGame().mapHash();
 		loadTiles();
 
 		// FIXME debug code remove when no longer needed
@@ -58,7 +66,16 @@ public class Tiles extends DefaultAgent {
 			stuff (threat zones, defensive positions, safe paths, etc...)
 		 */
 		try {
-			// load tiles data
+			// load persistant tiles data
+			String filename = path + "/" + PERSISTENT_FILENAME;
+			File file = new File(filename);
+			if (!file.exists()) {
+				// file doesn't exist, create folders to allow file creation
+				if (!file.getParentFile().mkdirs()) {
+					System.err.println("Couldn't create folder structure for file : "+ file.getCanonicalPath());
+				}
+			}
+
 			FileInputStream fis = new FileInputStream(filename);
 			ObjectInputStream in = new ObjectInputStream(fis);
 			this.tiles = (Tile[][]) in.readObject();
@@ -96,6 +113,28 @@ public class Tiles extends DefaultAgent {
 	public void saveTiles() {
 		// save tiles data to file
 		try {
+			// if no persistent file then save as persistent data
+			// otherwise save as {opponent_name}-{matchup}-{datetime}.grid
+
+			Game game = AI.getGame();
+			String filename = path + "/" + PERSISTENT_FILENAME;
+			File file = new File(filename);
+
+			if (!file.exists()) {
+				// file doesn't exist, create folders to allow file creation
+				if (!file.getParentFile().mkdirs()) {
+					System.err.println("Couldn't create folder structure for file : "+ file.getCanonicalPath());
+				}
+			}
+			else {
+				// already have a persistent file, store this game's tiles to a new file
+				filename = path + "/" + game.enemy().getName()
+						+ "-" + AI.getPlayer().getRace().toString().charAt(0)
+						+ "v" + game.enemy().getRace().toString().charAt(0)
+						+ "-" + new Date()
+						+ "-.grid";
+			}
+
 			FileOutputStream fos = new FileOutputStream(filename);
 			ObjectOutputStream out = new ObjectOutputStream(fos);
 			out.writeObject(tiles);
@@ -103,6 +142,9 @@ public class Tiles extends DefaultAgent {
 			out.close();
 		}
 		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
