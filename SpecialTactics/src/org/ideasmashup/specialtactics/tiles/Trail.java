@@ -21,15 +21,25 @@ public class Trail {
 		return this.score;
 	}
 
-	public void vent() {
+	public void decrease() {
 		// dilute score of this trail by 1%
 		//
 		this.score *= 0.01;
 		this.lastChange = new Date();
 	}
 
-	public void vent(float diluting_factor) {
+	public void decrease(float diluting_factor) {
 		this.score *= diluting_factor;
+		this.lastChange = new Date();
+	}
+
+	public void increase() {
+		this.score += 1f;
+		this.lastChange = new Date();
+	}
+
+	public void increase(float value) {
+		this.score += value;
 		this.lastChange = new Date();
 	}
 
