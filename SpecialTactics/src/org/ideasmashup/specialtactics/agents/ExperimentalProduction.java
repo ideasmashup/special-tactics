@@ -57,7 +57,8 @@ public class ExperimentalProduction extends DefaultAgent implements UnitListener
 
 			if (first != null
 				&& res.getUnusedMinerals() >= first.mineralPrice()
-				&& res.getUnusedGas() >= first.gasPrice()) {
+				&& res.getUnusedGas() >= first.gasPrice()
+				&& builders.size() == 1) {
 
 				// build structure asap using a "builder agent" (structure is built asap)
 				MakeStructure builder = new MakeStructure(first, true);
