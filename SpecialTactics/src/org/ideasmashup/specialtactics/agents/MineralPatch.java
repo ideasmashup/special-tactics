@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.managers.Needs;
+import org.ideasmashup.specialtactics.managers.Tiles;
+import org.ideasmashup.specialtactics.managers.Tiles.Specs;
+import org.ideasmashup.specialtactics.managers.Tiles.Trails;
 import org.ideasmashup.specialtactics.managers.Units;
 import org.ideasmashup.specialtactics.needs.Need;
 import org.ideasmashup.specialtactics.needs.NeedUnit;
+import org.ideasmashup.specialtactics.tiles.Tile;
 
 import bwapi.Color;
 import bwapi.Unit;
@@ -112,6 +116,14 @@ public class MineralPatch extends MasterAgent implements Consumer {
 						//System.out.println("MineralPatch : worker #"+ servant.getID()+" forced to mine this patch");
 						servant.gather(bindee);
 					}
+				}
+
+				// FIXME only for debugging of Tiles editing
+				if (servant.isMoving() && servant.isCarryingMinerals()) {
+					// create a mineral trail and turn underneath tiles into unbuildable tiles
+					Tile tile = Tiles.getInstance().getTile(servant.getTilePosition());
+					tile.getTrail(Trails.TRAIL_MINING).increase();
+					tile.setSpecs(Specs.BUILDABLE, false);
 				}
 			}
 		}
