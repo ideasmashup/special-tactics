@@ -71,8 +71,6 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 		// typical Base needs are minerals and supply to produce workers
 		// these needs are filled with a "null" offer
 
-		System.out.println("Base.fillNeeds("+ offer +")");
-
 		if (this.bindee.isTraining()) {
 			// already training unit, do nothing to save resources
 		}
@@ -154,7 +152,7 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 				}
 			}
 			else {
-				System.out.println(" - base has no more waiting consumers... production stopped");
+				//System.out.println(" - base has no more waiting consumers... production stopped");
 			}
 		}
 
