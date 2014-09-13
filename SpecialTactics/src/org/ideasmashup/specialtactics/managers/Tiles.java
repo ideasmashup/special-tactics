@@ -14,6 +14,7 @@ import org.ideasmashup.specialtactics.tiles.Tile;
 
 import bwapi.Color;
 import bwapi.Game;
+import bwapi.Position;
 import bwapi.TilePosition;
 
 
@@ -89,8 +90,8 @@ public class Tiles extends DefaultAgent {
 			e.printStackTrace();
 
 			// error when loading file : reset to blank tiles
-			this.rows = AI.getGame().mapHeight() * (Tile.HEIGHT / 32);  // bwapi standard resolution is 32px
-			this.columns = AI.getGame().mapWidth() * (Tile.WIDTH / 32); // bwapi standard resolution is 32px
+			this.rows = AI.getGame().mapHeight() * (Tile.SIZE_BUILD / Tile.HEIGHT);  // bwapi standard resolution is 32px
+			this.columns = AI.getGame().mapWidth() * (Tile.SIZE_BUILD / Tile.WIDTH); // bwapi standard resolution is 32px
 			this.tiles = new Tile[rows][columns];
 
 			for (int row = 0; row < this.rows; row++) {
@@ -157,10 +158,12 @@ public class Tiles extends DefaultAgent {
 		return instance;
 	}
 
-	public Tile getTile(TilePosition tp) {
+	public Tile getTile(Position p) {
 		// highlight this tile
-		AI.getGame().drawBoxMap(tp.getX() * Tile.WIDTH + 1, tp.getY() * Tile.HEIGHT + 1, (tp.getX() + 1) * Tile.WIDTH - 1, (tp.getY() + 1) * Tile.HEIGHT - 1, Color.Purple, false);
-		return tiles[tp.getY()][tp.getX()];
+		TilePosition tp = new TilePosition(p.getX() / Tile.SIZE_BUILD, p.getY() / Tile.SIZE_BUILD);
+		TilePosition tpu = new TilePosition(p.getX() / Tile.SIZE_UNIT, p.getY() / Tile.SIZE_UNIT);
+		AI.getGame().drawBoxMap(tp.getX() * Tile.SIZE_BUILD + 1, tp.getY() * Tile.SIZE_BUILD + 1, (tp.getX() + 1) * Tile.SIZE_BUILD - 1, (tp.getY()+ 1) * Tile.SIZE_BUILD - 1, Color.Purple, false);
+		return tiles[tpu.getY()][tpu.getX()];
 	}
 
 	public static enum Trails {
