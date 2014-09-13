@@ -17,8 +17,11 @@ public class Tile implements Serializable {
 	//  instead of current "build" level (e.g. 32*32px)
 	//  see : https://code.google.com/p/bwapi/wiki/Misc
 
-	public static int WIDTH = 32;
-	public static int HEIGHT = 32;
+	public static int SIZE_BUILD = 32;
+	public static int SIZE_UNIT = 8;
+
+	public static int WIDTH = 8;
+	public static int HEIGHT = 8;
 
 	private static final long serialVersionUID = -3384650743036528866L;
 
@@ -68,7 +71,7 @@ public class Tile implements Serializable {
 		this.row = row;
 		this.column = column;
 		this.tileposition = new TilePosition(column, row);
-		this.position = new Position(column * 32, row * 32);
+		this.position = new Position(column * Tile.WIDTH, row * Tile.HEIGHT);
 	}
 
 	public TilePosition getTilePosition() {
