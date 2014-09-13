@@ -121,7 +121,7 @@ public class MineralPatch extends MasterAgent implements Consumer {
 				// FIXME only for debugging of Tiles editing
 				if (servant.isMoving() && servant.isCarryingMinerals()) {
 					// create a mineral trail and turn underneath tiles into unbuildable tiles
-					Tile tile = Tiles.getInstance().getTile(servant.getTilePosition());
+					Tile tile = Tiles.getInstance().getTile(servant.getPosition());
 					tile.getTrail(Trails.TRAIL_MINING).increase();
 					tile.setSpecs(Specs.BUILDABLE, false);
 				}
