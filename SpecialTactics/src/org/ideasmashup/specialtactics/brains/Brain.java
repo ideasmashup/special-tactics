@@ -195,9 +195,8 @@ public class Brain implements BWEventListener {
 			//
 		}
 
-		// in all cases terminate AI and save all AI/game data
-		Tiles.getInstance().saveTiles();
-		AI.terminate(0);
+		// close AI and save game data
+		terminate();
 	}
 
 	@Override
@@ -297,5 +296,11 @@ public class Brain implements BWEventListener {
 	@Override
 	public void onPlayerDropped(Player player) {
 
+	}
+
+	private void terminate() {
+		// terminate AI and save all AI/game data
+		Tiles.getInstance().saveTiles();
+		AI.terminate(0);
 	}
 }
