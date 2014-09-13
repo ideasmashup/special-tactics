@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 
 import org.ideasmashup.specialtactics.AI;
@@ -74,6 +72,9 @@ public class Tiles extends DefaultAgent {
 				if (!file.getParentFile().mkdirs()) {
 					System.err.println("Couldn't create folder structure for file : "+ file.getCanonicalPath());
 				}
+				if (file.createNewFile()) {
+					System.err.println("Couldn't create new file : "+ file.getCanonicalPath());
+				}
 			}
 
 			FileInputStream fis = new FileInputStream(filename);
@@ -88,8 +89,8 @@ public class Tiles extends DefaultAgent {
 			e.printStackTrace();
 
 			// error when loading file : reset to blank tiles
-			this.rows = AI.getGame().mapHeight();
-			this.columns = AI.getGame().mapWidth();
+			this.rows = AI.getGame().mapHeight() * (Tile.HEIGHT / 32);  // bwapi standard resolution is 32px
+			this.columns = AI.getGame().mapWidth() * (Tile.WIDTH / 32); // bwapi standard resolution is 32px
 			this.tiles = new Tile[rows][columns];
 
 			for (int row = 0; row < this.rows; row++) {
@@ -125,6 +126,9 @@ public class Tiles extends DefaultAgent {
 				if (!file.getParentFile().mkdirs()) {
 					System.err.println("Couldn't create folder structure for file : "+ file.getCanonicalPath());
 				}
+				if (file.createNewFile()) {
+					System.err.println("Couldn't create new file : "+ file.getCanonicalPath());
+				}
 			}
 			else {
 				// already have a persistent file, store this game's tiles to a new file
@@ -142,9 +146,6 @@ public class Tiles extends DefaultAgent {
 			out.close();
 		}
 		catch (IOException e) {
-			e.printStackTrace();
-		}
-		catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
