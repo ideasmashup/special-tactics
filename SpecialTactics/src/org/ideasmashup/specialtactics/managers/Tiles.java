@@ -10,15 +10,17 @@ import java.util.Date;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.DefaultAgent;
+import org.ideasmashup.specialtactics.brains.BrainListener;
 import org.ideasmashup.specialtactics.tiles.Tile;
 
 import bwapi.Color;
 import bwapi.Game;
+import bwapi.Player;
 import bwapi.Position;
 import bwapi.TilePosition;
 
 
-public class Tiles extends DefaultAgent {
+public class Tiles extends DefaultAgent implements BrainListener {
 
 	private static final String PERSISTENT_FILENAME = "tiles-persistent.grid";
 	private static Tiles instance = null;
@@ -228,8 +230,47 @@ public class Tiles extends DefaultAgent {
 		DEFENSE_COST,      // float : cost to defend tile
 		DEFENSE_BONUS,     // float : defense bonus given on tile
 		DAMAGE_COST,       // float : estimate of DPS taken on tile
+		WALKABLE,          // boolean : can walk on tile or not ?
 		BUILDABLE,         // boolean : can build on tile or not ?
 		BUILD_TYPES,       // UnitType[] : preferred buildings to build on tile
 		BUILD_DIRECTIONS,  // String[] : top, left, bottom, right, edge, center
+	}
+
+	@Override
+	public void onSendText(String text) {
+		//
+	}
+
+	@Override
+	public void onReceiveText(Player player, String text) {
+		if (player == AI.getPlayer()) {
+			if (text.startsWith("/tiles")) {
+				String[] cmd = text.split(" ");
+				if (cmd.length > 1) {
+					switch (cmd[1]) {
+						default:
+							boolean found = false;
+							for (Mode m : Mode.values()) {
+								if (m.toString().equals(cmd[1])) {
+									AI.say("Tiles : set to mode "+ m);
+									this.mode = m;
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								AI.say("Tiles : couldn't find mode : "+ cmd[1]);
+							}
+							break;
+						case "select":
+							AI.getGame().getMouseState(0);
+							break;
+					}
+				}
+			}
+		}
+		else if (text.startsWith("/b")) {
+
+		}
 	}
 }
