@@ -115,6 +115,9 @@ public class Brain implements BWEventListener {
 				- tag choke
 				- tag base outline (drop defense)
 		*/
+
+		// initailize tiles
+		Tiles.getInstance();
 	}
 
 	@Override
@@ -134,9 +137,6 @@ public class Brain implements BWEventListener {
 				//       currently an agent for quick prototyping-testing
 				Agent agent = new ExperimentalProduction();
 				agents.add(agent);
-
-				// FIXME grid drawing for debugging! (remove Agent impl. later)
-				Tiles.getInstance();
 			}
 
 			if (frames % 18 == 0) {
