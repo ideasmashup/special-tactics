@@ -25,6 +25,14 @@ public class Tiles extends DefaultAgent {
 
 	private final String path;
 
+	// editor variables
+	private Mode mode;
+	private enum Mode{
+		build,
+		units,
+		debug,
+		view
+	}
 
 	private Tile[][] tiles;
 	private int columns, rows;
@@ -36,6 +44,9 @@ public class Tiles extends DefaultAgent {
 		this.path = "data/tiles/" + AI.getGame().mapHash();
 		loadTiles();
 
+		// editor parameters
+		this.mode = Mode.view;
+
 		// FIXME debug code remove when no longer needed
 		Agents.getInstance().add(this);
 	}
@@ -46,13 +57,48 @@ public class Tiles extends DefaultAgent {
 
 		// FIXME debug code remove when no longer needed
 		// draw the map grid onto the game
-		if (tiles != null) {
-			for (int x = 0; x < columns; x++) {
-				AI.getGame().drawLineMap(x * Tile.WIDTH, 0, x * Tile.WIDTH, rows * Tile.HEIGHT, Color.Black);
+		if (mode == Mode.view) {
+			if (gridUnits != null) {
+				for (int x = 0; x < gridUnits[0].length; x++) {
+					AI.getGame().drawLineMap(x * Tile.SIZE_UNIT, 0, x * Tile.SIZE_UNIT, gridUnits[0].length * Tile.SIZE_UNIT, Color.Black);
+				}
+				for (int y = 0; y < gridUnits.length; y++) {
+					AI.getGame().drawLineMap(0, y * Tile.SIZE_UNIT, gridUnits.length * Tile.SIZE_UNIT, y * Tile.SIZE_UNIT, Color.Black);
+				}
 			}
-			for (int y = 0; y < rows; y++) {
-				AI.getGame().drawLineMap(0, y * Tile.HEIGHT, columns * Tile.WIDTH, y * Tile.HEIGHT, Color.Black);
+			else if (gridBuild != null) {
+				for (int x = 0; x < gridBuild[0].length; x++) {
+					AI.getGame().drawLineMap(x * Tile.SIZE_BUILD, 0, x * Tile.SIZE_BUILD, gridBuild[0].length * Tile.SIZE_BUILD, Color.Black);
+				}
+				for (int y = 0; y < gridBuild.length; y++) {
+					AI.getGame().drawLineMap(0, y * Tile.SIZE_BUILD, gridBuild.length * Tile.SIZE_BUILD, y * Tile.SIZE_BUILD, Color.Black);
+				}
 			}
+		}
+		else if (mode == Mode.build) {
+			// draw grid : green = buildable, blue = powered, red = unwalkable, unbuildable
+			if (gridBuild != null) {
+				for (int x = 0; x < gridBuild[0].length; x++) {
+					AI.getGame().drawLineMap(x * Tile.SIZE_BUILD, 0, x * Tile.SIZE_BUILD, gridBuild[0].length * Tile.SIZE_BUILD, Color.Black);
+				}
+				for (int y = 0; y < gridBuild.length; y++) {
+					AI.getGame().drawLineMap(0, y * Tile.SIZE_BUILD, gridBuild.length * Tile.SIZE_BUILD, y * Tile.SIZE_BUILD, Color.Black);
+				}
+			}
+		}
+		else if (mode == Mode.units) {
+			// draw grid : purple = trail > 0
+			if (gridUnits != null) {
+				for (int x = 0; x < gridUnits[0].length; x++) {
+					AI.getGame().drawLineMap(x * Tile.SIZE_UNIT, 0, x * Tile.SIZE_UNIT, gridUnits[0].length * Tile.SIZE_UNIT, Color.Black);
+				}
+				for (int y = 0; y < gridUnits.length; y++) {
+					AI.getGame().drawLineMap(0, y * Tile.SIZE_UNIT, gridUnits.length * Tile.SIZE_UNIT, y * Tile.SIZE_UNIT, Color.Black);
+				}
+			}
+		}
+		else if (mode == Mode.debug) {
+			// do something, like display infos of MousePosition tile(s)
 		}
 	}
 
