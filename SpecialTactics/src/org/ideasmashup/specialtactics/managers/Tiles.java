@@ -36,9 +36,8 @@ public class Tiles extends DefaultAgent implements BrainListener {
 		view
 	}
 
-	private Tile[][] tiles;
-	private int columns, rows;
-
+	private Tile[][] gridBuild; // structure tiles (general)
+	private Tile[][] gridUnits; // units tiles (trails)
 
 	private Tiles() {
 		super();
@@ -128,35 +127,68 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 			FileInputStream fis = new FileInputStream(filename);
 			ObjectInputStream in = new ObjectInputStream(fis);
-			this.tiles = (Tile[][]) in.readObject();
-			this.columns = this.tiles[0].length;
-			this.rows = this.tiles.length;
+			this.gridBuild = (Tile[][]) in.readObject();
+			this.gridUnits = (Tile[][]) in.readObject();
 			in.close();
+
+			// set tiles with their position and grid for position awareness
+			for (int row = 0; row < this.gridBuild.length; row++) {
+				for (int column = 0; column < this.gridBuild[0].length; column++) {
+					this.gridBuild[row][column].setGrid(gridBuild);
+					this.gridBuild[row][column].setTilePosition(row, column);
+				}
+			}
+			for (int row = 0; row < this.gridUnits.length; row++) {
+				for (int column = 0; column < this.gridUnits[0].length; column++) {
+					this.gridUnits[row][column].setGrid(gridUnits);
+					this.gridUnits[row][column].setTilePosition(row, column);
+				}
+			}
 
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			System.err.println("Tiles : cannot load tiles file...");
 
 			// error when loading file : reset to blank tiles
-			this.rows = AI.getGame().mapHeight() * (Tile.SIZE_BUILD / Tile.HEIGHT);  // bwapi standard resolution is 32px
-			this.columns = AI.getGame().mapWidth() * (Tile.SIZE_BUILD / Tile.WIDTH); // bwapi standard resolution is 32px
-			this.tiles = new Tile[rows][columns];
+			Game game = AI.getGame();
+			int UNITS_BUILD_RATIO = Tile.SIZE_BUILD / Tile.SIZE_UNIT;
 
-			for (int row = 0; row < this.rows; row++) {
-				for (int column = 0; column < this.columns; column++) {
-					this.tiles[row][column] = new Tile();
+			this.gridBuild = new Tile[game.mapHeight()][game.mapWidth()];
+			this.gridUnits = new Tile[game.mapHeight() * UNITS_BUILD_RATIO][game.mapWidth() * UNITS_BUILD_RATIO];
+
+			System.err.println("Tiles (buildings) : "+ game.mapHeight() +"x"+ game.mapWidth());
+			System.err.println("Tiles (units) : "+ game.mapHeight() * UNITS_BUILD_RATIO +"x"+ game.mapWidth() * UNITS_BUILD_RATIO);
+
+			System.err.println("Tiles : looping through map tiles to initialize grid");
+
+			// fill default tiles
+			Tile tileUnits, tileBuild;
+			for (int row = 0; row < this.gridBuild.length; row++) {
+				for (int column = 0; column < this.gridBuild[0].length; column++) {
+					// buildings tile first
+					tileBuild = new Tile(Tile.SIZE_BUILD);
+
+					tileBuild.setGrid(gridBuild);
+					tileBuild.setTilePosition(row, column);
+
+					this.gridBuild[row][column] = tileBuild;
+
+					// apply building specs to sub-tiles (unit tiles)
+					for (int y = 0; y < UNITS_BUILD_RATIO; y++) {
+						for (int x = 0; x < UNITS_BUILD_RATIO; x++) {
+							tileUnits = new Tile(Tile.SIZE_UNIT);
+
+							tileUnits.setGrid(gridUnits);
+							tileUnits.setTilePosition(row * UNITS_BUILD_RATIO + y, column * UNITS_BUILD_RATIO + x);
+
+							this.gridUnits[row * UNITS_BUILD_RATIO + y][column * UNITS_BUILD_RATIO + x] = tileUnits;
+						}
+					}
 				}
 			}
-			System.err.println(" - Reset Tiles[][] to default blank tiles");
-		}
-		finally {
-			// set tiles with their position and grid for position awareness
-			for (int row = 0; row < this.rows; row++) {
-				for (int column = 0; column < this.columns; column++) {
-					this.tiles[row][column].setGrid(this.tiles);
-					this.tiles[row][column].setTilePosition(row, column);
-				}
-			}
+
+			System.err.println("Tiles : done !");
 		}
 	}
 
@@ -190,7 +222,8 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 			FileOutputStream fos = new FileOutputStream(filename);
 			ObjectOutputStream out = new ObjectOutputStream(fos);
-			out.writeObject(tiles);
+			out.writeObject(gridBuild);
+			out.writeObject(gridUnits);
 			out.flush();
 			out.close();
 		}
@@ -206,12 +239,22 @@ public class Tiles extends DefaultAgent implements BrainListener {
 		return instance;
 	}
 
-	public Tile getTile(Position p) {
-		// highlight this tile
+	public Tile getBuildTile(Position p) {
 		TilePosition tp = new TilePosition(p.getX() / Tile.SIZE_BUILD, p.getY() / Tile.SIZE_BUILD);
-		TilePosition tpu = new TilePosition(p.getX() / Tile.SIZE_UNIT, p.getY() / Tile.SIZE_UNIT);
+
+		// highlight this tile?
 		AI.getGame().drawBoxMap(tp.getX() * Tile.SIZE_BUILD + 1, tp.getY() * Tile.SIZE_BUILD + 1, (tp.getX() + 1) * Tile.SIZE_BUILD - 1, (tp.getY()+ 1) * Tile.SIZE_BUILD - 1, Color.Purple, false);
-		return tiles[tpu.getY()][tpu.getX()];
+
+		return gridBuild[tp.getY()][tp.getX()];
+	}
+
+	public Tile getUnitTile(Position p) {
+		TilePosition tp = new TilePosition(p.getX() / Tile.SIZE_UNIT, p.getY() / Tile.SIZE_UNIT);
+
+		// highlight this tile?
+		AI.getGame().drawBoxMap(tp.getX() * Tile.SIZE_UNIT + 1, tp.getY() * Tile.SIZE_UNIT + 1, (tp.getX() + 1) * Tile.SIZE_UNIT - 1, (tp.getY()+ 1) * Tile.SIZE_UNIT - 1, Color.Purple, false);
+
+		return gridUnits[tp.getY()][tp.getX()];
 	}
 
 	public static enum Trails {
