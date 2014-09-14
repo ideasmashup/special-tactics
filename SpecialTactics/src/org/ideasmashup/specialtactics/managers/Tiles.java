@@ -164,13 +164,22 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 			// fill default tiles
 			Tile tileUnits, tileBuild;
+			boolean buildable, walkable;
+
 			for (int row = 0; row < this.gridBuild.length; row++) {
 				for (int column = 0; column < this.gridBuild[0].length; column++) {
+					// detect specs using Game infos
+					buildable = game.isBuildable(column, row);
+					walkable = game.isWalkable(column, row);
+
 					// buildings tile first
 					tileBuild = new Tile(Tile.SIZE_BUILD);
 
 					tileBuild.setGrid(gridBuild);
 					tileBuild.setTilePosition(row, column);
+
+					tileBuild.setSpecs(Specs.BUILDABLE, buildable);
+					tileBuild.setSpecs(Specs.WALKABLE, walkable);
 
 					this.gridBuild[row][column] = tileBuild;
 
@@ -181,6 +190,9 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 							tileUnits.setGrid(gridUnits);
 							tileUnits.setTilePosition(row * UNITS_BUILD_RATIO + y, column * UNITS_BUILD_RATIO + x);
+
+							tileBuild.setSpecs(Specs.BUILDABLE, buildable);
+							tileBuild.setSpecs(Specs.WALKABLE, walkable);
 
 							this.gridUnits[row * UNITS_BUILD_RATIO + y][column * UNITS_BUILD_RATIO + x] = tileUnits;
 						}
