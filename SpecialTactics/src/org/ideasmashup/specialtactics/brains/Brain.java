@@ -50,14 +50,15 @@ public class Brain implements BWEventListener {
 	protected int prevMinerals = 0;
 	protected int prevGas = 0;
 	protected int prevSupply = 0;
-	protected BrainListener listener;
+
+	protected List<BrainListener> listeners;
 
 	public Brain(Game game) {
 		instance = this;
 
 		this.game = game;
 		this.self = game.self();
-		this.listener = null;
+		this.listeners = new LinkedList<BrainListener>();
 
 		// must initialize managers in correct order
 		agents = Agents.getInstance();
@@ -86,12 +87,12 @@ public class Brain implements BWEventListener {
 		return instance;
 	}
 
-	public void setListener(BrainListener ls) {
-		this.listener = ls;
+	public void addListener(BrainListener ls) {
+		this.listeners.add(ls);
 	}
 
 	public void removeListener(BrainListener ls) {
-		this.listener = null;
+		this.listeners.remove(ls);
 	}
 
 	@Override
