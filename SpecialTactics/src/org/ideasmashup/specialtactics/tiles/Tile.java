@@ -13,27 +13,28 @@ import bwapi.TilePosition;
 
 public class Tile implements Serializable {
 
-	// FIXME increase Tile resolution to "walkable" level (eg. 8*8px)
-	//  instead of current "build" level (e.g. 32*32px)
 	//  see : https://code.google.com/p/bwapi/wiki/Misc
-
 	public static int SIZE_BUILD = 32;
 	public static int SIZE_UNIT = 8;
-
-	public static int WIDTH = 8;
-	public static int HEIGHT = 8;
 
 	private static final long serialVersionUID = -3384650743036528866L;
 
 	protected Map<Tiles.Specs, Object> specs;
 	protected Map<Tiles.Trails, Trail> trails;
 
+
+	protected int width;
+	protected int height;
+
 	protected transient Tile[][] grid;
 	protected transient int row, column;
 	protected transient TilePosition tileposition;
 	protected transient Position position;
 
-	public Tile() {
+	public Tile(int size) {
+		this.width = size;
+		this.height = size;
+
 		this.specs = new HashMap<Tiles.Specs, Object>();
 		this.trails = new HashMap<Tiles.Trails, Trail>();
 
@@ -71,7 +72,7 @@ public class Tile implements Serializable {
 		this.row = row;
 		this.column = column;
 		this.tileposition = new TilePosition(column, row);
-		this.position = new Position(column * Tile.WIDTH, row * Tile.HEIGHT);
+		this.position = new Position(column * width, row * height);
 	}
 
 	public TilePosition getTilePosition() {
