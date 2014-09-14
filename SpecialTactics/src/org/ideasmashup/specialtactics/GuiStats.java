@@ -23,6 +23,7 @@ import org.ideasmashup.specialtactics.managers.Producers;
 import org.ideasmashup.specialtactics.managers.Resources;
 import org.ideasmashup.specialtactics.managers.Supplies;
 
+import bwapi.Player;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PVector;
@@ -47,7 +48,7 @@ public class GuiStats extends GuiWindow implements BrainListener {
 		initAI();
 
 		// attach itself to brain events
-		brain.setListener(this);
+		brain.addListener(this);
 
 		// run sketch
 		sketch.init();
@@ -401,5 +402,17 @@ public class GuiStats extends GuiWindow implements BrainListener {
 
 			return strings;
 		}
+	}
+
+	@Override
+	public void onSendText(String text) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onReceiveText(Player player, String text) {
+		// TODO Auto-generated method stub
+
 	}
 }
