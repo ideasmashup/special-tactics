@@ -85,6 +85,19 @@ public class Tiles extends DefaultAgent implements BrainListener {
 				for (int y = 0; y < gridBuild.length; y++) {
 					AI.getGame().drawLineMap(0, y * Tile.SIZE_BUILD, gridBuild.length * Tile.SIZE_BUILD, y * Tile.SIZE_BUILD, Color.Black);
 				}
+
+				// show buildable
+				for (int x = 0; x < gridBuild[0].length; x++) {
+					for (int y = 0; y < gridBuild.length; y++) {
+						Tile tile = gridBuild[y][x];
+						if (((Boolean) tile.getSpecs(Specs.BUILDABLE)).booleanValue()) {//AI.getGame().isBuildable(x, y)) {
+							colorTile(tile, Color.Green);
+						}
+						else {
+							colorTile(tile, Color.Red);
+						}
+					}
+				}
 			}
 		}
 		else if (mode == Mode.units) {
