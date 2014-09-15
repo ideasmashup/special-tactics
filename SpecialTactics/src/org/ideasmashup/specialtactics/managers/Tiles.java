@@ -46,7 +46,7 @@ public class Tiles extends DefaultAgent implements BrainListener {
 		loadTiles();
 
 		// editor parameters
-		this.mode = Mode.view;
+		this.mode = Mode.build;
 
 		// FIXME debug code remove when no longer needed
 		Agents.getInstance().add(this);
