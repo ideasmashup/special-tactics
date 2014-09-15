@@ -344,6 +344,8 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		// because it is the most urgent and next ones will wait until next
 		// resources change (after a few frames - less than 1s delay)
 
+		if (nResources.isEmpty()) return;
+
 		NeedResources need = (NeedResources) nResources.getFirst();
 		Resources res = Resources.getInstance();
 
