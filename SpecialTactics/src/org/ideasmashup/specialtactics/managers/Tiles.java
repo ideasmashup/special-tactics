@@ -253,20 +253,32 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 	public Tile getBuildTile(Position p) {
 		TilePosition tp = new TilePosition(p.getX() / Tile.SIZE_BUILD, p.getY() / Tile.SIZE_BUILD);
+		Tile tile = gridBuild[tp.getY()][tp.getX()];
 
 		// highlight this tile?
-		AI.getGame().drawBoxMap(tp.getX() * Tile.SIZE_BUILD + 1, tp.getY() * Tile.SIZE_BUILD + 1, (tp.getX() + 1) * Tile.SIZE_BUILD - 1, (tp.getY()+ 1) * Tile.SIZE_BUILD - 1, Color.Purple, false);
+		colorTile(tile, Color.Purple);
 
-		return gridBuild[tp.getY()][tp.getX()];
+		return tile;
 	}
 
 	public Tile getUnitTile(Position p) {
 		TilePosition tp = new TilePosition(p.getX() / Tile.SIZE_UNIT, p.getY() / Tile.SIZE_UNIT);
+		Tile tile = gridUnits[tp.getY()][tp.getX()];
 
 		// highlight this tile?
-		AI.getGame().drawBoxMap(tp.getX() * Tile.SIZE_UNIT + 1, tp.getY() * Tile.SIZE_UNIT + 1, (tp.getX() + 1) * Tile.SIZE_UNIT - 1, (tp.getY()+ 1) * Tile.SIZE_UNIT - 1, Color.Purple, false);
+		colorTile(tile, Color.Purple);
 
-		return gridUnits[tp.getY()][tp.getX()];
+		return tile;
+	}
+
+	public void colorTile(Tile tile, Color color, int padding, boolean fill) {
+		TilePosition tp = tile.getTilePosition();
+		int size = tile.getSize();
+		AI.getGame().drawBoxMap(tp.getX() * size + padding, tp.getY() * size + padding, (tp.getX() + 1) * size - padding, (tp.getY()+ 1) * size - padding, color, fill);
+	}
+
+	public void colorTile(Tile tile, Color color) {
+		colorTile(tile, color, 1, false);
 	}
 
 	public static enum Trails {
