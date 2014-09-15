@@ -318,39 +318,35 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 	@Override
 	public void onSendText(String text) {
-		//
+
 	}
 
 	@Override
 	public void onReceiveText(Player player, String text) {
-		if (player == AI.getPlayer()) {
-			if (text.startsWith("/tiles")) {
-				String[] cmd = text.split(" ");
-				if (cmd.length > 1) {
-					switch (cmd[1]) {
-						default:
-							boolean found = false;
-							for (Mode m : Mode.values()) {
-								if (m.toString().equals(cmd[1])) {
-									AI.say("Tiles : set to mode "+ m);
-									this.mode = m;
-									found = true;
-									break;
-								}
+		AI.getGame().printf("Received : "+ text);
+		if (text.startsWith("tiles")) {
+			String[] cmd = text.split(" ");
+			if (cmd.length > 1) {
+				switch (cmd[1]) {
+					default:
+						boolean found = false;
+						for (Mode m : Mode.values()) {
+							if (m.toString().equals(cmd[1])) {
+								AI.say("Tiles : set to mode "+ m);
+								this.mode = m;
+								found = true;
+								break;
 							}
-							if (!found) {
-								AI.say("Tiles : couldn't find mode : "+ cmd[1]);
-							}
-							break;
-						case "select":
-							AI.getGame().getMouseState(0);
-							break;
-					}
+						}
+						if (!found) {
+							AI.say("Tiles : couldn't find mode : "+ cmd[1]);
+						}
+						break;
+					case "select":
+						AI.getGame().getMouseState(0);
+						break;
 				}
 			}
-		}
-		else if (text.startsWith("/b")) {
-
 		}
 	}
 }
