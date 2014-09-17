@@ -7,6 +7,8 @@ open-source starcraft broodwar AI based on BWAPI and Java
 
 First clone this repository ```git clone git@github.com:ideasmashup/special-tactics.git``` and when you're done, follow the [Developer Guide](docs/guide.md)
 
+You can also download all files as an archive from [the project's website](http://ideasmashup.github.io/special-tactics/)
+
 
 ## Objectives
 
