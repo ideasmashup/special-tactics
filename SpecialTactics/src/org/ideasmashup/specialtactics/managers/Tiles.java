@@ -109,6 +109,19 @@ public class Tiles extends DefaultAgent implements BrainListener {
 				for (int y = 0; y < gridUnits.length; y++) {
 					AI.getGame().drawLineMap(0, y * Tile.SIZE_UNIT, gridUnits.length * Tile.SIZE_UNIT, y * Tile.SIZE_UNIT, Color.Black);
 				}
+
+				// show walkable
+				for (int x = 0; x < gridUnits[0].length; x++) {
+					for (int y = 0; y < gridUnits.length; y++) {
+						Tile tile = gridUnits[y][x];
+						if (AI.getGame().isWalkable(x, y)) {
+							colorTile(tile, Color.Green);
+						}
+						else {
+							colorTile(tile, Color.Red);
+						}
+					}
+				}
 			}
 		}
 		else if (mode == Mode.debug) {
