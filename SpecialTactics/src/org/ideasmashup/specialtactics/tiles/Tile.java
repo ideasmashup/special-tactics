@@ -43,6 +43,10 @@ public class Tile implements Serializable {
 		this.grid = null;
 	}
 
+	public int getSize() {
+		return width;
+	}
+
 	public Object getSpecs(Tiles.Specs type) {
 		return specs.get(type);
 	}
