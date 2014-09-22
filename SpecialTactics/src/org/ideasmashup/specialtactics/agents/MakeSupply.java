@@ -159,6 +159,11 @@ public class MakeSupply extends DefaultAgent implements Consumer, UnitListener {
 	}
 
 	@Override
+	public boolean canReceiveOffer() {
+		return state != State.BUILDING && state != State.DONE && !isDestroyed();
+	}
+
+	@Override
 	public boolean fillNeeds(Object offer) {
 		if (state == State.DONE) return false;
 

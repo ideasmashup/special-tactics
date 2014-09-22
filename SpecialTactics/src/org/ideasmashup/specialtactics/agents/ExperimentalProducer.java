@@ -85,6 +85,11 @@ public class ExperimentalProducer extends UnitAgent implements Producer, Consume
 	}
 
 	@Override
+	public boolean canReceiveOffer() {
+		return bindee.isIdle();
+	}
+
+	@Override
 	public Need[] getNeeds(boolean returnAll) {
 		if (returnAll) {
 			return needs.toArray(new Need[0]);

@@ -70,6 +70,11 @@ public class MineralPatch extends MasterAgent implements Consumer {
 	}
 
 	@Override
+	public boolean canReceiveOffer() {
+		return !bindee.isBeingGathered();
+	}
+
+	@Override
 	public boolean fillNeeds(Object offer) {
 		for (Need need : needs) {
 			if (offer instanceof Unit) {

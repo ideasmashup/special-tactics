@@ -67,6 +67,11 @@ public class Base extends UnitAgent implements Producer, Consumer, UnitListener 
 	}
 
 	@Override
+	public boolean canReceiveOffer() {
+		return bindee.isIdle();
+	}
+
+	@Override
 	public boolean fillNeeds(Object offer) {
 		// typical Base needs are minerals and supply to produce workers
 		// these needs are filled with a "null" offer

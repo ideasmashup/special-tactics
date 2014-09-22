@@ -1,6 +1,7 @@
 package org.ideasmashup.specialtactics.agents;
 
 import org.ideasmashup.specialtactics.AI;
+import org.ideasmashup.specialtactics.agents.MakeSupply.State;
 import org.ideasmashup.specialtactics.listeners.UnitListener;
 import org.ideasmashup.specialtactics.managers.Agents;
 import org.ideasmashup.specialtactics.managers.Needs;
@@ -169,6 +170,11 @@ public class MakeStructure extends DefaultAgent implements Consumer, UnitListene
 		@Override
 		public Need[] getNeeds(boolean returnAll) {
 			return new Need[]{needResources};
+		}
+
+		@Override
+		public boolean canReceiveOffer() {
+			return state != State.BUILDING && state != State.DONE && !isDestroyed();
 		}
 
 		@Override
