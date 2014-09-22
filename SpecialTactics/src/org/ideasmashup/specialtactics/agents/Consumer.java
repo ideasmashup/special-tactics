@@ -13,6 +13,10 @@ public interface Consumer {
 	// fetch needee's own needs (either all or only unsatisfied ones)
 	public Need[] getNeeds(boolean returnAll);
 
+	// if this consumer can receive an offer right now
+	// e.g. this is false for minerals that already have one worker mining
+	public boolean canReceiveOffer();
+
 	// attemp to fill needee's needs
 	public boolean fillNeeds(Object offer);
 }
