@@ -300,7 +300,7 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 		System.out.println("Needs.onUnitComplete()");
 
 		for (Need need : nUnits) {
-			if (need.canReceive(unit)) {
+			if (need.getOwner().canReceiveOffer() && need.canReceive(unit)) {
 				Consumer consumer = need.getOwner();
 				if (consumer.fillNeeds(unit)) {
 					System.out.println("  - consumer "+ consumer +" satisfied with "+ unit +" !");
