@@ -254,6 +254,9 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 	}
 
 	public void saveTiles() {
+		boolean debug = false;
+		if (debug = true) return; // don't save until tiles code debugged
+
 		// save tiles data to file
 		try {
 			// if no persistent file then save as persistent data
