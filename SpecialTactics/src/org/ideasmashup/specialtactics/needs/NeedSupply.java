@@ -24,6 +24,8 @@ public class NeedSupply extends Need {
 
 	@Override
 	public boolean canReceive(Object offer) {
+		if (!owner.canReceiveOffer()) return false;
+
 		// accept all offers because current supply value is
 		// fetched directly from the Player instance so the "offer'
 		// is ignored (and generally "null" except for special cases)

@@ -29,6 +29,8 @@ public class NeedResources extends Need {
 
 	@Override
 	public boolean canReceive(Object offer) {
+		if (!owner.canReceiveOffer()) return false;
+
 		// accept all offers because current ressources values are
 		// fetched directly from the Player instance so the "offer'
 		// is ignored (and generally "null" except for special cases)

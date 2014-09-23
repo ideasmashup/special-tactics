@@ -44,6 +44,8 @@ public class NeedUnit extends Need {
 
 	@Override
 	public boolean canReceive(Object offer) {
+		if (!owner.canReceiveOffer()) return false;
+
 		if (offer instanceof Unit) {
 			// only accept units "offers" of the correct type
 			Unit unit = (Unit) offer;
