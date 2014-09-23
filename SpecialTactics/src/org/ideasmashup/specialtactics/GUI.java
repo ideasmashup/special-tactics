@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.ideasmashup.specialtactics.brains.Brain;
+import org.ideasmashup.specialtactics.managers.Tiles;
 
 public class GUI extends GuiWindow {
 
@@ -66,6 +67,24 @@ public class GUI extends GuiWindow {
 					wndStats = new GuiStats(brain);
 					wndStats.show(true);
 				}
+			}
+		});
+		panel.add(button);
+
+		button = new JButton("Buildings Grid");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Tiles.getInstance().setMode(Tiles.Mode.build);
+			}
+		});
+		panel.add(button);
+
+		button = new JButton("Units Grid");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Tiles.getInstance().setMode(Tiles.Mode.units);
 			}
 		});
 		panel.add(button);
