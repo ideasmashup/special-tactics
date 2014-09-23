@@ -6,11 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.ideasmashup.specialtactics.AI;
 import org.ideasmashup.specialtactics.agents.DefaultAgent;
 import org.ideasmashup.specialtactics.brains.BrainListener;
+import org.ideasmashup.specialtactics.listeners.UnitListener;
+import org.ideasmashup.specialtactics.managers.Units.Filter;
 import org.ideasmashup.specialtactics.tiles.Tile;
 
 import bwapi.Color;
@@ -18,9 +22,10 @@ import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TilePosition;
+import bwapi.Unit;
 
 
-public class Tiles extends DefaultAgent implements BrainListener {
+public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 
 	private static final String PERSISTENT_FILENAME = "tiles-persistent.grid";
 	private static Tiles instance = null;
@@ -47,6 +52,8 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 		// editor parameters
 		this.mode = Mode.build;
+
+		Units.getInstance().addListener(this);
 
 		// FIXME debug code remove when no longer needed
 		Agents.getInstance().add(this);
@@ -353,6 +360,77 @@ public class Tiles extends DefaultAgent implements BrainListener {
 		BUILDABLE,         // boolean : can build on tile or not ?
 		BUILD_TYPES,       // UnitType[] : preferred buildings to build on tile
 		BUILD_DIRECTIONS,  // String[] : top, left, bottom, right, edge, center
+	}
+
+
+	@Override
+	public void onUnitDiscover(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitEvade(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitShow(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitHide(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitCreate(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitDestroy(Unit unit) {
+		//
+
+	}
+
+	@Override
+	public void onUnitMorph(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitRenegade(Unit unit) {
+		//
+	}
+
+	@Override
+	public void onUnitComplete(Unit unit) {
+		if (unit.getType().isBuilding()) {
+			// make landing site of this unit unbuildable
+			Tile[] tiles = getBuildTiles(unit);
+			for (Tile tile : tiles) {
+				tile.setSpecs(Specs.BUILDABLE, false);
+			}
+		}
+	}
+
+	protected Filter filter = new Filter() {
+		@Override
+		public boolean allow(Player player) {
+			return true; // watch all players
+		}
+
+		@Override
+		public boolean allow(Unit unit) {
+			// needs manager listens to all units events
+			return true;
+		}
+	};
+
+	@Override
+	public Filter getFilter() {
+		return this.filter;
 	}
 
 	@Override
