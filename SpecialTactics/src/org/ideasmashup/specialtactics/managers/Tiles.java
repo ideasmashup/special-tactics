@@ -34,7 +34,7 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 
 	// editor variables
 	private Mode mode;
-	private enum Mode{
+	public enum Mode{
 		build,
 		units,
 		debug,
@@ -51,7 +51,7 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 		loadTiles();
 
 		// editor parameters
-		this.mode = Mode.build;
+		this.mode = Mode.view;
 
 		Units.getInstance().addListener(this);
 
@@ -142,6 +142,14 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 		else if (mode == Mode.debug) {
 			// do something, like display infos of MousePosition tile(s)
 		}
+	}
+
+	public Mode getMode() {
+		return mode;
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
 	}
 
 	private void loadTiles() {
