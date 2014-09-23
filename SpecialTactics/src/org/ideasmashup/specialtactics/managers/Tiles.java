@@ -98,15 +98,7 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 					for (int y = 0; y < gridBuild.length; y++) {
 						Tile tile = gridBuild[y][x];
 						if (((Boolean) tile.getSpecs(Specs.BUILDABLE)).booleanValue()) {
-							colorTile(tile, Color.Green);
-						}
-						else {
-							colorTile(tile, Color.Red);
-						}
-
-						tile = gridUnits[y][x];
-						if (AI.getGame().isWalkable(x, y)) {
-							colorTile(tile, Color.Green);
+							//colorTile(tile, Color.Green);
 						}
 						else {
 							colorTile(tile, Color.Red);
@@ -126,11 +118,13 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 				}
 
 				// show walkable
+				Tile tile;
 				for (int x = 0; x < gridUnits[0].length; x++) {
 					for (int y = 0; y < gridUnits.length; y++) {
-						Tile tile = gridUnits[y][x];
-						if (AI.getGame().isWalkable(x, y)) {
-							colorTile(tile, Color.Green);
+						tile = gridUnits[y][x];
+
+						if (AI.getGame().isWalkable(x, y)) {//((Boolean) tile.getSpecs(Specs.WALKABLE)).booleanValue()) {
+							//colorTile(tile, Color.Green);
 						}
 						else {
 							colorTile(tile, Color.Red);
@@ -202,6 +196,7 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 			// error when loading file : reset to blank tiles
 			Game game = AI.getGame();
 			int UNITS_BUILD_RATIO = Tile.SIZE_BUILD / Tile.SIZE_UNIT;
+			System.out.println("tiles ratio = "+ UNITS_BUILD_RATIO);
 
 			this.gridBuild = new Tile[game.mapHeight()][game.mapWidth()];
 			this.gridUnits = new Tile[game.mapHeight() * UNITS_BUILD_RATIO][game.mapWidth() * UNITS_BUILD_RATIO];
@@ -219,7 +214,6 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 				for (int column = 0; column < this.gridBuild[0].length; column++) {
 					// detect specs using Game infos
 					buildable = game.isBuildable(column, row);
-					walkable = game.isWalkable(column, row);
 
 					// buildings tile first
 					tileBuild = new Tile(Tile.SIZE_BUILD);
@@ -228,24 +222,24 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 					tileBuild.setTilePosition(row, column);
 
 					tileBuild.setSpecs(Specs.BUILDABLE, buildable);
-					tileBuild.setSpecs(Specs.WALKABLE, walkable);
 
 					this.gridBuild[row][column] = tileBuild;
+				}
+			}
 
-					// apply building specs to sub-tiles (unit tiles)
-					for (int y = 0; y < UNITS_BUILD_RATIO; y++) {
-						for (int x = 0; x < UNITS_BUILD_RATIO; x++) {
-							tileUnits = new Tile(Tile.SIZE_UNIT);
+			// apply building specs to unit tiles (walk tiles)
+			for (int y = 0; y < this.gridUnits.length; y++) {
+				for (int x = 0; x < this.gridUnits[0].length; x++) {
+					tileUnits = new Tile(Tile.SIZE_UNIT);
 
-							tileUnits.setGrid(gridUnits);
-							tileUnits.setTilePosition(row * UNITS_BUILD_RATIO + y, column * UNITS_BUILD_RATIO + x);
+					walkable = game.isWalkable(x, y);
 
-							tileBuild.setSpecs(Specs.BUILDABLE, buildable);
-							tileBuild.setSpecs(Specs.WALKABLE, walkable);
+					tileUnits.setGrid(gridUnits);
+					tileUnits.setTilePosition(y, x);
 
-							this.gridUnits[row * UNITS_BUILD_RATIO + y][column * UNITS_BUILD_RATIO + x] = tileUnits;
-						}
-					}
+					tileUnits.setSpecs(Specs.WALKABLE, walkable);
+
+					this.gridUnits[y][x] = tileUnits;
 				}
 			}
 
