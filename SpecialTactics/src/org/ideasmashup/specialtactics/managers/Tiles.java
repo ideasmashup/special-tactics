@@ -287,12 +287,30 @@ public class Tiles extends DefaultAgent implements BrainListener {
 
 	public Tile getBuildTile(Position p) {
 		TilePosition tp = new TilePosition(p.getX() / Tile.SIZE_BUILD, p.getY() / Tile.SIZE_BUILD);
+		return getBuildTile(tp);
+	}
+
+	public Tile getBuildTile(TilePosition tp) {
 		Tile tile = gridBuild[tp.getY()][tp.getX()];
 
 		// highlight this tile?
 		colorTile(tile, Color.Purple);
 
 		return tile;
+	}
+
+	public Tile[] getBuildTiles(Unit unit) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		TilePosition up = unit.getTilePosition(), tp;
+
+		for (int row = 0; row < unit.getType().tileHeight(); row++) {
+			for (int col = 0; col < unit.getType().tileWidth(); col++) {
+				tp = new TilePosition(up.getX() + col, up.getY() + row);
+				tiles.add(getBuildTile(tp));
+			}
+		}
+
+		return tiles.toArray(new Tile[0]);
 	}
 
 	public Tile getUnitTile(Position p) {
