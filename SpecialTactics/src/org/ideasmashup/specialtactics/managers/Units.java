@@ -57,7 +57,7 @@ public class Units {
 		myBuildings = new HashMap<Types, Set<Unit>>();
 		enemyUnits = new HashMap<Types, Set<Unit>>();
 		enemyBuildings = new HashMap<Types, Set<Unit>>();
-		listeners = new ArrayList<UnitListener>();
+		listeners = Collections.synchronizedList(new ArrayList<UnitListener>());
 	}
 
 	public static Units getInstance() {
@@ -605,73 +605,91 @@ public class Units {
 
 	public void onUnitDiscover(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitDiscover(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitDiscover(unit);
+			}
 		}
 	}
 
 	public void onUnitEvade(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitEvade(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitEvade(unit);
+			}
 		}
 	}
 
 	public void onUnitShow(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitShow(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitShow(unit);
+			}
 		}
 	}
 
 	public void onUnitHide(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitHide(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitHide(unit);
+			}
 		}
 	}
 
 	public void onUnitCreate(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitCreate(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitCreate(unit);
+			}
 		}
 	}
 
 	public void onUnitDestroy(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitDestroy(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitDestroy(unit);
+			}
 		}
 	}
 
 	public void onUnitMorph(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitMorph(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitMorph(unit);
+			}
 		}
 	}
 
 	public void onUnitRenegade(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitRenegade(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitRenegade(unit);
+			}
 		}
 	}
 
 	public void onUnitComplete(Unit unit) {
 		// call all listeners
-		for (UnitListener ls : listeners) {
-			if (ls.getFilter().allow(unit))
-				ls.onUnitComplete(unit);
+		synchronized(listeners) {
+			for (UnitListener ls : listeners) {
+				if (ls.getFilter().allow(unit))
+					ls.onUnitComplete(unit);
+			}
 		}
 	}
 
