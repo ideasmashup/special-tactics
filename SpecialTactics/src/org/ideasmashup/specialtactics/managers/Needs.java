@@ -1,6 +1,5 @@
 package org.ideasmashup.specialtactics.managers;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,26 +81,28 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 	protected void sortedInsert(LinkedList<Need> llist, Need need) {
 		// sorted insert based on priority (highest is last)
 
-		if (llist.size() == 0) {
-			llist.add(need);
-		}
-		else if (need.getPriority() == Need.CRITICAL
-				|| llist.get(0).getPriority() > need.getPriority()) {
-			// first place for CRITICAL or need with smallest value
-			llist.add(0, need);
-		}
-		else if (need.getPriority() == Need.USELESS
-				|| llist.get(llist.size() - 1).getPriority() < need
-				.getPriority()) {
-			// last place for USELESS or need with biggest value
-			llist.add(llist.size(), need);
-		}
-		else {
-			int i = 0;
-			while (llist.get(i).getPriority() < need.getPriority()) {
-				i++;
+		synchronized(llist) {
+			if (llist.size() == 0) {
+				llist.add(need);
 			}
-			llist.add(i, need);
+			else if (need.getPriority() == Need.CRITICAL
+					|| llist.get(0).getPriority() > need.getPriority()) {
+				// first place for CRITICAL or need with smallest value
+				llist.add(0, need);
+			}
+			else if (need.getPriority() == Need.USELESS
+					|| llist.get(llist.size() - 1).getPriority() < need
+					.getPriority()) {
+				// last place for USELESS or need with biggest value
+				llist.add(llist.size(), need);
+			}
+			else {
+				int i = 0;
+				while (llist.get(i).getPriority() < need.getPriority()) {
+					i++;
+				}
+				llist.add(i, need);
+			}
 		}
 	}
 
@@ -180,24 +181,30 @@ public class Needs implements UnitListener, ResourcesListener, SupplyListener {
 
 	public void removeNeed(Need need) {
 		if (need instanceof NeedUnit) {
-			if (this.nUnits.contains(need)) {
-				this.nUnits.remove(need);
-				System.out.println("  - removed NeedUnit for "+ need.getOwner().toString());
-				System.out.println("  - total NeedUnit now = "+ nUnits.size());
+			synchronized(nUnits) {
+				if (this.nUnits.contains(need)) {
+					this.nUnits.remove(need);
+					System.out.println("  - removed NeedUnit for "+ need.getOwner().toString());
+					System.out.println("  - total NeedUnit now = "+ nUnits.size());
+				}
 			}
 		}
 		else if (need instanceof NeedResources) {
-			if (this.nResources.contains(need)) {
-				this.nResources.remove(need);
-				System.out.println("  - removed NeedResources for "+ need.getOwner().toString());
-				System.out.println("  - total NeedResources now = "+ nResources.size());
+			synchronized(nResources) {
+				if (this.nResources.contains(need)) {
+					this.nResources.remove(need);
+					System.out.println("  - removed NeedResources for "+ need.getOwner().toString());
+					System.out.println("  - total NeedResources now = "+ nResources.size());
+				}
 			}
 		}
 		else if (need instanceof NeedSupply) {
-			if (this.nSupplies.contains(need)) {
-				this.nSupplies.remove(need);
-				System.out.println("  - removed NeedSupply for "+ need.getOwner().toString());
-				System.out.println("  - total NeedSupply now = "+ nSupplies.size());
+			synchronized(nSupplies) {
+				if (this.nSupplies.contains(need)) {
+					this.nSupplies.remove(need);
+					System.out.println("  - removed NeedSupply for "+ need.getOwner().toString());
+					System.out.println("  - total NeedSupply now = "+ nSupplies.size());
+				}
 			}
 		}
 		else {
