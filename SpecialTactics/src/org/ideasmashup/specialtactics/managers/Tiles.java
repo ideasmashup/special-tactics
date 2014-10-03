@@ -335,6 +335,22 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 		return tile;
 	}
 
+	public int getBuildRowsCount() {
+		return gridBuild.length;
+	}
+
+	public int getBuildColsCount() {
+		return gridBuild[0].length;
+	}
+
+	public int getUnitsRowsCount() {
+		return gridUnits.length;
+	}
+
+	public int getUnitsColsCount() {
+		return gridUnits[0].length;
+	}
+
 	public void colorTile(Tile tile, Color color, int padding, boolean fill) {
 		TilePosition tp = tile.getTilePosition();
 		int size = tile.getSize();
