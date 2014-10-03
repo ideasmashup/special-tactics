@@ -3,6 +3,8 @@ package org.ideasmashup.specialtactics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -13,6 +15,10 @@ import javax.swing.JPanel;
 
 import org.ideasmashup.specialtactics.brains.Brain;
 import org.ideasmashup.specialtactics.managers.Tiles;
+import org.ideasmashup.specialtactics.managers.Tiles.Specs;
+import org.ideasmashup.specialtactics.tiles.Tile;
+
+import bwapi.TilePosition;
 
 public class GUI extends GuiWindow {
 
@@ -75,7 +81,41 @@ public class GUI extends GuiWindow {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Tiles.getInstance().setMode(Tiles.Mode.build);
+				Tiles tiles = Tiles.getInstance();
+				tiles.setMode(Tiles.Mode.build);
+				// force editing cursor to be on visible screen cell
+				TilePosition cell = AI.getPlayer().getStartLocation();
+				tiles.buildX = cell.getX();
+				tiles.buildY = cell.getY();
+			}
+		});
+		button.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent ke) {
+				int code = ke.getKeyCode();
+
+				Tiles tiles = Tiles.getInstance();
+
+				if (code == KeyEvent.VK_LEFT) {
+					// FIXME horrible direct access for demo hackathon
+					tiles.buildX = Math.max(0, tiles.buildX - 1);
+				}
+				else if (code == KeyEvent.VK_RIGHT) {
+					// FIXME horrible direct access for demo hackathon
+					tiles.buildX = Math.min(tiles.getBuildColsCount() - 1, tiles.buildX + 1);
+				}
+				if (code == KeyEvent.VK_UP) {
+					// FIXME horrible direct access for demo hackathon
+					tiles.buildY = Math.max(0, tiles.buildY - 1);
+				}
+				else if (code == KeyEvent.VK_DOWN) {
+					// FIXME horrible direct access for demo hackathon
+					tiles.buildY = Math.min(tiles.getBuildRowsCount() - 1, tiles.buildY + 1);
+				}
+				else if (code == KeyEvent.VK_ENTER) {
+					Tile tile = tiles.getBuildTile(new TilePosition(tiles.buildX, tiles.buildY));
+					tile.setSpecs(Specs.BUILDABLE, !(Boolean) tile.getSpecs(Specs.BUILDABLE));
+				}
 			}
 		});
 		panel.add(button);
