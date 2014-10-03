@@ -44,6 +44,9 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 	private Tile[][] gridBuild; // structure tiles (general)
 	private Tile[][] gridUnits; // units tiles (trails)
 
+	// editing mode selected tiles
+	public int buildX, buildY;
+
 	private Tiles() {
 		super();
 
@@ -52,6 +55,8 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 
 		// editor parameters
 		this.mode = Mode.view;
+		this.buildX = 0;
+		this.buildY = 0;
 
 		Units.getInstance().addListener(this);
 
@@ -97,7 +102,11 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 				for (int x = 0; x < gridBuild[0].length; x++) {
 					for (int y = 0; y < gridBuild.length; y++) {
 						Tile tile = gridBuild[y][x];
-						if (((Boolean) tile.getSpecs(Specs.BUILDABLE)).booleanValue()) {
+						// sepcial case for editing cursor
+						if (x == buildX && y == buildY) {
+							colorTile(tile, Color.Orange);
+						}
+						else if (((Boolean) tile.getSpecs(Specs.BUILDABLE)).booleanValue()) {
 							//colorTile(tile, Color.Green);
 						}
 						else {
@@ -244,6 +253,10 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 			}
 
 			System.err.println("Tiles : done !");
+		}
+		finally {
+			buildX = 0;
+			buildY = 0;
 		}
 	}
 
