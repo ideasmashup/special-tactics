@@ -160,7 +160,9 @@ public class GUI extends GuiWindow {
 							// fetch all build types authorized for this tile
 							UnitType[] _types = (UnitType[]) tile.getSpecs(Specs.BUILD_TYPES);
 							LinkedList<UnitType> types = new LinkedList<UnitType>();
-							types.addAll(Arrays.asList(_types));
+							if (_types != null) {
+								types.addAll(Arrays.asList(_types));
+							}
 
 							// remove or add production building
 							UnitType type = Units.Types.PROD_T1.getUnitType();
@@ -178,7 +180,9 @@ public class GUI extends GuiWindow {
 							// fetch all build types authorized for this tile
 							UnitType[] _types2 = (UnitType[]) tile.getSpecs(Specs.BUILD_TYPES);
 							LinkedList<UnitType> types2 = new LinkedList<UnitType>();
-							types2.addAll(Arrays.asList(_types2));
+							if (_types2 != null) {
+								types2.addAll(Arrays.asList(_types2));
+							}
 
 							// remove or add production building
 							UnitType type2 = Units.Types.SUPPLY.getUnitType();
