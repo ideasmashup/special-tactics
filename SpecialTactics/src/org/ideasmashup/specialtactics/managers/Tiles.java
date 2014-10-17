@@ -60,7 +60,7 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 		loadTiles();
 
 		// editor parameters
-		this.mode = Mode.view;
+		this.mode = Mode.build;
 		this.buildX = 0;
 		this.buildY = 0;
 
