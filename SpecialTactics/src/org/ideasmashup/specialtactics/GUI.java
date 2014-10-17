@@ -145,7 +145,7 @@ public class GUI extends GuiWindow {
 							break;
 					}
 				}
-				else if (code == KeyEvent.VK_SPACE) {
+				else if (code == KeyEvent.VK_CONTROL) {
 					// edit selected tile according to selected tool
 					Tile tile = tiles.getBuildTile(new TilePosition(tiles.buildX, tiles.buildY));
 
