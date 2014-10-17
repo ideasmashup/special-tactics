@@ -98,6 +98,8 @@ public class GUI extends GuiWindow {
 				TilePosition cell = AI.getPlayer().getStartLocation();
 				tiles.buildX = cell.getX();
 				tiles.buildY = cell.getY();
+
+				AI.say("Tiles editing : "+ Tiles.getInstance().edittool);
 			}
 		});
 		button.addKeyListener(new KeyAdapter() {
