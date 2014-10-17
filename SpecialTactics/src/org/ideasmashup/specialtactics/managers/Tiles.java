@@ -46,6 +46,12 @@ public class Tiles extends DefaultAgent implements BrainListener, UnitListener {
 
 	// editing mode selected tiles
 	public int buildX, buildY;
+	public EditTool edittool = EditTool.buildable;
+	public enum EditTool {
+		buildable, // switch buidable on/off
+		supply, // switch supply build sites on/off
+		production, // switch prod building sites on/off
+	}
 
 	private Tiles() {
 		super();
